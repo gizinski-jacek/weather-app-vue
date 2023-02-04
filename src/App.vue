@@ -14,7 +14,9 @@ const apiData = ref<WeatherData | null>(null);
 onMounted(async () => {
 	try {
 		const res: AxiosResponse<WeatherData> = await axios.get(
-			`https://api.openweathermap.org/data/2.5/weather?lat=52.374&lon=4.8897&&appid=928d161ba6f0dc16c683b4e736b43792`
+			`https://api.openweathermap.org/data/2.5/weather?lat=52.374&lon=4.8897&&appid=${
+				import.meta.env.API_KEY
+			}`
 		);
 		apiData.value = res.data;
 	} catch (error) {
@@ -30,10 +32,14 @@ async function searchWeather(query: string) {
 	try {
 		if (!query) return;
 		const resGeocoding: AxiosResponse<GeocodingData[]> = await axios.get(
-			`http://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=1appid=928d161ba6f0dc16c683b4e736b43792`
+			`https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=1appid=${
+				import.meta.env.API_KEY
+			}`
 		);
 		const resWeather: AxiosResponse<WeatherData> = await axios.get(
-			`https://api.openweathermap.org/data/2.5/weather?lat=${resGeocoding.data[0].lat}&lon=${resGeocoding.data[0].lon}&&appid=928d161ba6f0dc16c683b4e736b43792`
+			`https://api.openweathermap.org/data/2.5/weather?lat=${
+				resGeocoding.data[0].lat
+			}&lon=${resGeocoding.data[0].lon}&&appid=${import.meta.env.API_KEY}`
 		);
 		apiData.value = resWeather.data;
 	} catch (error) {
