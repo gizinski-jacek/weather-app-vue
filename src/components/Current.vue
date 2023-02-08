@@ -1,33 +1,59 @@
 <script setup lang="ts">
-import type { WeatherData } from '../types/types';
+import { convertTemp } from "@/utilities/converters";
+import type { GeocodingData, OneCallWeatherData } from "../types/types";
 
-const props = defineProps<{ apiData: WeatherData | null; metric: boolean }>();
+const props = defineProps<{
+	data: OneCallWeatherData | null;
+	location: GeocodingData | null;
+	metric: boolean;
+	fetching: boolean;
+}>();
 </script>
 <template>
-	<div class="current">
-		<div v-if="apiData" class="basic">
-			<p>{{ apiData.name }}</p>
-			<p>{{ apiData.sys.country }}</p>
-			<p>{{ apiData.main.temp }}</p>
-			<p>Main: {{ apiData.weather.main }}</p>
+	<div v-if="!fetching && data && location" class="current-weather">
+		<div class="basic">
+			<p>{{ location.name }}, {{ location.country }}, {{ location.state }}</p>
+			<p>{{ data.current.weather[0].main }}</p>
+			<p>
+				{{
+					new Date(data.current.dt * 1000).toLocaleString(undefined,
+						{
+							weekday: "long",
+							month: 'numeric',
+							day: 'numeric',
+							year: 'numeric'
+						})
+				}}
+			</p>
+			<img :src="`https://openweathermap.org/img/wn/${data.current.weather[0].icon}.png`"
+				:alt="data.current.weather[0].main" />
+			<p>{{ convertTemp(metric, data.current.temp) }}</p>
 		</div>
-		<div v-if="apiData" class="more">
-			<p>Data updated at: {{ apiData.dt }}</p>
-			<p>Description: {{ apiData.weather.description }}</p>
-			<p>Lat: {{ apiData.coord.lat }}</p>
-			<p>Lon: {{ apiData.coord.lon }}</p>
+		<div class="more">
+			<p>
+				{{
+					new Date(data.current.dt * 1000).toLocaleString(undefined,
+						{
+							weekday: "long",
+							month: 'numeric',
+							day: 'numeric',
+							year: 'numeric'
+						})
+				}}
+			</p>
+			<p> {{ data.current.weather[0].description }}</p>
+			<p>Lat: {{ data.lat }}</p>
+			<p>Lon: {{ data.lon }}</p>
 		</div>
 	</div>
 </template>
-<style scoped>
-.current {
+<style scoped lang="scss">
+.current-weather {
 	display: flex;
-	flex-direction: column;
+	gap: 2rem;
 }
 
-.basic {
-}
+.basic {}
 
-.more {
-}
+.more {}
 </style>
