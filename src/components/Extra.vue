@@ -1,33 +1,28 @@
 <script setup lang="ts">
-import type { WeatherData } from '../types/types';
-import { convertTemp, convertSpeed } from '../utilities/converters';
+import type { OneCallWeatherData } from "../types/types";
+import { convertTemp, convertSpeed, convertVisibility } from "../utilities/converters";
 
-const props = defineProps<{ apiData: WeatherData | null; metric: boolean }>();
+const props = defineProps<{
+	data: OneCallWeatherData | null;
+	metric: boolean;
+	fetching: boolean;
+}>();
 </script>
 <template>
-	<div class="extra">
-		<div v-if="apiData">
-			<p>Feels like: {{ convertTemp(metric, apiData.main.feels_like) }}</p>
-			<p>Temp min: {{ convertTemp(metric, apiData.main.temp_min) }}</p>
-			<p>Temp max: {{ convertTemp(metric, apiData.main.temp_max) }}</p>
-			<p>Pressure: {{ apiData.main.pressure }}</p>
-			<p>Pressure sea level: {{ apiData.main.sea_level }}</p>
-			<p>Pressure ground level: {{ apiData.main.grnd_level }}</p>
-			<p>Visibility: {{ apiData.visibility }}</p>
-			<p>Wind speed: {{ convertSpeed(metric, apiData.wind.speed) }}</p>
-			<p>Wind deg: {{ apiData.wind.deg }}</p>
-			<p v-if="apiData.wind.gust">
-				Wind gust: {{ convertSpeed(metric, apiData.wind.gust) }}
-			</p>
-			<p>Cloudiness: {{ apiData.clouds.all }}</p>
-			<p v-if="apiData.rain">Rain 1h: {{ apiData.rain['1h'] }}</p>
-			<p v-if="apiData.rain">Rain 3h: {{ apiData.rain['3h'] }}</p>
-			<p v-if="apiData.snow">Snow 1h: {{ apiData.snow['1h'] }}</p>
-			<p v-if="apiData.snow">Snow 3h: {{ apiData.snow['3h'] }}</p>
-		</div>
+	<div v-if="!fetching && data" class="extra-widgets">
+		<p>Feels like: {{ convertTemp(metric, data.current.feels_like) }}</p>
+		<p>Pressure: {{ data.current.pressure }} hPa</p>
+		<p>Visibility: {{ convertVisibility(metric, data.current.visibility) }}</p>
+		<p>Wind speed: {{ convertSpeed(metric, data.current.wind_speed) }}</p>
+		<p>Wind deg: {{ data.current.wind_deg }}</p>
+		<p v-if="data.current.wind_gust">
+			Wind gust: {{ convertSpeed(metric, data.current.wind_gust) }}
+		</p>
+		<p>Cloudiness: {{ data.current.clouds }}</p>
+		<p v-if="data.current.rain">Rain 1h: {{ data.current.rain["1h"] }}</p>
+		<p v-if="data.current.snow">Snow 1h: {{ data.current.snow["1h"] }}</p>
 	</div>
 </template>
-<style scoped>
-.extra {
-}
+<style scoped lang="scss">
+.extra {}
 </style>
