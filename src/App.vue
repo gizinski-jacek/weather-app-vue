@@ -7,7 +7,7 @@ import Controls from "./components/Controls.vue";
 import axios from "axios";
 import type { AxiosResponse } from "axios";
 import type { GeocodingData, OneCallWeatherData } from "./types/types";
-import { fetchGeolocation, fetchWeatherOneCall } from "./utilities/fetchWeather";
+import { fetchGeolocation, fetchWeatherOneCall } from "./utilities/fetchers";
 
 const metric = ref<boolean>(true);
 const location = ref<GeocodingData | null>({
@@ -106,8 +106,14 @@ function handleGeolocationError(error: GeolocationPositionError) {
 
 <style scoped lang="scss">
 main {
+	min-height: 100vh;
 	width: 100%;
+	padding: 2rem;
 	text-transform: capitalize;
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+
 
 	.top {
 		display: flex;
