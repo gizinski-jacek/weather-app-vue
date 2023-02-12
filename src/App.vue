@@ -4,8 +4,6 @@ import Current from "./components/Current.vue";
 import Extra from "./components/Extra.vue";
 import Forecast from "./components/Forecast.vue";
 import Controls from "./components/Controls.vue";
-import axios from "axios";
-import type { AxiosResponse } from "axios";
 import type { GeocodingData, OneCallWeatherData } from "./types/types";
 import { fetchGeolocation, fetchWeatherOneCall } from "./utilities/fetchers";
 
@@ -22,7 +20,7 @@ const fetching = ref<boolean>(true);
 
 onMounted(async () => {
 	try {
-		if (!location.value) return
+		if (!location.value) return;
 		fetching.value = true;
 		getGeolocation();
 		const { lat, lon } = location.value;
@@ -35,7 +33,7 @@ onMounted(async () => {
 });
 
 watch(location, async () => {
-	if (!location.value) return
+	if (!location.value) return;
 	fetching.value = true;
 	const { lat, lon } = location.value;
 	apiData.value = await fetchWeatherOneCall(lat, lon);
@@ -45,7 +43,7 @@ watch(location, async () => {
 async function changeLocation(query: string) {
 	try {
 		if (!query) return;
-		location.value = await fetchGeolocation(query)
+		location.value = await fetchGeolocation(query);
 	} catch (error) {
 		console.error(error);
 	}
@@ -66,7 +64,7 @@ function getGeolocation(): GeolocationPosition | null {
 			const geolocation = await fetchGeolocation(query);
 			if (!geolocation) throw new Error();
 			location.value = geolocation;
-		}, handleGeolocationError); fetchGeolocation
+		}, handleGeolocationError);
 	} else {
 		console.log("Geolocation is not supported by this browser.");
 	}
@@ -94,7 +92,7 @@ function handleGeolocationError(error: GeolocationPositionError) {
 <template>
 	<main v-if="apiData">
 		<div class="top">
-			<div class="left">
+			<div>
 				<Controls @changeUnits="changeUnits" @changeLocation="changeLocation" :metric="metric" />
 				<Current :data="apiData" :location="location" :metric="metric" :fetching="fetching" />
 			</div>
@@ -108,18 +106,17 @@ function handleGeolocationError(error: GeolocationPositionError) {
 main {
 	min-height: 100vh;
 	width: 100%;
-	padding: 2rem;
+	padding: 1rem;
 	text-transform: capitalize;
 	display: flex;
-	justify-content: space-between;
 	flex-direction: column;
-
+	justify-content: space-between;
+	gap: 1rem;
 
 	.top {
 		display: flex;
 		justify-content: space-between;
+		gap: 1rem;
 	}
-
-	.left {}
 }
 </style>
