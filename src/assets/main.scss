@@ -1,21 +1,66 @@
 @import './base.scss';
 
+* {
+	box-sizing: border-box !important;
+}
+
 #app {
 	font-weight: normal;
 }
 
-a,
-.green {
-	text-decoration: none;
-	color: hsla(160, 100%, 37%, 1);
-	transition: 0.4s;
-}
+button {
+	color: var(--color-background-soft);
+	background-color: var(--color-heading);
+	border: none;
+	text-transform: uppercase;
+	border-radius: 4px;
+	font-size: 0.75rem;
+	padding: 0.25rem 0.5rem;
+	cursor: pointer;
+	transition: 0.25s ease-in-out;
 
-@media (hover: hover) {
-	a:hover {
-		background-color: hsla(160, 100%, 37%, 0.2);
+	&:hover {
+		filter: brightness(75%);
 	}
 }
 
-@media (min-width: 1024px) {
+input {
+	color: var(--color-text);
+	background-color: var(--color-background);
+	border: 2px solid transparent;
+	border-radius: 4px;
+	font-size: 0.75rem;
+	padding: 0.25rem;
+	transition: 0.25s ease-in-out;
+	outline: none;
+
+	&:hover {
+		border-color: var(--border-color-hover);
+	}
+
+	&:focus {
+		border-color: var(--border-color-hover);
+	}
+}
+
+img {
+	display: block;
+}
+
+h1 {
+	font-size: 2rem;
+	font-weight: 600;
+}
+
+h2 {
+	font-size: 1.5rem;
+	font-weight: 600;
+}
+
+h3 {
+	font-size: 1.25rem;
+}
+
+P {
+	font-size: 1rem;
 }
