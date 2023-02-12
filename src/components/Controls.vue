@@ -8,7 +8,7 @@ const searchValue = ref("");
 </script>
 <template>
 	<div class="controls">
-		<input type="text" id="search" name="search" v-model="searchValue" placeholder="Search location..."
+		<input type="text" id="search" name="search" v-model="searchValue" placeholder="Search city..."
 			@keypress.enter="emit('changeLocation', searchValue)" />
 		<button type="button" @click="emit('changeUnits')">
 			Use {{ metric? "imperial": "metric" }}
@@ -17,6 +17,8 @@ const searchValue = ref("");
 </template>
 <style scoped lang="scss">
 .controls {
+	display: flex;
+	gap: 1rem;
 
 	button {
 		min-width: 100px;
