@@ -21,7 +21,7 @@ const searchValue = ref("");
 	gap: 1rem;
 
 	button {
-		min-width: 100px;
+		min-width: 110px;
 	}
 }
 </style>
