@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { convertTemp } from "@/utilities/converters";
 import type { GeocodingData, OneCallWeatherData } from "../types/types";
-import Controls from './Controls.vue'
 
 const props = defineProps<{
 	data: OneCallWeatherData | null;
@@ -43,11 +42,13 @@ const props = defineProps<{
 <style scoped lang="scss">
 .current-weather {
 	display: flex;
+	justify-content: space-evenly;
 	gap: 1rem;
 	margin: 0.5rem 0;
 
 	span {
 		display: flex;
+		flex-direction: column;
 		align-items: center;
 	}
 
@@ -55,8 +56,16 @@ const props = defineProps<{
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
-		align-items: center;
+	}
+}
 
+@media (min-width: 768px) {
+	.current-weather {
+		justify-content: flex-start;
+
+		span {
+			flex-direction: row;
+		}
 	}
 }
 </style>
