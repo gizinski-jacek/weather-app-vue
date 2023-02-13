@@ -112,11 +112,18 @@ main {
 	flex-direction: column;
 	justify-content: space-between;
 	gap: 1rem;
+}
 
+.top {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 1rem;
+}
+
+@media (min-width: 768px) {
 	.top {
-		display: flex;
-		justify-content: space-between;
-		gap: 1rem;
+		flex-direction: row;
 	}
 }
 </style>
