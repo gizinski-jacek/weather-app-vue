@@ -4,8 +4,8 @@
 // Show one decimal place.
 export function convertTemp(metric: boolean, temp: number): string {
 	return metric
-		? (Math.round(temp * 10) / 10).toFixed(1) + ' °C'
-		: (Math.round((temp * 1.8 + 32) * 10) / 10).toFixed(1) + ' °F';
+		? (Math.round(temp * 10) / 10).toFixed(1) + '°C'
+		: (Math.round((temp * 1.8 + 32) * 10) / 10).toFixed(1) + '°F';
 }
 
 // Convert speed to imperial units or return default value in metric.
