@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { OneCallWeatherData } from "../types/types";
-import { convertTemp, convertSpeed, convertVisibility } from "../utilities/converters";
+import { convertSpeed, convertVisibility } from "../utilities/converters";
 
 const props = defineProps<{
 	data: OneCallWeatherData | null;
@@ -10,7 +10,6 @@ const props = defineProps<{
 </script>
 <template>
 	<div v-if="!fetching && data" class="extra-widgets">
-		<p>Feels like: {{ convertTemp(metric, data.current.feels_like) }}</p>
 		<p>Pressure: {{ data.current.pressure }} hPa</p>
 		<p>Visibility: {{ convertVisibility(metric, data.current.visibility) }}</p>
 		<p>Wind speed: {{ convertSpeed(metric, data.current.wind_speed) }}</p>
@@ -24,5 +23,22 @@ const props = defineProps<{
 	</div>
 </template>
 <style scoped lang="scss">
-.extra {}
+.extra-widgets {
+	display: flex;
+	flex-direction: row;
+
+	>p {
+		margin: 0.5rem;
+	}
+}
+
+@media (min-width: 768px) {
+	.extra-widgets {
+		flex-direction: column;
+
+		span {
+			flex-direction: row;
+		}
+	}
+}
 </style>
