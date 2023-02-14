@@ -105,20 +105,22 @@ function handleGeolocationError(error: GeolocationPositionError) {
 <style scoped lang="scss">
 main {
 	min-height: 100vh;
-	width: 100%;
+	width: fit-content;
 	padding: 1rem;
 	text-transform: capitalize;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	gap: 1rem;
+	gap: 2rem;
+	margin: 0 auto;
 }
 
 .top {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	gap: 1rem;
+	gap: 2rem;
+
 }
 
 @media (min-width: 768px) {
