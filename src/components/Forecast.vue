@@ -17,7 +17,7 @@ const groupSizes = ref<number>(8);
 const smallScreen = ref<boolean>(false);
 
 onMounted(() => {
-	if (window.innerWidth < 500) smallScreen.value = true;
+	if (window.innerWidth < 540) smallScreen.value = true;
 	window.addEventListener("resize", watchResize);
 });
 
@@ -26,7 +26,7 @@ onUnmounted(() => {
 });
 
 function watchResize() {
-	if (window.innerWidth < 500) {
+	if (window.innerWidth < 540) {
 		smallScreen.value = true;
 	} else {
 		smallScreen.value = false;
@@ -88,37 +88,36 @@ watch(pageView, () => {
 			</div>
 		</div>
 		<div id="forecast-display" :class="{ scroll: !pageView }">
-			<div v-if="displayedForecast === 'daily'" v-for="(chunk, index1) in splitIntoGroups(
+			<div v-if="displayedForecast === 'daily'" v-for="(chunk, indexH) in splitIntoGroups(
 				data[displayedForecast],
 				groupSizes
-			)" :key="index1" class="forecast-daily" :class="{
+			)" :key="indexH" class="forecast-daily" :class="{
 	active:
 		data[displayedForecast].length > groupSizes
-			? currentPage - 1 === index1
+			? currentPage - 1 === indexH
 			: 'active',
 }">
-				<div v-for="(d, i) in chunk" :key="i" class="day">
+				<div v-for="(h, i) in chunk" :key="i" class="day">
 					<div class="date">
 						{{
-							new Date(d.dt * 1000).toLocaleString(undefined, {
+							new Date(h.dt * 1000).toLocaleString(undefined, {
 								weekday: smallScreen ? "short" : "long",
 								month: "numeric",
 								day: "numeric",
-								year: smallScreen ? "2-digit" : "numeric",
 							})
 						}}
 					</div>
 					<div class="img-con">
-						<img :src="`https://openweathermap.org/img/wn/${d.weather[0].icon}.png`" :alt="d.weather[0].main" />
+						<img :src="`https://openweathermap.org/img/wn/${h.weather[0].icon}.png`" :alt="h.weather[0].main" />
 					</div>
-					<div class="description">{{ d.weather[0].main }}</div>
-					<div>{{ convertTemp(metric, d.temp.day) }}</div>
+					<div class="description">{{ h.weather[0].description }}</div>
+					<div>{{ convertTemp(metric, h.temp.day) }}</div>
 				</div>
 			</div>
-			<div v-else-if="displayedForecast === 'hourly'" v-for="(chunk, index2) in splitIntoGroups(
+			<div v-else-if="displayedForecast === 'hourly'" v-for="(chunk, indexD) in splitIntoGroups(
 				data[displayedForecast],
 				groupSizes
-			)" :key="index2" class="forecast-hourly" :class="{ active: currentPage - 1 === index2 }">
+			)" :key="indexD" class="forecast-hourly" :class="{ active: currentPage - 1 === indexD }">
 				<div v-for="(d, i) in chunk" :key="i" class="hour">
 					<div class="date">
 						{{
@@ -126,14 +125,15 @@ watch(pageView, () => {
 								weekday: smallScreen ? "short" : "long",
 								month: "numeric",
 								day: "numeric",
-								year: smallScreen ? "2-digit" : "numeric",
+								hour: "numeric",
+								minute: "numeric",
 							})
 						}}
 					</div>
 					<div class="img">
 						<img :src="`https://openweathermap.org/img/wn/${d.weather[0].icon}.png`" :alt="d.weather[0].main" />
 					</div>
-					<div class="description">{{ d.weather[0].main }}</div>
+					<div class="description">{{ d.weather[0].description }}</div>
 					<div>{{ convertTemp(metric, d.temp) }}</div>
 				</div>
 			</div>
@@ -258,9 +258,9 @@ watch(pageView, () => {
 .forecast-hourly {
 	display: none;
 	flex-direction: column;
+	min-height: 280px;
 
 	&.active {
-		flex: 1;
 		justify-content: space-between;
 		flex-wrap: nowrap;
 		display: flex;
@@ -279,23 +279,20 @@ watch(pageView, () => {
 			background-color: var(--color-background);
 		}
 
-		.date {
-			flex: 2;
-		}
-
+		.date,
 		.description {
 			flex: 1;
 		}
 	}
 }
 
-@media (min-width: 500px) {
+@media (min-width: 540px) {
 	.forecast-controls {
-		flex-direction: row !important;
+		flex-direction: row;
 	}
 }
 
-@media (min-width: 900px) {
+@media (min-width: 930px) {
 	#forecast-display {
 		flex-direction: row;
 
