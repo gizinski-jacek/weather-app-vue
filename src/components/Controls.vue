@@ -18,7 +18,14 @@ const searchValue = ref("");
 <style scoped lang="scss">
 .controls {
 	display: flex;
+	justify-content: space-between;
 	gap: 1rem;
+	margin-bottom: 1rem;
+
+	input {
+		flex: 1;
+		max-width: 300px;
+	}
 
 	button {
 		min-width: 110px;
