@@ -58,7 +58,7 @@ watch(pageView, () => {
 	// Find a way to cleanup event listener. !!!
 	const element = document.getElementById("forecast-display");
 	if (!element) return;
-	element.addEventListener("wheel", (e) => {
+	element.addEventListener("wheel", (e: WheelEvent) => {
 		element.scrollLeft += e.deltaY;
 	});
 });
@@ -97,31 +97,31 @@ watch(pageView, () => {
 			? currentPage - 1 === indexH
 			: 'active',
 }">
-				<div v-for="(h, i) in chunk" :key="i" class="day">
+				<div v-for="(d, i) in chunk" :key="i" class="day">
 					<div class="date">
 						{{
-							new Date(h.dt * 1000).toLocaleString(undefined, {
+							new Date(d.dt * 1000).toLocaleString(undefined, {
 								weekday: smallScreen ? "short" : "long",
 								month: "numeric",
 								day: "numeric",
 							})
 						}}
 					</div>
-					<div class="img-con">
-						<img :src="`https://openweathermap.org/img/wn/${h.weather[0].icon}.png`" :alt="h.weather[0].main" />
+					<div>
+						<img :src="`https://openweathermap.org/img/wn/${d.weather[0].icon}.png`" :alt="d.weather[0].main" />
 					</div>
-					<div class="description">{{ h.weather[0].description }}</div>
-					<div>{{ convertTemp(metric, h.temp.day) }}</div>
+					<div>{{ convertTemp(metric, d.temp.day) }}</div>
+					<div class="description">{{ d.weather[0].description }}</div>
 				</div>
 			</div>
 			<div v-else-if="displayedForecast === 'hourly'" v-for="(chunk, indexD) in splitIntoGroups(
 				data[displayedForecast],
 				groupSizes
 			)" :key="indexD" class="forecast-hourly" :class="{ active: currentPage - 1 === indexD }">
-				<div v-for="(d, i) in chunk" :key="i" class="hour">
+				<div v-for="(h, i) in chunk" :key="i" class="hour">
 					<div class="date">
 						{{
-							new Date(d.dt * 1000).toLocaleString(undefined, {
+							new Date(h.dt * 1000).toLocaleString(undefined, {
 								weekday: smallScreen ? "short" : "long",
 								month: "numeric",
 								day: "numeric",
@@ -130,11 +130,11 @@ watch(pageView, () => {
 							})
 						}}
 					</div>
-					<div class="img">
-						<img :src="`https://openweathermap.org/img/wn/${d.weather[0].icon}.png`" :alt="d.weather[0].main" />
+					<div>
+						<img :src="`https://openweathermap.org/img/wn/${h.weather[0].icon}.png`" :alt="h.weather[0].main" />
 					</div>
-					<div class="description">{{ d.weather[0].description }}</div>
-					<div>{{ convertTemp(metric, d.temp) }}</div>
+					<div>{{ convertTemp(metric, h.temp) }}</div>
+					<div class="description">{{ h.weather[0].description }}</div>
 				</div>
 			</div>
 		</div>
@@ -270,9 +270,10 @@ watch(pageView, () => {
 	.hour {
 		display: flex;
 		flex-direction: row;
+		justify-content: center;
 		align-items: center;
-		gap: 1rem;
 		padding: 0 1rem;
+		gap: 1rem;
 		border-radius: 8px;
 
 		&:nth-child(2n) {
@@ -292,14 +293,14 @@ watch(pageView, () => {
 	}
 }
 
-@media (min-width: 930px) {
+@media (min-width: 940px) {
 	#forecast-display {
 		flex-direction: row;
+		max-width: 1200px;
+		padding-bottom: 1rem;
 
 		&.scroll {
 			overflow-x: scroll;
-			scrollbar-width: 0;
-			padding-bottom: 1rem;
 
 			.forecast-daily,
 			.forecast-hourly {
@@ -316,6 +317,7 @@ watch(pageView, () => {
 		.hour {
 			flex-direction: column;
 			padding: 1rem;
+			flex: 1 1 0px;
 		}
 	}
 }
