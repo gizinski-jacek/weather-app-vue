@@ -12,7 +12,7 @@ const props = defineProps<{
 <template>
 	<div v-if="!fetching && data && location" class="current-weather">
 		<div class="left">
-			<p class="date">
+			<span class="date">
 				{{
 					new Date(data.current.dt * 1000).toLocaleString(undefined, {
 						weekday: "long",
@@ -23,9 +23,9 @@ const props = defineProps<{
 						second: "numeric",
 					})
 				}}
-			</p>
+			</span>
 			<h2>{{ location.name }}, {{ location.country }}</h2>
-			<p>{{ location.state }}</p>
+			<span>{{ location.state }}</span>
 		</div>
 		<div class="center">
 			<span>
@@ -35,9 +35,11 @@ const props = defineProps<{
 			</span>
 		</div>
 		<div class="right">
-			<p>Feels like: {{ convertTemp(metric, data.current.feels_like) }}</p>
-			<p>{{ data.current.weather[0].description }}</p>
-			<p>{{ windSpeedToDescription(data.current.wind_speed) }}</p>
+			<span>
+				Feels like: {{ convertTemp(metric, data.current.feels_like) }}
+			</span>
+			<span>{{ data.current.weather[0].description }}</span>
+			<span>{{ windSpeedToDescription(data.current.wind_speed) }}</span>
 		</div>
 	</div>
 </template>
@@ -48,10 +50,10 @@ const props = defineProps<{
 	gap: 1rem;
 
 	.date {
-		color: var(--color-text-alt)
+		color: var(--color-text-alt);
 	}
 
-	span {
+	.right {
 		text-align: center;
 	}
 
