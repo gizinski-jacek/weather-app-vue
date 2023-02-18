@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from "vue";
 import type { OneCallWeatherData } from "../types/types";
 import {
 	convertSpeed,
 	convertVisibility,
-	degreesToCompassDirection
+	degreesToCompassDirection,
 } from "../utilities/converters";
 
 const props = defineProps<{
@@ -13,10 +13,10 @@ const props = defineProps<{
 	fetching: boolean;
 }>();
 
-const iconDisplay = ref<boolean>(true)
+const iconDisplay = ref<boolean>(true);
 
 function toggleDisplay() {
-	iconDisplay.value = !iconDisplay.value
+	iconDisplay.value = !iconDisplay.value;
 }
 </script>
 <template>
@@ -26,14 +26,17 @@ function toggleDisplay() {
 				<path
 					d="M13 11.261c0.038 0 0.070-0.018 0.107-0.021 2.849-0.061 5.136-2.386 5.136-5.244 0-2.897-2.348-5.245-5.245-5.245-2.404 0-4.43 1.617-5.050 3.823l-0.009 0.037-0.012 0.025c-0.115 0.411-0.181 0.883-0.182 1.371v0c0 0.69 0.56 1.25 1.25 1.25s1.25-0.56 1.25-1.25v0c0-0.254 0.035-0.499 0.099-0.732l-0.005 0.019 0.006-0.012c0.327-1.18 1.391-2.032 2.655-2.032 1.519 0 2.75 1.231 2.75 2.75s-1.231 2.75-2.75 2.75h-0c-0.019 0-0.034 0.010-0.053 0.011l-10.932-0.011c-0 0-0 0-0 0-0.69 0-1.25 0.56-1.25 1.25s0.559 1.25 1.249 1.25l10.985 0.011zM24.469 4.869c-3.106 0.004-5.723 2.093-6.527 4.942l-0.012 0.048-0.013 0.026c-0.149 0.53-0.235 1.139-0.235 1.768 0 0.002 0 0.003 0 0.005v-0c0 0.69 0.56 1.25 1.25 1.25s1.25-0.56 1.25-1.25v0c0-0.002 0-0.005 0-0.007 0-0.393 0.054-0.774 0.155-1.135l-0.007 0.030 0.007-0.013c0.509-1.837 2.166-3.163 4.133-3.163 2.364 0 4.281 1.917 4.281 4.281s-1.917 4.281-4.281 4.281v0c-0.026 0-0.047 0.013-0.072 0.015l-20.34-0.020c-0.689 0.003-1.246 0.561-1.246 1.25s0.557 1.247 1.245 1.25l20.413 0.020c0.053-0.008 0.099-0.017 0.144-0.029l-0.008 0.002c3.685-0.073 6.644-3.078 6.644-6.774 0-3.742-3.033-6.775-6.775-6.775-0.002 0-0.004 0-0.006 0h0zM22.718 19.309c-0.031-0.008-0.070-0.017-0.11-0.023l-0.006-0.001-18.546 0.018c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25c0 0 0 0 0.001 0l18.487-0.018c0.020 0.001 0.037 0.012 0.058 0.012 1.902 0 3.443 1.542 3.443 3.443s-1.542 3.443-3.443 3.443c-1.582 0-2.915-1.067-3.318-2.521l-0.006-0.024-0.007-0.015c-0.074-0.267-0.117-0.573-0.118-0.89v-0c0-0.002 0-0.003 0-0.005 0-0.69-0.559-1.25-1.25-1.25s-1.25 0.559-1.25 1.25c0 0.002 0 0.003 0 0.005v-0c0 0.002 0 0.005 0 0.007 0 0.55 0.075 1.082 0.214 1.587l-0.010-0.042c0.005 0.017 0.016 0.029 0.021 0.045 0.717 2.533 3.009 4.357 5.726 4.357 3.281 0 5.941-2.66 5.941-5.941 0-3.241-2.595-5.876-5.821-5.94l-0.006-0z" />
 			</svg>
-			<span v-else>Wind speed: </span>
+			<span v-else>Wind: </span>
 			<span>{{ convertSpeed(metric, data.current.wind_speed) }}</span>
+		</div>
+		<div>
 			<svg v-if="iconDisplay" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 				<path fill-rule="evenodd" clip-rule="evenodd"
 					d="M15.8694 9.53773C16.1838 8.66243 15.3376 7.81616 14.4623 8.13061L10.2921 9.62873C9.98303 9.73975 9.73975 9.98302 9.62874 10.2921L8.13063 14.4622C7.81619 15.3375 8.66245 16.1838 9.53776 15.8694L13.7079 14.3713C14.017 14.2602 14.2602 14.017 14.3713 13.7079L15.8694 9.53773ZM11.3675 11.3675L13.3417 10.6583L12.6325 12.6325L10.6583 13.3417L11.3675 11.3675Z" />
 				<path fill-rule="evenodd" clip-rule="evenodd"
 					d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12Z" />
 			</svg>
+			<span v-else>Direction: </span>
 			<span>{{ degreesToCompassDirection(data.current.wind_deg) }}</span>
 		</div>
 		<div>
@@ -47,18 +50,8 @@ function toggleDisplay() {
 					<path
 						d="M3.5 3.5C3.5 2.94772 3.94772 2.5 4.5 2.5H19.5C20.0523 2.5 20.5 2.94772 20.5 3.5V6.5C20.5 7.05228 20.0523 7.5 19.5 7.5H18.5C17.9477 7.5 17.5 7.05228 17.5 6.5V5.5H13.5V18.5H15.5C16.0523 18.5 16.5 18.9477 16.5 19.5V20.5C16.5 21.0523 16.0523 21.5 15.5 21.5H8.5C7.94772 21.5 7.5 21.0523 7.5 20.5V19.5C7.5 18.9477 7.94772 18.5 8.5 18.5H10.5V5.5H6.5V6.5C6.5 7.05228 6.05228 7.5 5.5 7.5H4.5C3.94772 7.5 3.5 7.05228 3.5 6.5V3.5Z" />
 				</svg>
-				{{ iconDisplay? "Icons": "Text" }}</button>
-		</div>
-		<div>
-			<svg v-if="iconDisplay" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-				<rect x="0" fill="none" width="20" height="20" />
-				<g>
-					<path
-						d="M18.3 9.5C15 4.9 8.5 3.8 3.9 7.2c-1.2.9-2.2 2.1-3 3.4.2.4.5.8.8 1.2 3.3 4.6 9.6 5.6 14.2 2.4.9-.7 1.7-1.4 2.4-2.4.3-.4.5-.8.8-1.2-.3-.4-.5-.8-.8-1.1zm-8.2-2.3c.5-.5 1.3-.5 1.8 0s.5 1.3 0 1.8-1.3.5-1.8 0-.5-1.3 0-1.8zm-.1 7.7c-3.1 0-6-1.6-7.7-4.2C3.5 9 5.1 7.8 7 7.2c-.7.8-1 1.7-1 2.7 0 2.2 1.7 4.1 4 4.1 2.2 0 4.1-1.7 4.1-4v-.1c0-1-.4-2-1.1-2.7 1.9.6 3.5 1.8 4.7 3.5-1.7 2.6-4.6 4.2-7.7 4.2z" />
-				</g>
-			</svg>
-			<span v-else>Visibility: </span>
-			<span>{{ convertVisibility(metric, data.current.visibility) }}</span>
+				Toggle
+			</button>
 		</div>
 		<div>
 			<svg v-if="iconDisplay" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -154,6 +147,17 @@ function toggleDisplay() {
 			<span>{{ data.current.snow["1h"] }}</span>
 		</div>
 		<div>
+			<svg v-if="iconDisplay" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+				<rect x="0" fill="none" width="20" height="20" />
+				<g>
+					<path
+						d="M18.3 9.5C15 4.9 8.5 3.8 3.9 7.2c-1.2.9-2.2 2.1-3 3.4.2.4.5.8.8 1.2 3.3 4.6 9.6 5.6 14.2 2.4.9-.7 1.7-1.4 2.4-2.4.3-.4.5-.8.8-1.2-.3-.4-.5-.8-.8-1.1zm-8.2-2.3c.5-.5 1.3-.5 1.8 0s.5 1.3 0 1.8-1.3.5-1.8 0-.5-1.3 0-1.8zm-.1 7.7c-3.1 0-6-1.6-7.7-4.2C3.5 9 5.1 7.8 7 7.2c-.7.8-1 1.7-1 2.7 0 2.2 1.7 4.1 4 4.1 2.2 0 4.1-1.7 4.1-4v-.1c0-1-.4-2-1.1-2.7 1.9.6 3.5 1.8 4.7 3.5-1.7 2.6-4.6 4.2-7.7 4.2z" />
+				</g>
+			</svg>
+			<span v-else>Visibility: </span>
+			<span>{{ convertVisibility(metric, data.current.visibility) }}</span>
+		</div>
+		<div>
 			<svg v-if="iconDisplay" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
 				<path
 					d="M20.44 20.26v64.66C130.8 72.49 291.4 112.6 370.5 191.6c-85.9-43.8-244.7-73.2-350.06-64v84.5C88.45 328.6 217.2 253.7 325.8 222c61-11.5 72.7 19.7 108.2 30.2-11.5-20.6-22.4-39.3-32.8-56.3 23.3-9.9 39.8-33 39.8-59.9 0-35.8-29.2-65-65-65-19.3 0-36.7 8.53-48.7 22-58.6-64.95-101.4-66.71-157.4-72.74H20.44zM373.8 88.08c5.7-.07 11.6.94 17.7 3.27-28.8 4.05-34.2 63.55 27 52.75 10.5-1.9-3.6 29.9-26.5 37.1-19.5-31-37.3-55.8-53.7-75.6 9.1-10.29 21.4-17.33 35.5-17.52zM432 286.5l-7.7 12.9s-12.3 20.4-24.5 46.8C387.6 372.7 375 405 375 432c0 14.7 7.7 28.4 18.2 38.8 10.4 10.5 24.1 18.2 38.8 18.2 14.7 0 28.4-7.7 38.8-18.2 10.5-10.4 18.2-24.1 18.2-38.8 0-27-12.6-59.3-24.8-85.8-12.2-26.4-24.5-46.8-24.5-46.8l-7.7-12.9zm-20.1 77c-16.6 49.1-12.6 99 58.7 72-2.7 26.2-43.6 56.9-71.5 15.4-12.1-18-12.7-50.1 12.8-87.4z" />
@@ -166,15 +170,20 @@ function toggleDisplay() {
 <style scoped lang="scss">
 .extra-widgets {
 	display: grid;
-	grid-template-rows: auto auto;
-	grid-auto-flow: column;
+	grid-template-columns: auto auto auto;
 	grid-gap: 1rem;
+	justify-content: space-between;
+	height: fit-content;
+	white-space: nowrap;
 
 	>div {
 		display: flex;
+		flex-direction: column;
 		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
 		gap: 0.25rem;
-		height: 40px;
+		min-width: 80px;
 	}
 
 	svg {
@@ -187,27 +196,15 @@ function toggleDisplay() {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		margin-left: auto;
+		margin-bottom: auto;
 		padding: 0.25rem;
-		min-width: 74px;
 
 		svg {
-			width: 24px;
-			height: 24px;
+			width: 20px;
+			height: 20px;
 			fill: var(--color-text);
 			stroke-width: 1px;
 			stroke: var(--color-background);
-		}
-	}
-}
-
-@media (min-width: 768px) {
-	.extra-widgets {
-		grid-template-columns: auto auto;
-		grid-auto-flow: row;
-
-		span {
-			flex-direction: row;
 		}
 	}
 }
