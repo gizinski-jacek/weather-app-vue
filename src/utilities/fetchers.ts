@@ -11,7 +11,7 @@ export async function fetchGeolocation(query: string): Promise<GeocodingData> {
 		);
 		return res.data[0];
 	} catch (error: any) {
-		return error;
+		throw error;
 	}
 }
 
@@ -27,6 +27,6 @@ export async function fetchWeatherOneCall(
 		);
 		return res.data;
 	} catch (error: any) {
-		return error;
+		throw error;
 	}
 }
