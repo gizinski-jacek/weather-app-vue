@@ -6,12 +6,12 @@
 
 #app {
 	font-weight: normal;
-	min-width: 380px;
+	min-width: 400px;
 }
 
 button {
-	color: var(--color-background-soft);
-	background-color: var(--color-heading);
+	color: var(--color-heading);
+	background-color: var(--color-background);
 	border: 2px solid var(--color-heading);
 	text-transform: uppercase;
 	border-radius: 4px;
@@ -22,7 +22,12 @@ button {
 	transition: 0.25s ease-in-out;
 
 	&:hover {
-		filter: brightness(75%);
+		border: 2px solid var(--color-text);
+		color: var(--color-text);
+	}
+
+	&:active {
+		color: var(--color-text-alt);
 	}
 }
 
