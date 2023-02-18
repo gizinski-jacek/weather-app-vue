@@ -4,8 +4,10 @@ import Current from "./components/Current.vue";
 import Extra from "./components/Extra.vue";
 import Forecast from "./components/Forecast.vue";
 import Controls from "./components/Controls.vue";
+import Spinner from "./components/Spinner.vue";
 import type { GeocodingData, OneCallWeatherData } from "./types/types";
 import { fetchGeolocation, fetchWeatherOneCall } from "./utilities/fetchers";
+import { AxiosError } from 'axios';
 
 const metric = ref<boolean>(true);
 const location = ref<GeocodingData | null>({
@@ -17,6 +19,7 @@ const location = ref<GeocodingData | null>({
 });
 const apiData = ref<OneCallWeatherData | null>(null);
 const fetching = ref<boolean>(true);
+const fetchingError = ref<string | null>(null);
 
 onMounted(async () => {
 	try {
@@ -26,26 +29,55 @@ onMounted(async () => {
 		const { lat, lon } = location.value;
 		apiData.value = await fetchWeatherOneCall(lat, lon);
 		fetching.value = false;
-	} catch (error) {
-		console.error(error);
+	} catch (error: any) {
+		console.error(error.message)
+		if (error instanceof AxiosError) {
+			if (error.response?.status === 400) {
+				fetchingError.value = 'City not found. Did you enter correct name?'
+			}
+		} else {
+			fetchingError.value = 'Request error, try again.'
+		}
 		fetching.value = false;
 	}
 });
 
 watch(location, async () => {
-	if (!location.value) return;
-	fetching.value = true;
-	const { lat, lon } = location.value;
-	apiData.value = await fetchWeatherOneCall(lat, lon);
-	fetching.value = false;
+	try {
+		if (!location.value) return;
+		fetching.value = true;
+		const { lat, lon } = location.value;
+		apiData.value = await fetchWeatherOneCall(lat, lon);
+		fetching.value = false;
+	} catch (error: any) {
+		console.error(error.message)
+		if (error instanceof AxiosError) {
+			if (error.response?.status === 400) {
+				fetchingError.value = 'City not found. Did you enter correct name?'
+			}
+		} else {
+			fetchingError.value = 'Request error, try again.'
+		}
+		fetching.value = false;
+	}
 });
 
 async function changeLocation(query: string) {
 	try {
 		if (!query) return;
+		fetching.value = true;
 		location.value = await fetchGeolocation(query);
-	} catch (error) {
-		console.error(error);
+		fetching.value = false;
+	} catch (error: any) {
+		console.error(error.message)
+		if (error instanceof AxiosError) {
+			if (error.response?.status === 400) {
+				fetchingError.value = 'City not found. Did you enter correct name?'
+			}
+		} else {
+			fetchingError.value = 'Request error, try again.'
+		}
+		fetching.value = false;
 	}
 }
 
@@ -53,7 +85,7 @@ function changeUnits() {
 	metric.value = !metric.value;
 }
 
-function getGeolocation(): GeolocationPosition | null {
+function getGeolocation(): null {
 	fetching.value = true;
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(async (position) => {
@@ -88,6 +120,10 @@ function handleGeolocationError(error: GeolocationPositionError) {
 			break;
 	}
 }
+
+function dismissError() {
+	fetchingError.value = null
+}
 </script>
 <template>
 	<main v-if="apiData">
@@ -100,19 +136,23 @@ function handleGeolocationError(error: GeolocationPositionError) {
 		</div>
 		<Forecast :data="apiData" :metric="metric" :fetching="fetching" />
 	</main>
+	<div v-if="fetchingError" class="error">
+		<h3>{{ fetchingError }}</h3>
+		<div class="dismiss" @click="dismissError"></div>
+	</div>
+	<Spinner v-if="fetching" />
 </template>
 
 <style scoped lang="scss">
 main {
 	min-height: 100vh;
-	width: fit-content;
-	padding: 1rem;
-	text-transform: capitalize;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	gap: 2rem;
+	gap: 5.8rem;
 	margin: 0 auto;
+	padding: 1rem;
+	text-transform: capitalize;
 }
 
 .top {
@@ -120,12 +160,54 @@ main {
 	flex-direction: column;
 	justify-content: space-between;
 	gap: 2rem;
-
 }
 
-@media (min-width: 768px) {
+.error {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: flex;
+	background-color: rgb(200, 0, 0);
+	padding: 0.5rem;
+	margin: 0.5rem;
+	border-radius: 8px;
+
+	h3 {
+		font-weight: 600;
+	}
+
+	.dismiss {
+		margin: 0;
+		margin-left: 5rem;
+		width: 24px;
+		height: 24px;
+		cursor: pointer;
+
+		&:before,
+		&:after {
+			display: block;
+			content: "";
+			width: 24px;
+			height: 4px;
+			background-color: rgb(0, 0, 0);
+			transform: translateY(8px) rotate(-45deg);
+		}
+
+		&:after {
+			transform: translateY(4px) rotate(45deg);
+		}
+
+		&:hover:before,
+		&:hover:after {
+			background-color: var(--color-background-soft);
+		}
+	}
+}
+
+@media (min-width: 640px) {
 	.top {
 		flex-direction: row;
+		gap: 5rem;
 	}
 }
 </style>
