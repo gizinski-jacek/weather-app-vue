@@ -12,27 +12,29 @@ const props = defineProps<{
 <template>
 	<div v-if="!fetching && data && location" class="current-weather">
 		<div class="left">
-			<span class="date">
-				{{
-					new Date(data.current.dt * 1000).toLocaleString(undefined, {
-						weekday: "long",
-						month: "numeric",
-						day: "numeric",
-						hour: "numeric",
-						minute: "numeric",
-						second: "numeric",
-					})
-				}}
-			</span>
-			<h2>{{ location.name }}, {{ location.country }}</h2>
-			<span>{{ location.state }}</span>
-		</div>
-		<div class="center">
-			<span>
-				<img :src="`https://openweathermap.org/img/wn/${data.current.weather[0].icon}@2x.png`"
-					:alt="data.current.weather[0].description" />
-				<h1>{{ convertTemp(metric, data.current.temp) }}</h1>
-			</span>
+			<div>
+				<span class="date">
+					{{
+						new Date(data.current.dt * 1000).toLocaleString(undefined, {
+							weekday: "long",
+							month: "numeric",
+							day: "numeric",
+							hour: "numeric",
+							minute: "numeric",
+							second: "numeric",
+						})
+					}}
+				</span>
+				<h2>{{ location.name }}</h2>
+				<span>{{ location.country }}, {{ location.state }}</span>
+			</div>
+			<div>
+				<span>
+					<img :src="`https://openweathermap.org/img/wn/${data.current.weather[0].icon}@2x.png`"
+						:alt="data.current.weather[0].description" />
+					<h1>{{ convertTemp(metric, data.current.temp) }}</h1>
+				</span>
+			</div>
 		</div>
 		<div class="right">
 			<span>
@@ -46,6 +48,7 @@ const props = defineProps<{
 <style scoped lang="scss">
 .current-weather {
 	display: flex;
+	flex-direction: column;
 	justify-content: space-between;
 	gap: 1rem;
 
@@ -53,20 +56,17 @@ const props = defineProps<{
 		color: var(--color-text-alt);
 	}
 
+	.left,
 	.right {
+		display: flex;
+		justify-content: space-evenly;
+		align-items: center;
+		gap: 1rem;
 		text-align: center;
 	}
 
-	>div {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-	}
-}
-
-@media (min-width: 768px) {
-	.current-weather {
-		gap: 2rem;
+	.right {
+		justify-content: space-between;
 	}
 }
 </style>
