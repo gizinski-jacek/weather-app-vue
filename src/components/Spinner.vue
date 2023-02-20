@@ -1,11 +1,9 @@
-
-
 <script setup lang="ts">
 </script>
+
 <template>
 	<div class="spinner"></div>
 </template>
-
 
 <style scoped lang="scss">
 .spinner {
