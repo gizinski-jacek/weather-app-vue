@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { convertTemp, windSpeedToDescription } from "@/utilities/converters";
+import { convertTemp, windSpeedToDescription } from "../utilities/converters";
 import type { GeocodingData, OneCallWeatherData } from "../types/types";
+import Tooltip from "./Tooltip.vue";
 
 const props = defineProps<{
 	data: OneCallWeatherData | null;
@@ -9,6 +10,7 @@ const props = defineProps<{
 	fetching: boolean;
 }>();
 </script>
+
 <template>
 	<div v-if="!fetching && data && location" class="current-weather">
 		<div class="left">
@@ -29,11 +31,14 @@ const props = defineProps<{
 				<span>{{ location.country }}, {{ location.state }}</span>
 			</div>
 			<div>
-				<span>
-					<img :src="`https://openweathermap.org/img/wn/${data.current.weather[0].icon}@2x.png`"
-						:alt="data.current.weather[0].description" />
+				<div>
+					<div>
+						<Tooltip :content="data.current.weather[0].description" />
+						<img :src="`https://openweathermap.org/img/wn/${data.current.weather[0].icon}@2x.png`"
+							:alt="data.current.weather[0].description" />
+					</div>
 					<h1>{{ convertTemp(metric, data.current.temp) }}</h1>
-				</span>
+				</div>
 			</div>
 		</div>
 		<div class="right">
@@ -45,6 +50,7 @@ const props = defineProps<{
 		</div>
 	</div>
 </template>
+
 <style scoped lang="scss">
 .current-weather {
 	display: flex;
