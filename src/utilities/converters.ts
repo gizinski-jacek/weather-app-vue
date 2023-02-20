@@ -16,12 +16,20 @@ export function convertSpeed(metric: boolean, speed: number): string {
 		: (Math.round(speed * 2.236936 * 10) / 10).toFixed(1) + 'mph';
 }
 
-// Convert visibility distance to metric or imperial units.
+// Convert visibility distance to imperial units or return default value in metric.
 // Show one decimal place.
 export function convertVisibility(metric: boolean, visibility: number): string {
 	return metric
 		? (Math.round((visibility / 1000) * 10) / 10).toFixed(1) + 'km'
 		: (Math.round((visibility / 1609.344) * 10) / 10).toFixed(1) + 'mi';
+}
+
+// Convert precipitation to imperial units or return default value in metric.
+// Show one decimal place.
+export function convertPrecipitation(metric: boolean, volume: number): string {
+	return metric
+		? (Math.round(volume * 10) / 10).toFixed(1) + 'mm'
+		: (Math.round((volume / 25.4) * 10) / 10).toFixed(1) + 'in';
 }
 
 // Convert wind speed from m/s to mph and return user friendly description.
