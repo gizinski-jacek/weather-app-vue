@@ -3,6 +3,7 @@ import { ref, watch, onMounted, onUnmounted } from "vue";
 import type { OneCallWeatherData } from "../types/types";
 import { convertTemp } from "../utilities/converters";
 import { splitIntoGroups } from "../utilities/groupers";
+import ScrollToTopBtn from "../components/ScrollToTopBtn.vue";
 
 const props = defineProps<{
 	data: OneCallWeatherData | null;
@@ -17,12 +18,14 @@ const groupSize = ref<number>(8);
 const smallScreen = ref<boolean>(false);
 
 onMounted(() => {
+	if (typeof window === 'undefined') return;
 	if (window.innerWidth < 540) smallScreen.value = true;
 	window.addEventListener("resize", watchResize);
 });
 
 onUnmounted(() => {
 	window.removeEventListener("resize", watchResize);
+	document.getElementById("forecast-display")?.removeEventListener("wheel", scrollHorizontally)
 });
 
 function watchResize() {
@@ -60,7 +63,26 @@ function changePage(number: number) {
 function scrollHorizontally(e: WheelEvent) {
 	const element = document.getElementById("forecast-display");
 	if (!element) return;
+	if (window.innerWidth >= 940) e.preventDefault()
 	element.scrollLeft += e.deltaY;
+}
+
+function scrollToEnd(e: MouseEvent) {
+	const element = document.getElementById("forecast-display");
+	if (!element) return;
+	element.scrollTo({
+		left: element.scrollWidth,
+		behavior: 'smooth',
+	});
+}
+
+function scrollToStart(e: MouseEvent) {
+	const element = document.getElementById("forecast-display");
+	if (!element) return;
+	element.scrollTo({
+		left: 0,
+		behavior: 'smooth',
+	});
 }
 
 watch(pageView, () => {
@@ -73,6 +95,7 @@ watch(pageView, () => {
 	}
 });
 </script>
+
 <template>
 	<div v-if="!fetching && data" class="weather-forecast">
 		<div class="forecast-controls">
@@ -98,6 +121,7 @@ watch(pageView, () => {
 			</div>
 		</div>
 		<div id="forecast-display" :class="{ scroll: !pageView }">
+			<button type="button" class="scroll-to-end" @click="scrollToEnd">Jump to end</button>
 			<div v-if="displayedForecast === 'daily'" v-for="(chunk, indexH) in splitIntoGroups(
 				data[displayedForecast],
 				groupSize
@@ -147,9 +171,12 @@ watch(pageView, () => {
 					<div>{{ h.weather[0].description }}</div>
 				</div>
 			</div>
+			<button type="button" class="scroll-to-start" @click="scrollToStart">Jump to start</button>
 		</div>
+		<ScrollToTopBtn />
 	</div>
 </template>
+
 <style scoped lang="scss">
 @import "../assets/base.scss";
 
@@ -181,6 +208,10 @@ watch(pageView, () => {
 				background-color: var(--color-background);
 				border-color: var(--color-text);
 				border-radius: 4px;
+			}
+
+			&:active {
+				border-color: var(--color-text-alt);
 			}
 		}
 	}
@@ -270,6 +301,11 @@ watch(pageView, () => {
 	flex-direction: column;
 	text-align: center;
 
+	.scroll-to-end,
+	.scroll-to-start {
+		display: none;
+	}
+
 	&.scroll {
 
 		.forecast-daily,
@@ -283,7 +319,8 @@ watch(pageView, () => {
 .forecast-daily,
 .forecast-hourly {
 	display: none;
-	min-height: 280px;
+	flex: 1;
+	min-height: 250px;
 
 	&.active {
 		display: flex;
@@ -314,7 +351,6 @@ watch(pageView, () => {
 }
 
 @media (min-width: 940px) {
-
 	#forecast-display {
 		flex-direction: row;
 		padding-bottom: 1rem;
@@ -325,8 +361,28 @@ watch(pageView, () => {
 			.forecast-daily,
 			.forecast-hourly {
 				display: grid;
-				grid-template-columns: auto;
+				grid-template-columns: minmax(0, 1fr);
+				grid-auto-columns: 1fr;
+				grid-auto-flow: column;
 				min-width: 100%;
+			}
+
+			.scroll-to-end,
+			.scroll-to-start {
+				display: block;
+				height: fit-content;
+				align-self: center;
+				padding: 0.5rem;
+				text-orientation: upright;
+				writing-mode: vertical-lr;
+			}
+
+			.scroll-to-end {
+				margin-right: 0.5rem;
+			}
+
+			.scroll-to-start {
+				margin-left: 0.5rem;
 			}
 		}
 	}
@@ -337,7 +393,9 @@ watch(pageView, () => {
 
 		&.active {
 			display: grid;
-			grid-template-columns: auto;
+			grid-template-columns: minmax(0, 1fr);
+			grid-auto-columns: 1fr;
+			grid-auto-flow: column;
 		}
 
 		.day,
