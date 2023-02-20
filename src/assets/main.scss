@@ -27,6 +27,7 @@ button {
 	}
 
 	&:active {
+		border-color: var(--color-text-alt);
 		color: var(--color-text-alt);
 	}
 }
