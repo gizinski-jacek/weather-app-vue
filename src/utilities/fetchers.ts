@@ -1,6 +1,10 @@
 import axios from 'axios';
 import type { AxiosResponse } from 'axios';
-import type { GeocodingData, OneCallWeatherData } from '../types/types';
+import type {
+	GeocodingData,
+	OneCallWeatherData,
+	AirPollution,
+} from '../types/types';
 
 export async function fetchGeolocation(query: string): Promise<GeocodingData> {
 	try {
@@ -24,6 +28,22 @@ export async function fetchWeatherOneCall(
 			`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${
 				import.meta.env.VITE_API_KEY
 			}&units=metric`
+		);
+		return res.data;
+	} catch (error: any) {
+		throw error;
+	}
+}
+
+export async function fetchAirPollution(
+	lat: number,
+	lon: number
+): Promise<AirPollution> {
+	try {
+		const res: AxiosResponse<AirPollution> = await axios.get(
+			`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${
+				import.meta.env.VITE_API_KEY
+			}`
 		);
 		return res.data;
 	} catch (error: any) {
