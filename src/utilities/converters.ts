@@ -13,7 +13,7 @@ export function convertTemp(metric: boolean, temp: number): string {
 export function convertSpeed(metric: boolean, speed: number): string {
 	return metric
 		? (Math.round(speed * 10) / 10).toFixed(1) + 'm/s'
-		: (Math.round(speed * 2.236936 * 10) / 10).toFixed(1) + 'mph';
+		: (Math.round(speed * 2.236936 * 10) / 10).toFixed(1) + 'mi/h';
 }
 
 // Convert visibility distance to imperial units or return default value in metric.
