@@ -6,7 +6,7 @@ import { splitIntoGroups } from "../utilities/groupers";
 import ScrollToTopBtn from "../components/ScrollToTopBtn.vue";
 
 const props = defineProps<{
-	data: OneCallWeatherData | null;
+	weather: OneCallWeatherData | null;
 	metric: boolean;
 	fetching: boolean;
 }>();
@@ -45,15 +45,15 @@ function changeDisplay() {
 }
 
 function changePage(number: number) {
-	if (!props.data) return;
+	if (!props.weather) return;
 	if (
 		number >
-		Math.ceil(props.data[displayedForecast.value].length / groupSize.value)
+		Math.ceil(props.weather[displayedForecast.value].length / groupSize.value)
 	) {
 		currentPage.value = 1;
 	} else if (number < 1) {
 		currentPage.value = Math.ceil(
-			props.data[displayedForecast.value].length / groupSize.value
+			props.weather[displayedForecast.value].length / groupSize.value
 		);
 	} else {
 		currentPage.value = number;
@@ -97,7 +97,7 @@ watch(pageView, () => {
 </script>
 
 <template>
-	<div v-if="!fetching && data" class="weather-forecast">
+	<div v-if="!fetching && weather" class="weather-forecast">
 		<div class="forecast-controls">
 			<div class="time-controls">
 				<button type="button" @click="changeForecast('daily')" :class="{ active: displayedForecast === 'daily' }">
@@ -107,13 +107,17 @@ watch(pageView, () => {
 					Hourly
 				</button>
 			</div>
-			<div class="display-controls" v-if="splitIntoGroups(data[displayedForecast], groupSize).length > 1">
+			<div class="display-controls" v-if="splitIntoGroups(weather[displayedForecast], groupSize).length > 1">
 				<div v-if="pageView" class="page-controls">
 					<div class="arrow-prev" @click="changePage(currentPage - 1)"></div>
-					<div v-for="num in Math.ceil(data[displayedForecast].length / groupSize)" :key="num">
+					<div v-for="num in Math.ceil(weather[displayedForecast].length / groupSize)" :key="num">
 						<span class="dot" :class="{ active: currentPage === num }" @click="currentPage = num"></span>
 					</div>
 					<div class="arrow-next" @click="changePage(currentPage + 1)"></div>
+				</div>
+				<div v-else="pageView" class="scroll-controls">
+					<button type="button" class="scroll-to-start" @click="scrollToStart">Start</button>
+					<button type="button" class="scroll-to-end" @click="scrollToEnd">End</button>
 				</div>
 				<button type="button" @click="changeDisplay">
 					{{ pageView ? "Pages" : "Scroll" }}
@@ -121,13 +125,12 @@ watch(pageView, () => {
 			</div>
 		</div>
 		<div id="forecast-display" :class="{ scroll: !pageView }">
-			<button type="button" class="scroll-to-end" @click="scrollToEnd">Jump to end</button>
 			<div v-if="displayedForecast === 'daily'" v-for="(chunk, indexH) in splitIntoGroups(
-				data[displayedForecast],
+				weather[displayedForecast],
 				groupSize
 			)" :key="indexH" class="forecast-daily" :class="{
 	active:
-		data[displayedForecast].length > groupSize
+		weather[displayedForecast].length > groupSize
 			? currentPage - 1 === indexH
 			: 'active',
 }">
@@ -145,11 +148,12 @@ watch(pageView, () => {
 						<img :src="`https://openweathermap.org/img/wn/${d.weather[0].icon}.png`" :alt="d.weather[0].main" />
 					</div>
 					<div>{{ convertTemp(metric, d.temp.day) }}</div>
+					<div>{{ Math.round(d.pop * 100) }}%</div>
 					<div>{{ d.weather[0].description }}</div>
 				</div>
 			</div>
 			<div v-else-if="displayedForecast === 'hourly'" v-for="(chunk, indexD) in splitIntoGroups(
-				data[displayedForecast],
+				weather[displayedForecast],
 				groupSize
 			)" :key="indexD" class="forecast-hourly" :class="{ active: currentPage - 1 === indexD }">
 				<div v-for="(h, i) in chunk" :key="i" class="hour">
@@ -168,10 +172,10 @@ watch(pageView, () => {
 						<img :src="`https://openweathermap.org/img/wn/${h.weather[0].icon}.png`" :alt="h.weather[0].main" />
 					</div>
 					<div>{{ convertTemp(metric, h.temp) }}</div>
+					<div>{{ Math.round(h.pop * 100) }}%</div>
 					<div>{{ h.weather[0].description }}</div>
 				</div>
 			</div>
-			<button type="button" class="scroll-to-start" @click="scrollToStart">Jump to start</button>
 		</div>
 		<ScrollToTopBtn />
 	</div>
@@ -219,7 +223,7 @@ watch(pageView, () => {
 	.display-controls {
 		display: flex;
 		align-items: center;
-		gap: 1rem;
+		gap: 2rem;
 	}
 
 	.time-controls {
@@ -255,8 +259,6 @@ watch(pageView, () => {
 			&.active {
 				background-color: var(--color-text);
 			}
-
-
 		}
 
 		.arrow-prev,
@@ -294,17 +296,16 @@ watch(pageView, () => {
 			transform: scaleX(-1);
 		}
 	}
+
+	.scroll-controls {
+		display: none;
+	}
 }
 
 #forecast-display {
 	display: flex;
 	flex-direction: column;
 	text-align: center;
-
-	.scroll-to-end,
-	.scroll-to-start {
-		display: none;
-	}
 
 	&.scroll {
 
@@ -320,7 +321,7 @@ watch(pageView, () => {
 .forecast-hourly {
 	display: none;
 	flex: 1;
-	min-height: 250px;
+	min-height: 280px;
 
 	&.active {
 		display: flex;
@@ -330,11 +331,11 @@ watch(pageView, () => {
 	.day,
 	.hour {
 		display: grid;
-		grid-template-columns: 1fr 50px 50px 1fr;
+		grid-template-columns: 1fr 50px 50px 50px 1fr;
 		grid-auto-flow: column;
 		align-items: center;
 		padding: 0 1rem;
-		gap: 1rem;
+		gap: 0.5rem;
 		border-radius: 8px;
 
 		&:nth-child(2n) {
@@ -351,12 +352,28 @@ watch(pageView, () => {
 }
 
 @media (min-width: 940px) {
+	.forecast-controls {
+		.scroll-controls {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+	}
+
 	#forecast-display {
 		flex-direction: row;
-		padding-bottom: 1rem;
+		padding-bottom: 1.5rem;
 
 		&.scroll {
 			overflow-x: scroll;
+
+			@media screen and (-webkit-min-device-pixel-ratio:0) {
+				padding-bottom: 0.55rem;
+			}
+
+			@-moz-document url-prefix() {
+				padding-bottom: 1.5rem;
+			}
 
 			.forecast-daily,
 			.forecast-hourly {
@@ -365,24 +382,6 @@ watch(pageView, () => {
 				grid-auto-columns: 1fr;
 				grid-auto-flow: column;
 				min-width: 100%;
-			}
-
-			.scroll-to-end,
-			.scroll-to-start {
-				display: block;
-				height: fit-content;
-				align-self: center;
-				padding: 0.5rem;
-				text-orientation: upright;
-				writing-mode: vertical-lr;
-			}
-
-			.scroll-to-end {
-				margin-right: 0.5rem;
-			}
-
-			.scroll-to-start {
-				margin-left: 0.5rem;
 			}
 		}
 	}
@@ -400,9 +399,14 @@ watch(pageView, () => {
 
 		.day,
 		.hour {
-			display: flex;
-			flex-direction: column;
+			display: grid;
+			grid-template-columns: unset;
+			grid-template-rows: 1fr 50px 50px 50px 1fr;
+			grid-auto-flow: column;
+			justify-items: center;
+			align-items: start;
 			padding: 1rem;
+			gap: 0;
 		}
 	}
 }
