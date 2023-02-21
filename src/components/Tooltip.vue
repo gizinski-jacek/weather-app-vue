@@ -50,6 +50,6 @@ function hideTooltip() {
 .tooltip-content.show {
 	opacity: 1;
 	transition: 0.25s ease-in-out;
-	transition-delay: 0.25s;
+	transition-delay: 0.15s;
 }
 </style>
