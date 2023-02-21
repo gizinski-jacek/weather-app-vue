@@ -5,8 +5,8 @@ import Extra from "./components/Extra.vue";
 import Forecast from "./components/Forecast.vue";
 import Controls from "./components/Controls.vue";
 import Spinner from "./components/Spinner.vue";
-import type { GeocodingData, OneCallWeatherData } from "./types/types";
-import { fetchGeolocation, fetchWeatherOneCall } from "./utilities/fetchers";
+import type { GeocodingData, OneCallWeatherData, AirPollution } from "./types/types";
+import { fetchGeolocation, fetchWeatherOneCall, fetchAirPollution } from "./utilities/fetchers";
 import { AxiosError } from 'axios';
 
 const metric = ref<boolean>(true);
@@ -18,6 +18,7 @@ const location = ref<GeocodingData | null>({
 	state: "North Holland",
 });
 const apiData = ref<OneCallWeatherData | null>(null);
+const airPollutionData = ref<AirPollution | null>(null)
 const fetching = ref<boolean>(true);
 const fetchingError = ref<string | null>(null);
 
@@ -28,6 +29,7 @@ onMounted(async () => {
 		getGeolocation();
 		const { lat, lon } = location.value;
 		apiData.value = await fetchWeatherOneCall(lat, lon);
+		airPollutionData.value = await fetchAirPollution(lat, lon)
 		fetching.value = false;
 	} catch (error: any) {
 		console.error(error.message)
@@ -125,16 +127,17 @@ function dismissError() {
 	fetchingError.value = null
 }
 </script>
+
 <template>
 	<main v-if="apiData">
 		<div class="top">
 			<div>
 				<Controls @changeUnits="changeUnits" @changeLocation="changeLocation" :metric="metric" />
-				<Current :data="apiData" :location="location" :metric="metric" :fetching="fetching" />
+				<Current :weather="apiData" :location="location" :metric="metric" :fetching="fetching" />
 			</div>
-			<Extra :data="apiData" :metric="metric" :fetching="fetching" />
+			<Extra :weather="apiData" :pollution="airPollutionData" :metric="metric" :fetching="fetching" />
 		</div>
-		<Forecast :data="apiData" :metric="metric" :fetching="fetching" />
+		<Forecast :weather="apiData" :metric="metric" :fetching="fetching" />
 	</main>
 	<div v-if="fetchingError" class="error">
 		<h3>{{ fetchingError }}</h3>
@@ -146,10 +149,11 @@ function dismissError() {
 <style scoped lang="scss">
 main {
 	min-height: 100vh;
+	max-width: 1300px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	gap: 5.8rem;
+	gap: 2rem;
 	margin: 0 auto;
 	padding: 1rem;
 	text-transform: capitalize;
