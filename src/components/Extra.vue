@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import type { OneCallWeatherData } from "../types/types";
+import type { OneCallWeatherData, AirPollution } from "../types/types";
 import {
 	convertSpeed,
 	convertVisibility,
@@ -10,33 +9,27 @@ import {
 import Tooltip from "./Tooltip.vue";
 
 const props = defineProps<{
-	data: OneCallWeatherData | null;
+	weather: OneCallWeatherData | null;
+	pollution: AirPollution | null;
 	metric: boolean;
 	fetching: boolean;
 }>();
-
-const iconDisplay = ref<boolean>(true);
-
-function toggleDisplay() {
-	iconDisplay.value = !iconDisplay.value;
-}
 </script>
 
 <template>
-	<div v-if="!fetching && data" class="extra-widgets">
+	<div v-if="!fetching && weather" class="extra-widgets">
 		<div>
-			<div class="icon" v-if="iconDisplay">
+			<div class="icon">
 				<Tooltip :content="'Wind speed'" />
 				<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
 					<path
 						d="M13 11.261c0.038 0 0.070-0.018 0.107-0.021 2.849-0.061 5.136-2.386 5.136-5.244 0-2.897-2.348-5.245-5.245-5.245-2.404 0-4.43 1.617-5.050 3.823l-0.009 0.037-0.012 0.025c-0.115 0.411-0.181 0.883-0.182 1.371v0c0 0.69 0.56 1.25 1.25 1.25s1.25-0.56 1.25-1.25v0c0-0.254 0.035-0.499 0.099-0.732l-0.005 0.019 0.006-0.012c0.327-1.18 1.391-2.032 2.655-2.032 1.519 0 2.75 1.231 2.75 2.75s-1.231 2.75-2.75 2.75h-0c-0.019 0-0.034 0.010-0.053 0.011l-10.932-0.011c-0 0-0 0-0 0-0.69 0-1.25 0.56-1.25 1.25s0.559 1.25 1.249 1.25l10.985 0.011zM24.469 4.869c-3.106 0.004-5.723 2.093-6.527 4.942l-0.012 0.048-0.013 0.026c-0.149 0.53-0.235 1.139-0.235 1.768 0 0.002 0 0.003 0 0.005v-0c0 0.69 0.56 1.25 1.25 1.25s1.25-0.56 1.25-1.25v0c0-0.002 0-0.005 0-0.007 0-0.393 0.054-0.774 0.155-1.135l-0.007 0.030 0.007-0.013c0.509-1.837 2.166-3.163 4.133-3.163 2.364 0 4.281 1.917 4.281 4.281s-1.917 4.281-4.281 4.281v0c-0.026 0-0.047 0.013-0.072 0.015l-20.34-0.020c-0.689 0.003-1.246 0.561-1.246 1.25s0.557 1.247 1.245 1.25l20.413 0.020c0.053-0.008 0.099-0.017 0.144-0.029l-0.008 0.002c3.685-0.073 6.644-3.078 6.644-6.774 0-3.742-3.033-6.775-6.775-6.775-0.002 0-0.004 0-0.006 0h0zM22.718 19.309c-0.031-0.008-0.070-0.017-0.11-0.023l-0.006-0.001-18.546 0.018c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25c0 0 0 0 0.001 0l18.487-0.018c0.020 0.001 0.037 0.012 0.058 0.012 1.902 0 3.443 1.542 3.443 3.443s-1.542 3.443-3.443 3.443c-1.582 0-2.915-1.067-3.318-2.521l-0.006-0.024-0.007-0.015c-0.074-0.267-0.117-0.573-0.118-0.89v-0c0-0.002 0-0.003 0-0.005 0-0.69-0.559-1.25-1.25-1.25s-1.25 0.559-1.25 1.25c0 0.002 0 0.003 0 0.005v-0c0 0.002 0 0.005 0 0.007 0 0.55 0.075 1.082 0.214 1.587l-0.010-0.042c0.005 0.017 0.016 0.029 0.021 0.045 0.717 2.533 3.009 4.357 5.726 4.357 3.281 0 5.941-2.66 5.941-5.941 0-3.241-2.595-5.876-5.821-5.94l-0.006-0z" />
 				</svg>
 			</div>
-			<span v-else>Wind: </span>
-			<span>{{ convertSpeed(metric, data.current.wind_speed) }}</span>
+			<span>{{ convertSpeed(metric, weather.current.wind_speed) }}</span>
 		</div>
 		<div>
-			<div class="icon" v-if="iconDisplay">
+			<div class="icon">
 				<Tooltip :content="'Wind direction'" />
 				<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 					<path fill-rule="evenodd" clip-rule="evenodd"
@@ -45,25 +38,38 @@ function toggleDisplay() {
 						d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12Z" />
 				</svg>
 			</div>
-			<span v-else>Direction: </span>
-			<span>{{ degreesToCompassDirection(data.current.wind_deg) }}</span>
+			<span>{{ degreesToCompassDirection(weather.current.wind_deg) }}</span>
+		</div>
+		<div v-if="weather.current.rain">
+			<div class="icon">
+				<Tooltip :content="'Rain precipitation in 1 hour'" />
+				<svg viewBox="0 0 410.823 410.823" xmlns="http://www.w3.org/2000/svg">
+					<g>
+						<path
+							d="M5.595,254.875c-17.185,46.513,6.539,98.118,53.048,115.317c46.474,17.203,98.103-6.577,115.312-53.046 c17.175-46.468-31.479-173.544-31.479-173.544S22.821,208.372,5.595,254.875z M35.054,273.141    c5.685,50.553,34.358,67.908,34.358,67.908C18.311,325.793,35.054,273.141,35.054,273.141z" />
+						<path
+							d="M395.391,259.702c0,0-52.531,28.454-60.083,48.864c-7.54,20.411,2.873,43.066,23.285,50.616 c20.399,7.535,43.06-2.884,50.614-23.278C416.761,315.505,395.391,259.702,395.391,259.702z M348.232,316.572    c2.503,22.202,15.086,29.817,15.086,29.817C340.889,339.719,348.232,316.572,348.232,316.572z" />
+						<path
+							d="M368.837,177.115c14.061-38.057-25.778-142.083-25.778-142.083s-97.944,53.086-112.03,91.106 c-14.074,38.028,5.364,80.34,43.398,94.384C312.473,234.624,354.746,215.17,368.837,177.115z M255.121,141.088    c4.663,41.38,28.137,55.596,28.137,55.596C241.416,184.205,255.121,141.088,255.121,141.088z" />
+					</g>
+				</svg>
+			</div>
+			<span>{{ convertPrecipitation(metric, weather.current.rain["1h"]) }}</span>
+		</div>
+		<div v-if="weather.current.snow">
+			<div class="icon">
+				<Tooltip :content="'Snow precipitation in 1 hour'" />
+				<svg height="40px" width="40px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+					<g>
+						<path
+							d="M458.071,306.273l-9.519-21.579l-65.885,29.07l-43.103-24.899l74.607-32.879l-74.589-32.87l43.085-24.863   l65.885,29.07l9.536-21.624l-50.088-22.103l76.363-44.053l-13.318-23.044l-76.362,44.08l5.917-54.422l-23.47-2.561l-7.782,71.576   l-43.085,24.89l8.83-81.022l-65.777,48.152V117.43l58.123-42.542l-13.934-19.055l-44.19,32.354V0h-26.6v88.187l-44.17-32.354   l-13.952,19.055l58.122,42.542v49.762l-65.777-48.134l8.795,80.995l-43.049-24.882l-7.799-71.576l-23.47,2.561l5.916,54.422   l-76.344-44.08l-13.318,23.044l76.363,44.053l-50.088,22.103l9.519,21.624l65.867-29.07l43.122,24.863l-74.59,32.888l24.501,10.803   l50.089,22.076l-43.104,24.882l-65.885-29.07l-9.536,21.579l50.106,22.112l-76.399,44.099l13.354,23.054l76.363-44.098   l-5.935,54.412l23.47,2.551l7.781-71.594l43.068-24.863l-8.813,81.013l65.794-48.151v49.771l-58.122,42.525l13.952,19.036   l44.17-32.328V512h26.6v-88.188l44.19,32.328l13.934-19.036l-58.123-42.542v-49.736l65.777,48.143l-8.812-81.022l43.067,24.863   l7.818,71.594l23.434-2.551l-5.9-54.412l76.345,44.098l13.318-23.054l-76.381-44.099L458.071,306.273z M156.385,256.004   l41.366-18.24l31.631,18.24l-31.612,18.268L156.385,256.004z M242.718,315.556l-36.534,26.727l4.904-44.958l31.63-18.267V315.556z    M242.718,232.942l-31.63-18.25l-4.904-44.967l36.534,26.718V232.942z M269.318,196.443l36.535-26.718l-4.922,44.967l-31.613,18.25   V196.443z M269.318,315.556v-36.498l31.613,18.267l4.922,44.958L269.318,315.556z M314.248,274.272l-31.612-18.268l31.631-18.24   l41.384,18.24L314.248,274.272z" />
+					</g>
+				</svg>
+			</div>
+			<span>{{ convertPrecipitation(metric, weather.current.snow["1h"]) }}</span>
 		</div>
 		<div>
-			<button type="button" @click="toggleDisplay">
-				<svg v-if="iconDisplay" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-					<path
-						d="M4.02693 18.329C4.18385 19.277 5.0075 20 6 20H18C19.1046 20 20 19.1046 20 18V14.1901M4.02693 18.329C4.00922 18.222 4 18.1121 4 18V6C4 4.89543 4.89543 4 6 4H18C19.1046 4 20 4.89543 20 6V14.1901M4.02693 18.329L7.84762 14.5083C8.52765 13.9133 9.52219 13.8482 10.274 14.3494L10.7832 14.6888C11.5078 15.1719 12.4619 15.1305 13.142 14.5865L15.7901 12.4679C16.4651 11.9279 17.4053 11.8856 18.1228 12.3484C18.2023 12.3997 18.2731 12.4632 18.34 12.5302L20 14.1901M11 9C11 10.1046 10.1046 11 9 11C7.89543 11 7 10.1046 7 9C7 7.89543 7.89543 7 9 7C10.1046 7 11 7.89543 11 9Z"
-						stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-				</svg>
-				<svg v-else viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-					<path
-						d="M3.5 3.5C3.5 2.94772 3.94772 2.5 4.5 2.5H19.5C20.0523 2.5 20.5 2.94772 20.5 3.5V6.5C20.5 7.05228 20.0523 7.5 19.5 7.5H18.5C17.9477 7.5 17.5 7.05228 17.5 6.5V5.5H13.5V18.5H15.5C16.0523 18.5 16.5 18.9477 16.5 19.5V20.5C16.5 21.0523 16.0523 21.5 15.5 21.5H8.5C7.94772 21.5 7.5 21.0523 7.5 20.5V19.5C7.5 18.9477 7.94772 18.5 8.5 18.5H10.5V5.5H6.5V6.5C6.5 7.05228 6.05228 7.5 5.5 7.5H4.5C3.94772 7.5 3.5 7.05228 3.5 6.5V3.5Z" />
-				</svg>
-				Toggle
-			</button>
-		</div>
-		<div>
-			<div class="icon" v-if="iconDisplay">
+			<div class="icon">
 				<Tooltip :content="'Atmospheric pressure'" />
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
 					<g>
@@ -90,22 +96,20 @@ function toggleDisplay() {
 					</g>
 				</svg>
 			</div>
-			<span v-else>Pressure: </span>
-			<span>{{ data.current.pressure }}hPa</span>
+			<span>{{ weather.current.pressure }}hPa</span>
 		</div>
-		<div v-if="data.current.wind_gust">
-			<div class="icon" v-if="iconDisplay">
+		<div v-if="weather.current.wind_gust">
+			<div class="icon">
 				<Tooltip :content="'Wind gust'" />
 				<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 					<path
 						d="M22,7a4,4,0,0,1-4,4H5A1,1,0,0,1,5,9H18a2,2,0,1,0-2-2,1,1,0,0,1-2,0,4,4,0,0,1,8,0Zm-4,6H7a1,1,0,0,0,0,2H18a2,2,0,1,1-2,2,1,1,0,0,0-2,0,4,4,0,1,0,4-4ZM8,19a1,1,0,0,0,0-2H3a1,1,0,0,0,0,2ZM2,6A1,1,0,0,0,3,7h8a1,1,0,0,0,0-2H3A1,1,0,0,0,2,6Z" />
 				</svg>
 			</div>
-			<span v-else>Gust: </span>
-			<span>{{ convertSpeed(metric, data.current.wind_gust) }}</span>
+			<span>{{ convertSpeed(metric, weather.current.wind_gust) }}</span>
 		</div>
 		<div>
-			<div class="icon" v-if="iconDisplay">
+			<div class="icon">
 				<Tooltip :content="'Humidity'" />
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 328.611 328.611">
 					<g>
@@ -120,11 +124,23 @@ function toggleDisplay() {
 					</g>
 				</svg>
 			</div>
-			<span v-else>Humidity: </span>
-			<span>{{ data.current.humidity }}%</span>
+			<span>{{ weather.current.humidity }}%</span>
 		</div>
 		<div>
-			<div class="icon" v-if="iconDisplay">
+			<div class="icon">
+				<Tooltip :content="'Visibility'" />
+				<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+					<rect x="0" fill="none" width="20" height="20" />
+					<g>
+						<path
+							d="M18.3 9.5C15 4.9 8.5 3.8 3.9 7.2c-1.2.9-2.2 2.1-3 3.4.2.4.5.8.8 1.2 3.3 4.6 9.6 5.6 14.2 2.4.9-.7 1.7-1.4 2.4-2.4.3-.4.5-.8.8-1.2-.3-.4-.5-.8-.8-1.1zm-8.2-2.3c.5-.5 1.3-.5 1.8 0s.5 1.3 0 1.8-1.3.5-1.8 0-.5-1.3 0-1.8zm-.1 7.7c-3.1 0-6-1.6-7.7-4.2C3.5 9 5.1 7.8 7 7.2c-.7.8-1 1.7-1 2.7 0 2.2 1.7 4.1 4 4.1 2.2 0 4.1-1.7 4.1-4v-.1c0-1-.4-2-1.1-2.7 1.9.6 3.5 1.8 4.7 3.5-1.7 2.6-4.6 4.2-7.7 4.2z" />
+					</g>
+				</svg>
+			</div>
+			<span>{{ convertVisibility(metric, weather.current.visibility) }}</span>
+		</div>
+		<div>
+			<div class="icon">
 				<Tooltip :content="'Ultraviolet index'" />
 				<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
 					<path d="M13,30H9a2.0027,2.0027,0,0,1-2-2V20H9v8h4V20h2v8A2.0027,2.0027,0,0,1,13,30Z"
@@ -140,66 +156,20 @@ function toggleDisplay() {
 						width="32" height="32" />
 				</svg>
 			</div>
-			<span v-else>UV Index: </span>
-			<span>{{ data.current.uvi }}</span>
-		</div>
-		<div v-if="data.current.rain">
-			<div class="icon" v-if="iconDisplay">
-				<Tooltip :content="'Rain precipitation in 1 hour'" />
-				<svg viewBox="0 0 410.823 410.823" xmlns="http://www.w3.org/2000/svg">
-					<g>
-						<path
-							d="M5.595,254.875c-17.185,46.513,6.539,98.118,53.048,115.317c46.474,17.203,98.103-6.577,115.312-53.046 c17.175-46.468-31.479-173.544-31.479-173.544S22.821,208.372,5.595,254.875z M35.054,273.141    c5.685,50.553,34.358,67.908,34.358,67.908C18.311,325.793,35.054,273.141,35.054,273.141z" />
-						<path
-							d="M395.391,259.702c0,0-52.531,28.454-60.083,48.864c-7.54,20.411,2.873,43.066,23.285,50.616 c20.399,7.535,43.06-2.884,50.614-23.278C416.761,315.505,395.391,259.702,395.391,259.702z M348.232,316.572    c2.503,22.202,15.086,29.817,15.086,29.817C340.889,339.719,348.232,316.572,348.232,316.572z" />
-						<path
-							d="M368.837,177.115c14.061-38.057-25.778-142.083-25.778-142.083s-97.944,53.086-112.03,91.106 c-14.074,38.028,5.364,80.34,43.398,94.384C312.473,234.624,354.746,215.17,368.837,177.115z M255.121,141.088    c4.663,41.38,28.137,55.596,28.137,55.596C241.416,184.205,255.121,141.088,255.121,141.088z" />
-					</g>
-				</svg>
-			</div>
-			<span v-else>Rain 1h: </span>
-			<span>{{ convertPrecipitation(metric, data.current.rain["1h"]) }}</span>
-		</div>
-		<div v-if="data.current.snow">
-			<div class="icon" v-if="iconDisplay">
-				<Tooltip :content="'Snow precipitation in 1 hour'" />
-				<svg height="40px" width="40px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-					<g>
-						<path
-							d="M458.071,306.273l-9.519-21.579l-65.885,29.07l-43.103-24.899l74.607-32.879l-74.589-32.87l43.085-24.863   l65.885,29.07l9.536-21.624l-50.088-22.103l76.363-44.053l-13.318-23.044l-76.362,44.08l5.917-54.422l-23.47-2.561l-7.782,71.576   l-43.085,24.89l8.83-81.022l-65.777,48.152V117.43l58.123-42.542l-13.934-19.055l-44.19,32.354V0h-26.6v88.187l-44.17-32.354   l-13.952,19.055l58.122,42.542v49.762l-65.777-48.134l8.795,80.995l-43.049-24.882l-7.799-71.576l-23.47,2.561l5.916,54.422   l-76.344-44.08l-13.318,23.044l76.363,44.053l-50.088,22.103l9.519,21.624l65.867-29.07l43.122,24.863l-74.59,32.888l24.501,10.803   l50.089,22.076l-43.104,24.882l-65.885-29.07l-9.536,21.579l50.106,22.112l-76.399,44.099l13.354,23.054l76.363-44.098   l-5.935,54.412l23.47,2.551l7.781-71.594l43.068-24.863l-8.813,81.013l65.794-48.151v49.771l-58.122,42.525l13.952,19.036   l44.17-32.328V512h26.6v-88.188l44.19,32.328l13.934-19.036l-58.123-42.542v-49.736l65.777,48.143l-8.812-81.022l43.067,24.863   l7.818,71.594l23.434-2.551l-5.9-54.412l76.345,44.098l13.318-23.054l-76.381-44.099L458.071,306.273z M156.385,256.004   l41.366-18.24l31.631,18.24l-31.612,18.268L156.385,256.004z M242.718,315.556l-36.534,26.727l4.904-44.958l31.63-18.267V315.556z    M242.718,232.942l-31.63-18.25l-4.904-44.967l36.534,26.718V232.942z M269.318,196.443l36.535-26.718l-4.922,44.967l-31.613,18.25   V196.443z M269.318,315.556v-36.498l31.613,18.267l4.922,44.958L269.318,315.556z M314.248,274.272l-31.612-18.268l31.631-18.24   l41.384,18.24L314.248,274.272z" />
-					</g>
-				</svg>
-			</div>
-			<span v-else>Snow: </span>
-			<span>{{ convertPrecipitation(metric, data.current.snow["1h"]) }}</span>
+			<span>{{ weather.current.uvi }}</span>
 		</div>
 		<div>
-			<div class="icon" v-if="iconDisplay">
-				<Tooltip :content="'Visibility'" />
-				<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-					<rect x="0" fill="none" width="20" height="20" />
-					<g>
-						<path
-							d="M18.3 9.5C15 4.9 8.5 3.8 3.9 7.2c-1.2.9-2.2 2.1-3 3.4.2.4.5.8.8 1.2 3.3 4.6 9.6 5.6 14.2 2.4.9-.7 1.7-1.4 2.4-2.4.3-.4.5-.8.8-1.2-.3-.4-.5-.8-.8-1.1zm-8.2-2.3c.5-.5 1.3-.5 1.8 0s.5 1.3 0 1.8-1.3.5-1.8 0-.5-1.3 0-1.8zm-.1 7.7c-3.1 0-6-1.6-7.7-4.2C3.5 9 5.1 7.8 7 7.2c-.7.8-1 1.7-1 2.7 0 2.2 1.7 4.1 4 4.1 2.2 0 4.1-1.7 4.1-4v-.1c0-1-.4-2-1.1-2.7 1.9.6 3.5 1.8 4.7 3.5-1.7 2.6-4.6 4.2-7.7 4.2z" />
-					</g>
-				</svg>
-			</div>
-			<span v-else>Visibility: </span>
-			<span>{{ convertVisibility(metric, data.current.visibility) }}</span>
-		</div>
-		<div>
-			<div class="icon" v-if="iconDisplay">
+			<div class="icon">
 				<Tooltip :content="'Dew Point'" />
 				<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
 					<path
 						d="M13.5 0a.5.5 0 0 0 0 1H15v2.75h-.5a.5.5 0 0 0 0 1h.5V7.5h-1.5a.5.5 0 0 0 0 1H15v2.75h-.5a.5.5 0 0 0 0 1h.5V15h-1.5a.5.5 0 0 0 0 1h2a.5.5 0 0 0 .5-.5V.5a.5.5 0 0 0-.5-.5h-2zM7 1.5l.364-.343a.5.5 0 0 0-.728 0l-.002.002-.006.007-.022.023-.08.088a28.458 28.458 0 0 0-1.274 1.517c-.769.983-1.714 2.325-2.385 3.727C2.368 7.564 2 8.682 2 9.733 2 12.614 4.212 15 7 15s5-2.386 5-5.267c0-1.05-.368-2.169-.867-3.212-.671-1.402-1.616-2.744-2.385-3.727a28.458 28.458 0 0 0-1.354-1.605l-.022-.023-.006-.007-.002-.001L7 1.5zm0 0-.364-.343L7 1.5zm-.016.766L7 2.247l.016.019c.24.274.572.667.944 1.144.611.781 1.32 1.776 1.901 2.827H4.14c.58-1.051 1.29-2.046 1.9-2.827.373-.477.706-.87.945-1.144zM3 9.733c0-.755.244-1.612.638-2.496h6.724c.395.884.638 1.741.638 2.496C11 12.117 9.182 14 7 14s-4-1.883-4-4.267z" />
 				</svg>
 			</div>
-			<span v-else>Dew Point: </span>
-			<span>{{ data.current.dew_point }}°C</span>
+			<span>{{ weather.current.dew_point }}°C</span>
 		</div>
 		<div>
-			<div class="icon" v-if="iconDisplay">
+			<div class="icon">
 				<Tooltip :content="'Cloudiness'" />
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.013 512.013">
 					<g>
@@ -214,8 +184,7 @@ function toggleDisplay() {
 					</g>
 				</svg>
 			</div>
-			<span v-else>Cloudiness: </span>
-			<span>{{ data.current.clouds }}%</span>
+			<span>{{ weather.current.clouds }}%</span>
 		</div>
 	</div>
 </template>
@@ -223,7 +192,7 @@ function toggleDisplay() {
 <style scoped lang="scss">
 .extra-widgets {
 	display: grid;
-	grid-template-columns: auto auto auto;
+	grid-template-columns: repeat(3, 1fr);
 	grid-gap: 1rem;
 	justify-content: space-between;
 	height: fit-content;
@@ -243,27 +212,6 @@ function toggleDisplay() {
 		width: 40px;
 		height: 40px;
 		fill: var(--color-text);
-	}
-
-	button {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		margin-bottom: auto;
-		padding: 0.25rem;
-
-		svg {
-			width: 20px;
-			height: 20px;
-			fill: var(--color-text);
-			stroke-width: 1px;
-			stroke: var(--color-background);
-			transition: inherit;
-		}
-
-		&:active svg {
-			fill: var(--color-text-alt);
-		}
 	}
 }
 </style>
