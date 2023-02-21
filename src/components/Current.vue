@@ -4,7 +4,7 @@ import type { GeocodingData, OneCallWeatherData } from "../types/types";
 import Tooltip from "./Tooltip.vue";
 
 const props = defineProps<{
-	data: OneCallWeatherData | null;
+	weather: OneCallWeatherData | null;
 	location: GeocodingData | null;
 	metric: boolean;
 	fetching: boolean;
@@ -12,12 +12,12 @@ const props = defineProps<{
 </script>
 
 <template>
-	<div v-if="!fetching && data && location" class="current-weather">
+	<div v-if="!fetching && weather && location" class="current-weather">
 		<div class="left">
 			<div>
 				<span class="date">
 					{{
-						new Date(data.current.dt * 1000).toLocaleString(undefined, {
+						new Date(weather.current.dt * 1000).toLocaleString(undefined, {
 							weekday: "long",
 							month: "numeric",
 							day: "numeric",
@@ -33,20 +33,20 @@ const props = defineProps<{
 			<div>
 				<div>
 					<div>
-						<Tooltip :content="data.current.weather[0].description" />
-						<img :src="`https://openweathermap.org/img/wn/${data.current.weather[0].icon}@2x.png`"
-							:alt="data.current.weather[0].description" />
+						<Tooltip :content="weather.current.weather[0].description" />
+						<img :src="`https://openweathermap.org/img/wn/${weather.current.weather[0].icon}@2x.png`"
+							:alt="weather.current.weather[0].description" />
 					</div>
-					<h1>{{ convertTemp(metric, data.current.temp) }}</h1>
+					<h1>{{ convertTemp(metric, weather.current.temp) }}</h1>
 				</div>
 			</div>
 		</div>
 		<div class="right">
 			<span>
-				Feels like: {{ convertTemp(metric, data.current.feels_like) }}
+				Feels like: {{ convertTemp(metric, weather.current.feels_like) }}
 			</span>
-			<span>{{ data.current.weather[0].description }}</span>
-			<span>{{ windSpeedToDescription(data.current.wind_speed) }}</span>
+			<span>{{ weather.current.weather[0].description }}</span>
+			<span>{{ windSpeedToDescription(weather.current.wind_speed) }}</span>
 		</div>
 	</div>
 </template>
