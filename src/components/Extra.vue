@@ -4,7 +4,10 @@ import {
 	convertSpeed,
 	convertVisibility,
 	degreesToCompassDirection,
-	convertPrecipitation
+	convertPrecipitation,
+	convertTemp,
+	ultravioletIndexToDescription,
+	airQualityIndexDescription,
 } from "../utilities/converters";
 import Tooltip from "./Tooltip.vue";
 
@@ -42,7 +45,7 @@ const props = defineProps<{
 		</div>
 		<div v-if="weather.current.rain">
 			<div class="icon">
-				<Tooltip :content="'Rain precipitation in 1 hour'" />
+				<Tooltip :content="'Rain precipitation in last hour'" />
 				<svg viewBox="0 0 410.823 410.823" xmlns="http://www.w3.org/2000/svg">
 					<g>
 						<path
@@ -58,7 +61,7 @@ const props = defineProps<{
 		</div>
 		<div v-if="weather.current.snow">
 			<div class="icon">
-				<Tooltip :content="'Snow precipitation in 1 hour'" />
+				<Tooltip :content="'Snow precipitation in last hour'" />
 				<svg height="40px" width="40px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
 					<g>
 						<path
@@ -110,6 +113,19 @@ const props = defineProps<{
 		</div>
 		<div>
 			<div class="icon">
+				<Tooltip :content="'Visibility'" />
+				<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+					<rect x="0" fill="none" width="20" height="20" />
+					<g>
+						<path
+							d="M18.3 9.5C15 4.9 8.5 3.8 3.9 7.2c-1.2.9-2.2 2.1-3 3.4.2.4.5.8.8 1.2 3.3 4.6 9.6 5.6 14.2 2.4.9-.7 1.7-1.4 2.4-2.4.3-.4.5-.8.8-1.2-.3-.4-.5-.8-.8-1.1zm-8.2-2.3c.5-.5 1.3-.5 1.8 0s.5 1.3 0 1.8-1.3.5-1.8 0-.5-1.3 0-1.8zm-.1 7.7c-3.1 0-6-1.6-7.7-4.2C3.5 9 5.1 7.8 7 7.2c-.7.8-1 1.7-1 2.7 0 2.2 1.7 4.1 4 4.1 2.2 0 4.1-1.7 4.1-4v-.1c0-1-.4-2-1.1-2.7 1.9.6 3.5 1.8 4.7 3.5-1.7 2.6-4.6 4.2-7.7 4.2z" />
+					</g>
+				</svg>
+			</div>
+			<span>{{ convertVisibility(metric, weather.current.visibility) }}</span>
+		</div>
+		<div>
+			<div class="icon">
 				<Tooltip :content="'Humidity'" />
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 328.611 328.611">
 					<g>
@@ -128,45 +144,13 @@ const props = defineProps<{
 		</div>
 		<div>
 			<div class="icon">
-				<Tooltip :content="'Visibility'" />
-				<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-					<rect x="0" fill="none" width="20" height="20" />
-					<g>
-						<path
-							d="M18.3 9.5C15 4.9 8.5 3.8 3.9 7.2c-1.2.9-2.2 2.1-3 3.4.2.4.5.8.8 1.2 3.3 4.6 9.6 5.6 14.2 2.4.9-.7 1.7-1.4 2.4-2.4.3-.4.5-.8.8-1.2-.3-.4-.5-.8-.8-1.1zm-8.2-2.3c.5-.5 1.3-.5 1.8 0s.5 1.3 0 1.8-1.3.5-1.8 0-.5-1.3 0-1.8zm-.1 7.7c-3.1 0-6-1.6-7.7-4.2C3.5 9 5.1 7.8 7 7.2c-.7.8-1 1.7-1 2.7 0 2.2 1.7 4.1 4 4.1 2.2 0 4.1-1.7 4.1-4v-.1c0-1-.4-2-1.1-2.7 1.9.6 3.5 1.8 4.7 3.5-1.7 2.6-4.6 4.2-7.7 4.2z" />
-					</g>
-				</svg>
-			</div>
-			<span>{{ convertVisibility(metric, weather.current.visibility) }}</span>
-		</div>
-		<div>
-			<div class="icon">
-				<Tooltip :content="'Ultraviolet index'" />
-				<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-					<path d="M13,30H9a2.0027,2.0027,0,0,1-2-2V20H9v8h4V20h2v8A2.0027,2.0027,0,0,1,13,30Z"
-						transform="translate(0 0)" />
-					<polygon points="25 20 23.25 20 21 29.031 18.792 20 17 20 19.5 30 22.5 30 25 20" />
-					<rect x="15" y="2" width="2" height="5" />
-					<rect x="21.6675" y="6.8536" width="4.958" height="1.9998" transform="translate(1.5191 19.3744) rotate(-45)" />
-					<rect x="25" y="15" width="5" height="2" />
-					<rect x="2" y="15" width="5" height="2" />
-					<rect x="6.8536" y="5.3745" width="1.9998" height="4.958" transform="translate(-3.253 7.8535) rotate(-45)" />
-					<path d="M22,17H20V16a4,4,0,0,0-8,0v1H10V16a6,6,0,0,1,12,0Z" transform="translate(0 0)" />
-					<rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" fill="none"
-						width="32" height="32" />
-				</svg>
-			</div>
-			<span>{{ weather.current.uvi }}</span>
-		</div>
-		<div>
-			<div class="icon">
 				<Tooltip :content="'Dew Point'" />
 				<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
 					<path
 						d="M13.5 0a.5.5 0 0 0 0 1H15v2.75h-.5a.5.5 0 0 0 0 1h.5V7.5h-1.5a.5.5 0 0 0 0 1H15v2.75h-.5a.5.5 0 0 0 0 1h.5V15h-1.5a.5.5 0 0 0 0 1h2a.5.5 0 0 0 .5-.5V.5a.5.5 0 0 0-.5-.5h-2zM7 1.5l.364-.343a.5.5 0 0 0-.728 0l-.002.002-.006.007-.022.023-.08.088a28.458 28.458 0 0 0-1.274 1.517c-.769.983-1.714 2.325-2.385 3.727C2.368 7.564 2 8.682 2 9.733 2 12.614 4.212 15 7 15s5-2.386 5-5.267c0-1.05-.368-2.169-.867-3.212-.671-1.402-1.616-2.744-2.385-3.727a28.458 28.458 0 0 0-1.354-1.605l-.022-.023-.006-.007-.002-.001L7 1.5zm0 0-.364-.343L7 1.5zm-.016.766L7 2.247l.016.019c.24.274.572.667.944 1.144.611.781 1.32 1.776 1.901 2.827H4.14c.58-1.051 1.29-2.046 1.9-2.827.373-.477.706-.87.945-1.144zM3 9.733c0-.755.244-1.612.638-2.496h6.724c.395.884.638 1.741.638 2.496C11 12.117 9.182 14 7 14s-4-1.883-4-4.267z" />
 				</svg>
 			</div>
-			<span>{{ weather.current.dew_point }}°C</span>
+			<span>{{ convertTemp(metric, weather.current.dew_point) }}</span>
 		</div>
 		<div>
 			<div class="icon">
@@ -186,6 +170,86 @@ const props = defineProps<{
 			</div>
 			<span>{{ weather.current.clouds }}%</span>
 		</div>
+		<div>
+			<div class="icon">
+				<Tooltip>
+					<div class="uv-description">
+						<div>Ultraviolet index: <span>{{ weather.current.uvi }}</span></div>
+					</div>
+					<div class="uv-details">
+						<div><span class="low" :class="{
+							active: weather.current.uvi <= 2
+						}"></span>
+							<h5>0-2</h5>
+						</div>
+						<div><span class="moderate" :class="{
+							active: weather.current.uvi >= 3 && weather.current.uvi <= 5
+						}"></span>
+							<h5>3-5</h5>
+						</div>
+						<div><span class="high" :class="{
+							active: weather.current.uvi >= 6 && weather.current.uvi <= 7
+						}"></span>
+							<h5>6-7</h5>
+						</div>
+						<div><span class="very-high" :class="{
+							active: weather.current.uvi >= 8 && weather.current.uvi <= 10
+						}"></span>
+							<h5>8-10</h5>
+						</div>
+						<div><span class="extreme" :class="{
+							active: weather.current.uvi >= 11
+						}"></span>
+							<h5>11+</h5>
+						</div>
+					</div>
+				</Tooltip>
+				<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+					<path d="M13,30H9a2.0027,2.0027,0,0,1-2-2V20H9v8h4V20h2v8A2.0027,2.0027,0,0,1,13,30Z"
+						transform="translate(0 0)" />
+					<polygon points="25 20 23.25 20 21 29.031 18.792 20 17 20 19.5 30 22.5 30 25 20" />
+					<rect x="15" y="2" width="2" height="5" />
+					<rect x="21.6675" y="6.8536" width="4.958" height="1.9998" transform="translate(1.5191 19.3744) rotate(-45)" />
+					<rect x="25" y="15" width="5" height="2" />
+					<rect x="2" y="15" width="5" height="2" />
+					<rect x="6.8536" y="5.3745" width="1.9998" height="4.958" transform="translate(-3.253 7.8535) rotate(-45)" />
+					<path d="M22,17H20V16a4,4,0,0,0-8,0v1H10V16a6,6,0,0,1,12,0Z" transform="translate(0 0)" />
+					<rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" fill="none"
+						width="32" height="32" />
+				</svg>
+			</div>
+			<span>{{ ultravioletIndexToDescription(weather.current.uvi) }}</span>
+		</div>
+		<div v-if="pollution">
+			<div>
+				<Tooltip>
+					<div class="air-pollution-description">
+						<div>Air Quality Index: <span>{{ pollution.list[0].main.aqi }}</span></div>
+						<div>Concentration in μg/m3</div>
+					</div>
+					<div class="air-pollution-details">
+						<div v-for="(value, key, i) in pollution.list[0].components" :key="i">
+							<span>{{ key }}: {{ value }}</span>
+						</div>
+					</div>
+				</Tooltip>
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470.508 470.508">
+					<g>
+						<g>
+							<path
+								d="M365.326,179.565c-23.729-6.11-42.054-17.595-54.465-34.135c-9.396-12.52-15.109-27.536-16.985-44.631    c-0.174-1.59-1.099-3-2.486-3.794c-1.388-0.795-3.071-0.876-4.529-0.223c-16.84,7.557-41.648,16.565-64.209,16.566    c-9.042,0-17.073-1.466-23.87-4.356c-9.834-4.186-17.332-11.236-22.284-20.961c-1.061-2.083-3.424-3.156-5.689-2.576    c-50.696,12.916-70.093,62.319-77.143,90.619c-0.39,1.563-0.002,3.219,1.042,4.446l68.292,80.355    c0.952,1.12,2.346,1.762,3.81,1.762c0.067,0,0.135-0.001,0.203-0.004c1.537-0.063,2.959-0.829,3.857-2.078    c18.924-26.333,38.781-38.076,64.385-38.076s45.46,11.743,64.384,38.076c0.905,1.261,2.346,2.028,3.896,2.079    c1.587,0.064,3.038-0.619,4.022-1.816l60.381-73.229c1.089-1.318,1.427-3.102,0.897-4.728    C368.304,181.233,366.981,179.991,365.326,179.565z" />
+							<path
+								d="M381.824,317.388c-4.982-3.094-10.312-5.356-15.9-6.758c3.979-11.217,7.447-22.104,9.711-30.522    c0.015-0.045,0.025-0.09,0.035-0.137c1.777-7.441,5.225-12.477,9.709-14.179c1.461-0.556,2.578-1.761,3.021-3.258l17.903-60.592    c0.416-1.41,0.191-2.933-0.615-4.161c-0.809-1.229-2.114-2.041-3.573-2.219l-19.39-2.364c-1.692-0.202-3.377,0.466-4.463,1.782    l-65.645,79.613c-1.322,1.603-1.517,3.854-0.486,5.657c5.398,9.471,11.053,20.574,17.734,34.831    c-0.488,1.544-0.857,2.603-0.861,2.616c-7.082,19.742-14.654,36.695-21.312,47.695c-0.011,0.016-0.021,0.031-0.029,0.047    c-0.008,0.014-0.017,0.024-0.021,0.035c-13.655,22.75-41.333,45.705-72.386,45.711c-31.055-0.006-58.732-22.961-72.389-45.711    c-0.006-0.011-0.014-0.021-0.021-0.035c-0.01-0.016-0.02-0.031-0.029-0.047c-6.658-11-14.23-27.953-21.313-47.695    c-0.004-0.014-0.373-1.072-0.861-2.616c6.682-14.257,12.336-25.36,17.734-34.831c1.029-1.805,0.836-4.057-0.486-5.657    L92.244,194.98c-1.086-1.316-2.77-1.984-4.463-1.782l-19.388,2.365c-1.459,0.178-2.766,0.989-3.574,2.219    c-0.807,1.229-1.031,2.751-0.615,4.161l17.904,60.592c0.441,1.498,1.559,2.703,3.02,3.258c4.484,1.702,7.932,6.736,9.709,14.179    c0.01,0.046,0.021,0.091,0.035,0.138c2.264,8.418,5.732,19.306,9.711,30.521c-5.59,1.4-10.918,3.664-15.9,6.758    c-26.23,16.29-34.32,50.885-18.029,77.115l30.766,49.542c10.291,16.569,28.094,26.462,47.623,26.462    c10.412,0,20.611-2.916,29.494-8.434c9.836-6.108,17.504-15.104,21.994-25.687c11.461,4.245,23.113,6.396,34.713,6.398l0,0    c0.004,0,0.008,0,0.012,0c0.002,0,0.006,0,0.01,0l0,0c11.6-0.003,23.254-2.153,34.713-6.398    c4.489,10.582,12.157,19.577,21.993,25.687c8.884,5.518,19.082,8.434,29.494,8.434c19.529,0,37.332-9.893,47.623-26.462    l30.767-49.542C416.144,368.271,408.054,333.678,381.824,317.388z M163.236,437.438c-4.287,2.662-9.195,4.069-14.195,4.069    c-9.432,0-18.023-4.771-22.986-12.763l-30.766-49.54c-3.799-6.115-4.984-13.354-3.34-20.388    c1.645-7.031,5.918-12.996,12.033-16.795c3.42-2.123,7.234-3.447,11.176-3.896c0.869,2.084,1.742,4.133,2.607,6.123    c6.047,15.126,12.109,27.744,18.006,37.492c9.596,15.982,23.309,30.479,38.863,41.144    C172.68,428.943,168.715,434.035,163.236,437.438z M375.216,379.204l-30.766,49.54c-4.963,7.992-13.556,12.763-22.986,12.763    c-5,0-9.908-1.407-14.195-4.069c-5.479-3.401-9.442-8.493-11.397-14.554c15.555-10.665,29.268-25.16,38.863-41.144    c5.896-9.747,11.959-22.366,18.006-37.492c0.864-1.99,1.737-4.039,2.606-6.123c3.941,0.449,7.756,1.773,11.177,3.896    c6.114,3.799,10.389,9.764,12.032,16.795C380.201,365.85,379.015,373.089,375.216,379.204z" />
+							<path
+								d="M88.55,88.351l2.163,33.578c0.147,2.277,1.79,4.18,4.022,4.653c2.23,0.473,4.507-0.593,5.568-2.614    c18.914-36.044,48.615-57.508,85.894-62.072c0,0,5.7-0.771,7.622,1.087c1.604,1.55,2.733,6.103,2.733,6.103    c2.257,9.42,6.896,15.506,14.175,18.603c4.217,1.794,9.311,2.703,15.138,2.703c25.567,0,62.088-18.702,72.327-24.169    c9.123-4.872,16.551-3.153,14.082,9.981c-0.521,2.766-4.951,29.628,12.224,52.269c10.116,13.334,26.11,22.216,47.54,26.397    c1.543,0.201,3.187-0.272,4.085-0.965c1.159-0.895,1.879-2.244,1.973-3.705l4.021-62.416c0,0,2.584-25.797-14.196-47.317    C346.711,13.271,299.962,0,235.316,0c-64.647,0-110.998,13.587-132.604,40.466C85.31,62.113,88.403,83.66,88.55,88.351z" />
+						</g>
+					</g>
+				</svg>
+			</div>
+			<span>
+				{{ airQualityIndexDescription[pollution.list[0].main.aqi - 1] }}
+			</span>
+		</div>
 	</div>
 </template>
 
@@ -197,6 +261,7 @@ const props = defineProps<{
 	justify-content: space-between;
 	height: fit-content;
 	white-space: nowrap;
+	text-transform: capitalize;
 
 	>div {
 		display: flex;
@@ -204,14 +269,104 @@ const props = defineProps<{
 		align-items: center;
 		justify-content: center;
 		flex-wrap: wrap;
-		gap: 0.25rem;
-		min-width: 80px;
+		gap: 0.5rem;
 	}
 
 	svg {
 		width: 40px;
 		height: 40px;
 		fill: var(--color-text);
+	}
+
+	.uv-description span {
+		color: var(--color-text-alt);
+		font-weight: 600;
+	}
+
+	.uv-details {
+		margin-top: 0.5rem;
+		display: flex;
+		align-items: flex-end;
+		gap: 0.25rem;
+
+		div {
+			text-align: center;
+
+			h5 {
+				color: var(--color-heading);
+			}
+
+			span {
+				display: block;
+				width: 24px;
+				border: 1px solid var(--color-heading);
+
+				&.active {
+					filter: brightness(150%);
+					border-color: var(--color-text);
+
+					&+h5 {
+						color: var(--color-text-alt);
+						font-weight: 600;
+					}
+				}
+			}
+
+			.low {
+				height: 16px;
+				background-color: rgb(0, 165, 0);
+			}
+
+			.moderate {
+				height: 22px;
+				background-color: rgb(200, 200, 0);
+			}
+
+			.high {
+				height: 28px;
+				background-color: rgb(200, 125, 0);
+			}
+
+			.very-high {
+				height: 34px;
+				background-color: rgb(175, 0, 0);
+			}
+
+			.extreme {
+				height: 40px;
+				background-color: rgb(75, 0, 200);
+			}
+		}
+	}
+
+	.air-pollution-description {
+		div {
+			&:first-child {
+				span {
+					color: var(--color-text-alt);
+					font-weight: 600;
+				}
+			}
+
+			&:nth-child(2) {
+				text-transform: none;
+			}
+		}
+	}
+
+	.air-pollution-details {
+		margin-top: 0.25rem;
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+
+		>div {
+			padding: 0.25rem 0.5rem;
+		}
+
+		>div:nth-child(4n+1),
+		>div:nth-child(4n+2) {
+			background-color: var(--color-background-soft);
+		}
 	}
 }
 </style>
