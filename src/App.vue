@@ -156,7 +156,6 @@ main {
 	gap: 2rem;
 	margin: 0 auto;
 	padding: 1rem;
-	text-transform: capitalize;
 }
 
 .top {
