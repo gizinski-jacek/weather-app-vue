@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from "vue";
 import type { OneCallWeatherData } from "../types/types";
-import { convertTemp } from "../utilities/converters";
+import { convertTemp, convertToPercentage } from "../utilities/converters";
 import { splitIntoGroups } from "../utilities/groupers";
 import ScrollToTopBtn from "../components/ScrollToTopBtn.vue";
 
@@ -148,7 +148,7 @@ watch(pageView, () => {
 						<img :src="`https://openweathermap.org/img/wn/${d.weather[0].icon}.png`" :alt="d.weather[0].main" />
 					</div>
 					<div>{{ convertTemp(metric, d.temp.day) }}</div>
-					<div>{{ Math.round(d.pop * 100) }}%</div>
+					<div>{{ convertToPercentage(d.pop) }}</div>
 					<div>{{ d.weather[0].description }}</div>
 				</div>
 			</div>
@@ -172,7 +172,7 @@ watch(pageView, () => {
 						<img :src="`https://openweathermap.org/img/wn/${h.weather[0].icon}.png`" :alt="h.weather[0].main" />
 					</div>
 					<div>{{ convertTemp(metric, h.temp) }}</div>
-					<div>{{ Math.round(h.pop * 100) }}%</div>
+					<div>{{ convertToPercentage(h.pop) }}</div>
 					<div>{{ h.weather[0].description }}</div>
 				</div>
 			</div>
@@ -188,6 +188,7 @@ watch(pageView, () => {
 	display: flex;
 	flex-direction: column;
 	gap: 1rem;
+	text-transform: capitalize;
 
 	button.active {
 		color: var(--color-text-alt);
