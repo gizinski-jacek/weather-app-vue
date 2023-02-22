@@ -28,7 +28,7 @@ const props = defineProps<{
 					}}
 				</span>
 				<h2>{{ location.name }}</h2>
-				<span>{{ location.country }}, {{ location.state }}</span>
+				<span>{{ location.country }}</span><span v-if="location.state">, {{ location.state }}</span>
 			</div>
 			<div>
 				<div>
@@ -57,6 +57,7 @@ const props = defineProps<{
 	flex-direction: column;
 	justify-content: space-between;
 	gap: 1rem;
+	text-transform: capitalize;
 
 	.date {
 		color: var(--color-text-alt);
@@ -65,7 +66,7 @@ const props = defineProps<{
 	.left,
 	.right {
 		display: flex;
-		justify-content: space-evenly;
+		justify-content: space-between;
 		align-items: center;
 		gap: 1rem;
 		text-align: center;
