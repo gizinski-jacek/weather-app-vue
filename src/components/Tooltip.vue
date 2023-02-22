@@ -1,24 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 
 const props = defineProps<{
-	content: string;
+	content?: string;
 }>();
-
-const tooltipVisible = ref<boolean>(false);
-
-function showTooltip() {
-	tooltipVisible.value = true;
-};
-
-function hideTooltip() {
-	tooltipVisible.value = false;
-}
 </script>
 
 <template>
-	<div class="tooltip-wrapper" @mouseenter="showTooltip" @mouseleave="hideTooltip">
-		<div class="tooltip-content" :class="{ show: tooltipVisible }">{{ content }}</div>
+	<div class="tooltip-wrapper">
+		<div class="tooltip-content">
+			<div v-if="content">{{ content }}</div>
+			<slot></slot>
+		</div>
 	</div>
 </template>
 
@@ -30,26 +22,30 @@ function hideTooltip() {
 	bottom: 0;
 	left: 0;
 	right: 0;
-	z-index: 10;
+	z-index: 20;
+
+	&:hover .tooltip-content {
+		height: auto;
+		width: auto;
+		opacity: 1;
+		transition: 0.15s ease-in-out;
+		transition-delay: 0.25s;
+		z-index: 10;
+	}
 }
 
 .tooltip-content {
 	position: absolute;
-	bottom: -50%;
-	right: 0;
-	padding: 0.25rem;
+	bottom: 0;
+	right: -50%;
+	height: 0;
+	width: 0;
+	padding: 0.25rem 0.5rem;
 	text-transform: capitalize;
-	inline-size: min-content;
 	color: var(--color-text);
 	background-color: var(--color-background);
-	border: 1px solid var(--color-text-alt);
+	border: 2px solid var(--color-text-alt);
 	border-radius: 4px;
 	opacity: 0;
-}
-
-.tooltip-content.show {
-	opacity: 1;
-	transition: 0.25s ease-in-out;
-	transition-delay: 0.15s;
 }
 </style>
