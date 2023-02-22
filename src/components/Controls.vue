@@ -18,6 +18,7 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 	}
 }
 </script>
+
 <template>
 	<div class="controls">
 		<div class="search">
@@ -33,12 +34,14 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 		</button>
 	</div>
 </template>
+
 <style scoped lang="scss">
 .controls {
 	display: flex;
 	justify-content: space-between;
 	gap: 1rem;
 	margin-bottom: 1rem;
+	text-transform: capitalize;
 
 	button {
 		min-width: 110px;
