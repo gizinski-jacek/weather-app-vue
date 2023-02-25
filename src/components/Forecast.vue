@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from "vue";
 import type { OneCallWeatherData } from "../types/types";
-import { convertTemp, convertToPercentage } from "../utilities/converters";
-import { splitIntoGroups } from "../utilities/groupers";
+import { convertTemp, convertToPercentage, splitIntoGroups } from "../utilities/converters";
 import ScrollToTopBtn from "../components/ScrollToTopBtn.vue";
 
 const props = defineProps<{
@@ -367,14 +366,6 @@ watch(pageView, () => {
 
 		&.scroll {
 			overflow-x: scroll;
-
-			@media screen and (-webkit-min-device-pixel-ratio:0) {
-				padding-bottom: 0.55rem;
-			}
-
-			@-moz-document url-prefix() {
-				padding-bottom: 1.5rem;
-			}
 
 			.forecast-daily,
 			.forecast-hourly {
