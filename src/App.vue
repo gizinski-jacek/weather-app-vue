@@ -6,51 +6,63 @@ import Forecast from "./components/Forecast.vue";
 import Controls from "./components/Controls.vue";
 import Spinner from "./components/Spinner.vue";
 import type { GeocodingData, OneCallWeatherData, AirPollution } from "./types/types";
-import { fetchGeolocation, fetchWeatherOneCall, fetchAirPollution } from "./utilities/fetchers";
+import { fetchByQuery, fetchByCoords, fetchWeatherOneCall, fetchAirPollution } from "./utilities/fetchers";
 import { AxiosError } from 'axios';
 
-const metric = ref<boolean>(true);
-const location = ref<GeocodingData | null>({
+const defaultLocation: GeocodingData = {
 	lat: 52.3727598,
 	lon: 4.8936041,
 	country: "NL",
 	name: "Amsterdam",
 	state: "North Holland",
-});
+}
+
+const metric = ref<boolean>(true);
+const location = ref<GeocodingData | null>(null);
 const apiData = ref<OneCallWeatherData | null>(null);
 const airPollutionData = ref<AirPollution | null>(null)
-const fetching = ref<boolean>(true);
+const fetching = ref<boolean>(false);
 const fetchingError = ref<string | null>(null);
 
 onMounted(async () => {
 	try {
-		if (!location.value) return;
 		fetching.value = true;
-		getGeolocation();
-		const { lat, lon } = location.value;
+		if (localStorage.userMetric) {
+			metric.value = JSON.parse(localStorage.userMetric)
+		}
+		if (localStorage.userLocation) {
+			location.value = JSON.parse(localStorage.userLocation)
+		} else {
+			await getCurrentLocation()
+			fetching.value = false;
+		}
+	} catch (error: any) {
+		console.log(error.message)
+		location.value = defaultLocation;
+		fetching.value = false;
+	}
+});
+
+async function updateWeatherData(lat: number, lon: number) {
+	try {
+		fetching.value = true;
 		apiData.value = await fetchWeatherOneCall(lat, lon);
 		airPollutionData.value = await fetchAirPollution(lat, lon)
 		fetching.value = false;
-	} catch (error: any) {
-		console.error(error.message)
-		if (error instanceof AxiosError) {
-			if (error.response?.status === 400) {
-				fetchingError.value = 'City not found. Did you enter correct name?'
-			}
-		} else {
-			fetchingError.value = 'Request error, try again.'
-		}
-		fetching.value = false;
+	} catch (error) {
+		console.log(error)
 	}
-});
+}
 
-watch(location, async () => {
+watch(metric, (newMetric) => {
+	localStorage.setItem('userMetric', JSON.stringify(newMetric));
+})
+
+watch(location, async (newLocation) => {
 	try {
-		if (!location.value) return;
-		fetching.value = true;
-		const { lat, lon } = location.value;
-		apiData.value = await fetchWeatherOneCall(lat, lon);
-		fetching.value = false;
+		if (!newLocation) return;
+		const { lat, lon } = newLocation;
+		await updateWeatherData(lat, lon)
 	} catch (error: any) {
 		console.error(error.message)
 		if (error instanceof AxiosError) {
@@ -64,11 +76,12 @@ watch(location, async () => {
 	}
 });
 
-async function changeLocation(query: string) {
+async function searchLocation(query: string) {
 	try {
 		if (!query) return;
 		fetching.value = true;
-		location.value = await fetchGeolocation(query);
+		const geolocation = await fetchByQuery(query);
+		location.value = geolocation;
 		fetching.value = false;
 	} catch (error: any) {
 		console.error(error.message)
@@ -87,41 +100,47 @@ function changeUnits() {
 	metric.value = !metric.value;
 }
 
-function getGeolocation(): null {
-	fetching.value = true;
-	if (navigator.geolocation) {
-		navigator.geolocation.getCurrentPosition(async (position) => {
-			const { latitude, longitude } = position.coords;
-			const weather = await fetchWeatherOneCall(latitude, longitude);
-			if (!weather) throw new Error();
-			const query = weather.timezone.split("/")[1];
-			const geolocation = await fetchGeolocation(query);
-			if (!geolocation) throw new Error();
-			location.value = geolocation;
-		}, handleGeolocationError);
-	} else {
-		console.log("Geolocation is not supported by this browser.");
+async function requestUserGeolocation() {
+	try {
+		fetching.value = true
+		await getCurrentLocation();
+		fetching.value = false;
+	} catch (error: any) {
+		if (error.type === 'Unsupported') {
+			console.log(error.message)
+		} else if (error.name === 'PositionError') {
+			fetchingError.value = error.message
+			fetching.value = false;
+		} else {
+			console.error(error.message)
+			fetchingError.value = error.message
+		}
+		fetching.value = false;
 	}
-	fetching.value = false;
-	return null;
 }
 
-function handleGeolocationError(error: GeolocationPositionError) {
-	switch (error.code) {
-		case error.PERMISSION_DENIED:
-			console.log("User denied the request for geolocation.");
-			break;
-		case error.POSITION_UNAVAILABLE:
-			console.log("Geolocation information is unavailable.");
-			break;
-		case error.TIMEOUT:
-			console.log("The request to get user geolocation timed out.");
-			break;
-		default:
-			console.log("An unknown geolocation error occurred.");
-			break;
-	}
-}
+function getCurrentLocation(): Promise<null> {
+	return new Promise((resolve, reject) => {
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(
+				async (position) => {
+					try {
+						const { latitude, longitude } = position.coords;
+						const geolocation = await fetchByCoords(latitude, longitude);
+						location.value = geolocation;
+						localStorage.setItem('userLocation', JSON.stringify(geolocation))
+						resolve(null)
+					} catch (error: any) {
+						reject(error)
+					}
+				}, (error) =>
+				reject(new Error('Geolocation request error. Displaying default location: Amsterdam.'))
+			)
+		} else {
+			reject(new Error('Geolocation is not supported by this browser'))
+		}
+	});
+};
 
 function dismissError() {
 	fetchingError.value = null
@@ -132,16 +151,16 @@ function dismissError() {
 	<main v-if="apiData">
 		<div class="top">
 			<div>
-				<Controls @changeUnits="changeUnits" @changeLocation="changeLocation" :metric="metric" />
+				<Controls @changeUnits="changeUnits" @searchLocation="searchLocation"
+					@requestUserGeolocation="requestUserGeolocation" :metric="metric" />
 				<Current :weather="apiData" :location="location" :metric="metric" :fetching="fetching" />
 			</div>
 			<Extra :weather="apiData" :pollution="airPollutionData" :metric="metric" :fetching="fetching" />
 		</div>
 		<Forecast :weather="apiData" :metric="metric" :fetching="fetching" />
 	</main>
-	<div v-if="fetchingError" class="error">
-		<h3>{{ fetchingError }}</h3>
-		<div class="dismiss" @click="dismissError"></div>
+	<div v-if="fetchingError" class="error" @click="dismissError">
+		<h4>{{ fetchingError }}</h4>
 	</div>
 	<Spinner v-if="fetching" />
 </template>
@@ -170,40 +189,15 @@ main {
 	top: 0;
 	left: 0;
 	display: flex;
-	background-color: rgb(200, 0, 0);
+	background-color: var(--color-red);
 	padding: 0.5rem;
 	margin: 0.5rem;
 	border-radius: 8px;
+	z-index: 50;
+	cursor: pointer;
 
-	h3 {
-		font-weight: 600;
-	}
-
-	.dismiss {
-		margin: 0;
-		margin-left: 5rem;
-		width: 24px;
-		height: 24px;
-		cursor: pointer;
-
-		&:before,
-		&:after {
-			display: block;
-			content: "";
-			width: 24px;
-			height: 4px;
-			background-color: rgb(0, 0, 0);
-			transform: translateY(8px) rotate(-45deg);
-		}
-
-		&:after {
-			transform: translateY(4px) rotate(45deg);
-		}
-
-		&:hover:before,
-		&:hover:after {
-			background-color: var(--color-background-soft);
-		}
+	h4 {
+		font-weight: 700;
 	}
 }
 
