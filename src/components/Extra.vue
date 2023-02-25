@@ -8,6 +8,8 @@ import {
 	convertTemp,
 	ultravioletIndexToDescription,
 	airQualityIndexDescription,
+	pollutantConcentrationToDescription,
+	pollutantSort,
 } from "../utilities/converters";
 import Tooltip from "./Tooltip.vue";
 
@@ -45,7 +47,7 @@ const props = defineProps<{
 		</div>
 		<div v-if="weather.current.rain">
 			<div class="icon">
-				<Tooltip :content="'Rain precipitation in last hour'" />
+				<Tooltip :content="'Rain precipitation within an hour'" />
 				<svg viewBox="0 0 410.823 410.823" xmlns="http://www.w3.org/2000/svg">
 					<g>
 						<path
@@ -61,7 +63,7 @@ const props = defineProps<{
 		</div>
 		<div v-if="weather.current.snow">
 			<div class="icon">
-				<Tooltip :content="'Snow precipitation in last hour'" />
+				<Tooltip :content="'Snow precipitation within an hour'" />
 				<svg height="40px" width="40px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
 					<g>
 						<path
@@ -228,7 +230,8 @@ const props = defineProps<{
 						<div>Concentration in μg/m3</div>
 					</div>
 					<div class="air-pollution-details">
-						<div v-for="(value, key, i) in pollution.list[0].components" :key="i">
+						<div v-for="(value, key, i) in pollutantSort(pollution.list[0].components)" :key="i"
+							:class="pollutantConcentrationToDescription(key.toString(), value).replace(' ', '-')">
 							<span>{{ key }}: {{ value }}</span>
 						</div>
 					</div>
@@ -280,13 +283,14 @@ const props = defineProps<{
 
 	.uv-description span {
 		color: var(--color-text-alt);
-		font-weight: 600;
+		font-weight: 700;
 	}
 
 	.uv-details {
 		margin-top: 0.5rem;
 		display: flex;
 		align-items: flex-end;
+		justify-content: center;
 		gap: 0.25rem;
 
 		div {
@@ -299,42 +303,42 @@ const props = defineProps<{
 			span {
 				display: block;
 				width: 24px;
-				border: 1px solid var(--color-heading);
+				border: 1px solid var(--color-text);
+				opacity: 0.5;
 
 				&.active {
-					filter: brightness(150%);
-					border-color: var(--color-text);
+					opacity: 1;
 
 					&+h5 {
 						color: var(--color-text-alt);
-						font-weight: 600;
+						font-weight: 800;
 					}
 				}
 			}
 
 			.low {
 				height: 16px;
-				background-color: rgb(0, 165, 0);
+				background-color: var(--color-green);
 			}
 
 			.moderate {
-				height: 22px;
-				background-color: rgb(200, 200, 0);
+				height: 23px;
+				background-color: var(--color-yellow);
 			}
 
 			.high {
-				height: 28px;
-				background-color: rgb(200, 125, 0);
+				height: 30px;
+				background-color: var(--color-orange);
 			}
 
 			.very-high {
-				height: 34px;
-				background-color: rgb(175, 0, 0);
+				height: 37px;
+				background-color: var(--color-red);
 			}
 
 			.extreme {
-				height: 40px;
-				background-color: rgb(75, 0, 200);
+				height: 44px;
+				background-color: var(--color-purple);
 			}
 		}
 	}
@@ -344,7 +348,7 @@ const props = defineProps<{
 			&:first-child {
 				span {
 					color: var(--color-text-alt);
-					font-weight: 600;
+					font-weight: 700;
 				}
 			}
 
@@ -355,17 +359,42 @@ const props = defineProps<{
 	}
 
 	.air-pollution-details {
-		margin-top: 0.25rem;
+		margin-top: 0.5rem;
+		margin-bottom: 0.25rem;
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
+		border: 1px solid var(--color-text);
+		gap: 1px;
+		background-color: var(--color-text);
 
 		>div {
 			padding: 0.25rem 0.5rem;
+			text-transform: none;
+			background-color: var(--color-background-soft);
+
+			span {
+				font-weight: 600;
+			}
 		}
 
-		>div:nth-child(4n+1),
-		>div:nth-child(4n+2) {
-			background-color: var(--color-background-soft);
+		.good {
+			background-color: var(--color-green);
+		}
+
+		.fair {
+			background-color: var(--color-yellow);
+		}
+
+		.moderate {
+			background-color: var(--color-orange);
+		}
+
+		.poor {
+			background-color: var(--color-red);
+		}
+
+		.very-poor {
+			background-color: var(--color-purple);
 		}
 	}
 }
