@@ -15,7 +15,7 @@ const props = defineProps<{
 	<div v-if="!fetching && weather && location" class="current-weather">
 		<div class="left">
 			<div>
-				<span class="date">
+				<h4 class="date">
 					{{
 						new Date(weather.current.dt * 1000).toLocaleString(undefined, {
 							weekday: "long",
@@ -23,10 +23,9 @@ const props = defineProps<{
 							day: "numeric",
 							hour: "numeric",
 							minute: "numeric",
-							second: "numeric",
 						})
 					}}
-				</span>
+				</h4>
 				<h2>{{ location.name }}</h2>
 				<span>{{ location.country }}</span><span v-if="location.state">, {{ location.state }}</span>
 			</div>
@@ -61,6 +60,7 @@ const props = defineProps<{
 
 	.date {
 		color: var(--color-text-alt);
+		font-weight: 600;
 	}
 
 	.left,
