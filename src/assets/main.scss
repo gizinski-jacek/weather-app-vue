@@ -16,7 +16,7 @@ button {
 	text-transform: uppercase;
 	border-radius: 4px;
 	font-size: 0.75rem;
-	font-weight: 600 !important;
+	font-weight: 700 !important;
 	padding: 0.25rem 0.5rem;
 	cursor: pointer;
 	transition: 0.25s ease-in-out;
@@ -58,16 +58,20 @@ img {
 
 h1 {
 	font-size: 2rem;
-	font-weight: 600;
+	font-weight: 700;
 }
 
 h2 {
 	font-size: 1.5rem;
-	font-weight: 600;
+	font-weight: 700;
 }
 
 h3 {
 	font-size: 1.25rem;
+}
+
+h4 {
+	font-size: 1.1rem;
 }
 
 h5 {
