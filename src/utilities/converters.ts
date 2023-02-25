@@ -35,6 +35,11 @@ export function convertPrecipitation(
 		: roundToDecimal(volume / 25.4) + 'in';
 }
 
+// Convert number to percentage value.
+export function convertToPercentage(value: number): string {
+	return roundToDecimal(value * 100, 0) + '%';
+}
+
 // Convert wind speed from m/s to mph and return user friendly description.
 // Based on https://www.weather.gov/pqr/wind.
 export function windSpeedToDescription(speed: number): string {
@@ -93,11 +98,6 @@ export function degreesToCompassDirection(degree: number): string {
 	return compass_directions[Math.round((degree % 360) / 22.5)];
 }
 
-// Convert number to percentage value.
-export function convertToPercentage(value: number): string {
-	return value * 100 + '%';
-}
-
 // Round number to X (defaults to 1) decimal places as string.
 export function roundToDecimal(value: number, decimal: number = 1): string {
 	return (Math.round(value * 10) / 10).toFixed(decimal);
@@ -127,3 +127,100 @@ export const airQualityIndexDescription: string[] = [
 	'poor',
 	'very poor',
 ];
+
+const pollutantConcentrationRanges: {
+	[key: string]: { [key: string]: string };
+} = {
+	pm2_5: {
+		good: '0-10',
+		fair: '10-25',
+		moderate: '25-50',
+		poor: '50-75',
+		'very poor': '75',
+	},
+	pm10: {
+		good: '0-20',
+		fair: '20-50',
+		moderate: '50-100',
+		poor: '100-200',
+		'very poor': '200',
+	},
+	o3: {
+		good: '0-60',
+		fair: '60-100',
+		moderate: '100-140',
+		poor: '140-180',
+		'very poor': '180',
+	},
+	no2: {
+		good: '0-40',
+		fair: '40-70',
+		moderate: '70-150',
+		poor: '150-200',
+		'very poor': '200',
+	},
+	so2: {
+		good: '0-20',
+		fair: '20-80',
+		moderate: '80-250',
+		poor: '250-350',
+		'very poor': '350',
+	},
+	co: {
+		good: '0-4400',
+		fair: '4400-9400',
+		moderate: '9400-12400',
+		poor: '12400-15400',
+		'very poor': '15400',
+	},
+};
+
+// Check pollutant concentration levels and return user friendly description.
+// Supports: pm2.5, pm10, o3, no2, so2, co.
+// Based on https://openweathermap.org/api/air-pollution.
+export function pollutantConcentrationToDescription(
+	pollutant: string,
+	concentration: number
+): string {
+	const data = pollutantConcentrationRanges[pollutant.toLowerCase()];
+	if (!data) return '';
+	let quality: string = '';
+	for (const [key, value] of Object.entries(data)) {
+		const [min, max] = value.split('-').map((v) => parseInt(v));
+		if (concentration >= min && concentration <= (max || 999999)) {
+			quality = key;
+		}
+	}
+	return quality;
+}
+
+const pollutantWeigh: { [key: string]: number } = {
+	pm2_5: 1,
+	pm10: 2,
+	o3: 3,
+	no2: 4,
+	so2: 5,
+	co: 6,
+};
+
+// Sorts pollutants that affect Air Quality Index in order of most to least harmful.
+export function pollutantSort(pollutants: { [key: string]: number }): {
+	[key: string]: number;
+} {
+	const entries: [string, number, number][] = Object.entries(pollutants).map(
+		(e) => [...e, pollutantWeigh[e[0]] || 999]
+	);
+	const sorted = entries.sort().sort((a, b) => a[2] - b[2]);
+	const object = Object.fromEntries(sorted);
+	return object;
+}
+
+// Splits long array into smaller groups.
+export function splitIntoGroups(data: any[], chunkSize: number): any[][] {
+	const array = [] as any[][];
+	for (let i = 0; i < data.length; i += chunkSize) {
+		const chunk = data.slice(i, i + chunkSize);
+		array.push(chunk);
+	}
+	return array;
+}
