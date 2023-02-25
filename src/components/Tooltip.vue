@@ -25,8 +25,12 @@ const props = defineProps<{
 	z-index: 20;
 
 	&:hover .tooltip-content {
-		height: auto;
-		width: auto;
+		height: max-content;
+		width: max-content;
+		max-width: 240px;
+		padding: 0.25rem 0.5rem;
+		border: 2px solid var(--color-text-alt);
+		border-radius: 4px;
 		opacity: 1;
 		transition: 0.15s ease-in-out;
 		transition-delay: 0.25s;
@@ -37,15 +41,13 @@ const props = defineProps<{
 .tooltip-content {
 	position: absolute;
 	bottom: 0;
-	right: -50%;
+	right: 0;
 	height: 0;
 	width: 0;
-	padding: 0.25rem 0.5rem;
+	overflow: hidden;
 	text-transform: capitalize;
 	color: var(--color-text);
 	background-color: var(--color-background);
-	border: 2px solid var(--color-text-alt);
-	border-radius: 4px;
 	opacity: 0;
 }
 </style>
