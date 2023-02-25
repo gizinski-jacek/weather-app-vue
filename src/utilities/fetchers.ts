@@ -6,10 +6,26 @@ import type {
 	AirPollution,
 } from '../types/types';
 
-export async function fetchGeolocation(query: string): Promise<GeocodingData> {
+export async function fetchByQuery(query: string): Promise<GeocodingData> {
 	try {
 		const res: AxiosResponse<GeocodingData[]> = await axios.get(
-			`https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=1&appid=${
+			`https://api.openweathermap.org/geo/1.0/direct?q=${query}&appid=${
+				import.meta.env.VITE_API_KEY
+			}`
+		);
+		return res.data[0];
+	} catch (error: any) {
+		throw error;
+	}
+}
+
+export async function fetchByCoords(
+	lat: number,
+	lon: number
+): Promise<GeocodingData> {
+	try {
+		const res: AxiosResponse<GeocodingData[]> = await axios.get(
+			`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&appid=${
 				import.meta.env.VITE_API_KEY
 			}`
 		);
