@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import type { GeocodingData } from '@/types/types';
 import { ref } from "vue";
 
-const props = defineProps<{ metric: boolean }>();
+const props = defineProps<{ metric: boolean, searchResults: GeocodingData[] | null }>();
 
 const emit = defineEmits(["changeUnits", "searchLocation", "requestUserGeolocation"]);
 const searchValue = ref<string>("");
@@ -28,6 +29,14 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 				<circle cx="10" cy="10" r="6" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
 				<path d="M14.5 14.5L19 19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
 			</svg>
+			<div v-if="searchResults" class="search-results">
+				<div v-for="(result, index) in searchResults" :key="index" class="result" @click="emit('searchLocation',
+					result)">
+					<div>{{ result.country }}</div>
+					<div>{{ result.name }}</div>
+					<div>{{ result.lat.toFixed(3) }}, {{ result.lon.toFixed(3) }}</div>
+				</div>
+			</div>
 		</div>
 		<div class="geolocation" @click="emit('requestUserGeolocation')">
 			<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
@@ -60,15 +69,16 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 	background-color: var(--color-background);
 	border: 2px solid var(--color-text);
 	border-radius: 4px;
-
-	&:hover input {
-		color: var(--color-text);
-	}
+	position: relative;
 
 	input {
 		width: 100%;
 		background-color: transparent;
 		border: none;
+
+		&:hover {
+			color: var(--color-text);
+		}
 
 		&:focus {
 			color: var(--color-text-alt);
@@ -99,7 +109,42 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 	}
 
 	.search-results {
-		display: flex;
+		position: absolute;
+		top: 100%;
+		left: -2px;
+		right: -2px;
+		z-index: 20;
+
+		.result {
+			display: flex;
+			gap: 1rem;
+			padding: 0.25rem;
+			background-color: var(--color-background);
+			border: 2px solid var(--color-text);
+			border-bottom-width: 0;
+			cursor: pointer;
+
+			>div:nth-child(2) {
+				flex: 1;
+			}
+
+			&:last-child {
+				border-bottom-width: 2px;
+			}
+
+			&:hover {
+				color: var(--color-text-alt);
+				border: 2px solid var(--color-text-alt);
+
+				&+div {
+					border-top: 0;
+				}
+			}
+
+			&:active {
+				filter: brightness(125%);
+			}
+		}
 	}
 }
 
