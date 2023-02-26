@@ -4,16 +4,16 @@ import type {
 	GeocodingData,
 	OneCallWeatherData,
 	AirPollution,
-} from '../types/types';
+} from '@/types/types';
 
-export async function fetchByQuery(query: string): Promise<GeocodingData> {
+export async function fetchByQuery(query: string): Promise<GeocodingData[]> {
 	try {
 		const res: AxiosResponse<GeocodingData[]> = await axios.get(
-			`https://api.openweathermap.org/geo/1.0/direct?q=${query}&appid=${
+			`https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=${
 				import.meta.env.VITE_API_KEY
 			}`
 		);
-		return res.data[0];
+		return res.data;
 	} catch (error: any) {
 		throw error;
 	}
@@ -25,7 +25,7 @@ export async function fetchByCoords(
 ): Promise<GeocodingData> {
 	try {
 		const res: AxiosResponse<GeocodingData[]> = await axios.get(
-			`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&appid=${
+			`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${
 				import.meta.env.VITE_API_KEY
 			}`
 		);
