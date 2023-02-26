@@ -7,12 +7,11 @@ const props = defineProps<{
 	weather: OneCallWeatherData | null;
 	location: GeocodingData | null;
 	metric: boolean;
-	fetching: boolean;
 }>();
 </script>
 
 <template>
-	<div v-if="!fetching && weather && location" class="current-weather">
+	<div v-if="weather && location" class="current-weather">
 		<div class="left">
 			<div>
 				<h4 class="date">

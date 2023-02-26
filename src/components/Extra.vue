@@ -17,12 +17,11 @@ const props = defineProps<{
 	weather: OneCallWeatherData | null;
 	pollution: AirPollution | null;
 	metric: boolean;
-	fetching: boolean;
 }>();
 </script>
 
 <template>
-	<div v-if="!fetching && weather" class="extra-widgets">
+	<div v-if="weather" class="extra-widgets">
 		<div>
 			<div class="icon">
 				<Tooltip :content="'Wind speed'" />

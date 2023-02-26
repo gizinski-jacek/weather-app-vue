@@ -7,7 +7,6 @@ import ScrollToTopBtn from "../components/ScrollToTopBtn.vue";
 const props = defineProps<{
 	weather: OneCallWeatherData | null;
 	metric: boolean;
-	fetching: boolean;
 }>();
 
 const displayedForecast = ref<"daily" | "hourly">("daily");
@@ -96,7 +95,7 @@ watch(pageView, () => {
 </script>
 
 <template>
-	<div v-if="!fetching && weather" class="weather-forecast">
+	<div v-if="weather" class="weather-forecast">
 		<div class="forecast-controls">
 			<div class="time-controls">
 				<button type="button" @click="changeForecast('daily')" :class="{ active: displayedForecast === 'daily' }">
