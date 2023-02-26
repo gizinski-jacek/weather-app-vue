@@ -22,7 +22,7 @@ const props = defineProps<{
 	bottom: 0;
 	left: 0;
 	right: 0;
-	z-index: 20;
+	z-index: 50;
 
 	&:hover .tooltip-content {
 		height: max-content;
@@ -34,7 +34,7 @@ const props = defineProps<{
 		opacity: 1;
 		transition: 0.15s ease-in-out;
 		transition-delay: 0.25s;
-		z-index: 10;
+		z-index: 20;
 	}
 }
 
