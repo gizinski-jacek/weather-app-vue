@@ -18,81 +18,83 @@ const defaultLocation: GeocodingData = {
 }
 
 const metric = ref<boolean>(true);
-const location = ref<GeocodingData | null>(null);
+const geolocation = ref<GeocodingData | null>(null);
+const searchResults = ref<GeocodingData[] | null>(null)
 const apiData = ref<OneCallWeatherData | null>(null);
 const airPollutionData = ref<AirPollution | null>(null)
-const fetching = ref<boolean>(false);
-const fetchingError = ref<string | null>(null);
+const dataError = ref<string | null>(null);
 
 onMounted(async () => {
 	try {
-		fetching.value = true;
 		if (localStorage.userMetric) {
 			metric.value = JSON.parse(localStorage.userMetric)
 		}
 		if (localStorage.userLocation) {
-			location.value = JSON.parse(localStorage.userLocation)
+			updateAppData(JSON.parse(localStorage.userLocation));
 		} else {
 			await getCurrentLocation()
-			fetching.value = false;
 		}
 	} catch (error: any) {
 		console.log(error.message)
-		location.value = defaultLocation;
-		fetching.value = false;
+		geolocation.value = defaultLocation;
 	}
 });
 
-async function updateWeatherData(lat: number, lon: number) {
+watch(geolocation, async (newLocation) => {
 	try {
-		fetching.value = true;
-		apiData.value = await fetchWeatherOneCall(lat, lon);
-		airPollutionData.value = await fetchAirPollution(lat, lon)
-		fetching.value = false;
+		if (!newLocation) return;
+		await updateAppData(newLocation)
+	} catch (error: any) {
+		console.error(error.message)
+		if (error instanceof AxiosError) {
+			if (error.response?.status === 400) {
+				dataError.value = 'City not found. Did you enter correct name?'
+			}
+		} else {
+			dataError.value = 'Request error, try again.'
+		}
+	}
+});
+
+async function updateAppData(location: GeocodingData) {
+	try {
+		const weather = await fetchWeatherOneCall(location.lat, location.lon);
+		const pollution = await fetchAirPollution(location.lat, location.lon)
+		apiData.value = weather;
+		airPollutionData.value = pollution;
+		geolocation.value = location;
 	} catch (error) {
 		console.log(error)
+		dataError.value = 'Error getting weather data, try again.'
 	}
 }
 
-watch(metric, (newMetric) => {
-	localStorage.setItem('userMetric', JSON.stringify(newMetric));
-})
 
-watch(location, async (newLocation) => {
-	try {
-		if (!newLocation) return;
-		const { lat, lon } = newLocation;
-		await updateWeatherData(lat, lon)
-	} catch (error: any) {
-		console.error(error.message)
-		if (error instanceof AxiosError) {
-			if (error.response?.status === 400) {
-				fetchingError.value = 'City not found. Did you enter correct name?'
-			}
-		} else {
-			fetchingError.value = 'Request error, try again.'
-		}
-		fetching.value = false;
-	}
-});
-
-async function searchLocation(query: string) {
+async function searchLocation(query: string | GeocodingData) {
 	try {
 		if (!query) return;
-		fetching.value = true;
-		const geolocation = await fetchByQuery(query);
-		location.value = geolocation;
-		fetching.value = false;
+		if (typeof query === 'string') {
+			const results = await fetchByQuery(query);
+			if (!results.length) {
+				dataError.value = `No results for ${query}.`;
+			} else {
+				searchResults.value;
+			}
+		} else if (typeof query === 'object') {
+			const geolocation = await fetchByCoords(query.lat, query.lon);
+			updateAppData(geolocation);
+		} else {
+			dataError.value = 'Error searching for city, try again.'
+		}
 	} catch (error: any) {
 		console.error(error.message)
 		if (error instanceof AxiosError) {
 			if (error.response?.status === 400) {
-				fetchingError.value = 'City not found. Did you enter correct name?'
+				dataError.value = 'City not found. Did you enter correct name?'
 			}
 		} else {
-			fetchingError.value = 'Request error, try again.'
+			dataError.value = 'Error searching for city, try again.'
 		}
-		fetching.value = false;
 	}
 }
 
@@ -100,22 +102,26 @@ function changeUnits() {
 	metric.value = !metric.value;
 }
 
+function dismissError() {
+	dataError.value = null;
+}
+
+watch(metric, (newMetric) => {
+	localStorage.setItem('userMetric', JSON.stringify(newMetric));
+})
+
 async function requestUserGeolocation() {
 	try {
-		fetching.value = true
 		await getCurrentLocation();
-		fetching.value = false;
 	} catch (error: any) {
 		if (error.type === 'Unsupported') {
 			console.log(error.message)
 		} else if (error.name === 'PositionError') {
-			fetchingError.value = error.message
-			fetching.value = false;
+			dataError.value = error.message
 		} else {
 			console.error(error.message)
-			fetchingError.value = error.message
+			dataError.value = error.message
 		}
-		fetching.value = false;
 	}
 }
 
@@ -127,7 +133,7 @@ function getCurrentLocation(): Promise<null> {
 					try {
 						const { latitude, longitude } = position.coords;
 						const geolocation = await fetchByCoords(latitude, longitude);
-						location.value = geolocation;
+						updateAppData(geolocation)
 						localStorage.setItem('userLocation', JSON.stringify(geolocation))
 						resolve(null)
 					} catch (error: any) {
@@ -142,9 +148,7 @@ function getCurrentLocation(): Promise<null> {
 	});
 };
 
-function dismissError() {
-	fetchingError.value = null
-}
+
 </script>
 
 <template>
@@ -152,17 +156,17 @@ function dismissError() {
 		<div class="top">
 			<div>
 				<Controls @changeUnits="changeUnits" @searchLocation="searchLocation"
-					@requestUserGeolocation="requestUserGeolocation" :metric="metric" />
-				<Current :weather="apiData" :location="location" :metric="metric" :fetching="fetching" />
+					@requestUserGeolocation="requestUserGeolocation" :metric="metric" :searchResults="searchResults" />
+				<Current :weather="apiData" :location="geolocation" :metric="metric" />
 			</div>
-			<Extra :weather="apiData" :pollution="airPollutionData" :metric="metric" :fetching="fetching" />
+			<Extra :weather="apiData" :pollution="airPollutionData" :metric="metric" />
 		</div>
-		<Forecast :weather="apiData" :metric="metric" :fetching="fetching" />
+		<Forecast :weather="apiData" :metric="metric" />
+		<div v-if="dataError" class="error" @click="dismissError">
+			<h4>{{ dataError }}</h4>
+		</div>
 	</main>
-	<div v-if="fetchingError" class="error" @click="dismissError">
-		<h4>{{ fetchingError }}</h4>
-	</div>
-	<Spinner v-if="fetching" />
+	<Spinner v-else />
 </template>
 
 <style scoped lang="scss">
@@ -175,6 +179,7 @@ main {
 	gap: 2rem;
 	margin: 0 auto;
 	padding: 1rem;
+	position: relative;
 }
 
 .top {
@@ -188,12 +193,16 @@ main {
 	position: absolute;
 	top: 0;
 	left: 0;
+	min-width: 280px;
 	display: flex;
+	justify-content: center;
+	align-items: center;
 	background-color: var(--color-red);
-	padding: 0.5rem;
+	border: 3px solid var(--color-text-alt);
+	padding: 1rem 2rem;
 	margin: 0.5rem;
 	border-radius: 8px;
-	z-index: 50;
+	z-index: 100;
 	cursor: pointer;
 
 	h4 {
