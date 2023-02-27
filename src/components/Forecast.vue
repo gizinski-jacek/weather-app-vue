@@ -242,13 +242,14 @@ watch(pageView, () => {
 			height: 14px;
 			margin: 0 0.25rem;
 			border-radius: 50%;
-			border: 2px solid var(--color-text);
+			border: 2px solid var(--color-heading);
 			user-select: none;
 			cursor: pointer;
 			transition: 0.25s ease-in-out;
 
 			&:hover {
 				background-color: var(--color-border-hover);
+				border-color: var(--color-text);
 			}
 
 			&:active {
@@ -257,27 +258,31 @@ watch(pageView, () => {
 
 			&.active {
 				background-color: var(--color-text);
+				border-color: var(--color-text);
 			}
 		}
 
 		.arrow-prev,
 		.arrow-next {
+			width: 20px;
+			height: 20px;
+			cursor: pointer;
 
 			&:before,
 			&:after {
 				display: block;
+				margin: auto;
 				content: "";
 				width: 12px;
 				height: 4px;
 				background-color: var(--color-heading);
-				transform: translateY(-1px) rotate(-45deg);
-				cursor: pointer;
+				transform: translateY(5px) rotate(-45deg);
 				margin: 0 0.25rem;
 				transition: 0.25s ease-in-out;
 			}
 
 			&:after {
-				transform: translateY(1px) rotate(45deg);
+				transform: translateY(7px) rotate(45deg);
 			}
 
 			&:hover:before,
