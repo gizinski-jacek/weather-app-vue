@@ -100,7 +100,7 @@ export function degreesToCompassDirection(degree: number): string {
 
 // Round number to X (defaults to 1) decimal places as string.
 export function roundToDecimal(value: number, decimal: number = 1): string {
-	return (Math.round(value * 10) / 10).toFixed(decimal);
+	return (Math.round(value * 10 ** decimal) / 10 ** decimal).toFixed(decimal);
 }
 
 // Convert Ultraviolet Index to user friendly description.
