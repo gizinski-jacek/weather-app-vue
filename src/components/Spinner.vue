@@ -2,12 +2,20 @@
 </script>
 
 <template>
-	<div class="spinner"></div>
+	<div class="container">
+		<div class="spinner"></div>
+	</div>
 </template>
 
 <style scoped lang="scss">
+.container {
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
 .spinner {
-	margin: 10rem auto;
 	border: 16px solid var(--color-background);
 	border-top: 16px solid var(--color-text-alt);
 	border-radius: 50%;
