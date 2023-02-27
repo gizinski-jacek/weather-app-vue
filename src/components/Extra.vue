@@ -262,7 +262,6 @@ const props = defineProps<{
 	grid-gap: 1rem;
 	justify-content: space-between;
 	height: fit-content;
-	white-space: nowrap;
 	text-transform: capitalize;
 
 	>div {
@@ -272,6 +271,7 @@ const props = defineProps<{
 		justify-content: center;
 		flex-wrap: wrap;
 		gap: 0.5rem;
+		text-align: center;
 	}
 
 	svg {
@@ -395,6 +395,12 @@ const props = defineProps<{
 		.very-poor {
 			background-color: var(--color-purple);
 		}
+	}
+}
+
+@media (min-width: 940px) {
+	.extra-widgets {
+		grid-template-columns: repeat(5, 1fr);
 	}
 }
 </style>
