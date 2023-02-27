@@ -77,14 +77,16 @@ async function searchLocation(query: string | GeocodingData) {
 			const results = await fetchByQuery(query);
 			if (!results.length) {
 				dataError.value = `No results for ${query}.`;
+				searchResults.value = null;
 			} else {
-				searchResults.value;
+				searchResults.value = results;
+				dataError.value = null;
 			}
 		} else if (typeof query === 'object') {
 			const geolocation = await fetchByCoords(query.lat, query.lon);
 			updateAppData(geolocation);
-		} else {
-			dataError.value = 'Error searching for city, try again.'
+			dataError.value = null;
+			searchResults.value = null;
 		}
 	} catch (error: any) {
 		console.error(error.message)
@@ -95,6 +97,7 @@ async function searchLocation(query: string | GeocodingData) {
 		} else {
 			dataError.value = 'Error searching for city, try again.'
 		}
+		searchResults.value = null;
 	}
 }
 
@@ -154,7 +157,7 @@ function getCurrentLocation(): Promise<null> {
 <template>
 	<main v-if="apiData">
 		<div class="top">
-			<div>
+			<div class="basic">
 				<Controls @changeUnits="changeUnits" @searchLocation="searchLocation"
 					@requestUserGeolocation="requestUserGeolocation" :metric="metric" :searchResults="searchResults" />
 				<Current :weather="apiData" :location="geolocation" :metric="metric" />
@@ -171,7 +174,7 @@ function getCurrentLocation(): Promise<null> {
 
 <style scoped lang="scss">
 main {
-	min-height: 100vh;
+	height: 100%;
 	max-width: 1300px;
 	display: flex;
 	flex-direction: column;
@@ -187,12 +190,18 @@ main {
 	flex-direction: column;
 	justify-content: space-between;
 	gap: 2rem;
+
+	.basic {
+		flex: 1;
+		max-width: 450px;
+	}
 }
 
 .error {
 	position: absolute;
 	top: 0;
-	left: 0;
+	left: 50%;
+	transform: translateX(-50%);
 	min-width: 280px;
 	display: flex;
 	justify-content: center;
