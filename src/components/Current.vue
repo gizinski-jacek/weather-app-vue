@@ -12,7 +12,7 @@ const props = defineProps<{
 
 <template>
 	<div v-if="weather && location" class="current-weather">
-		<div class="left">
+		<div>
 			<div>
 				<h4 class="date">
 					{{
@@ -39,7 +39,7 @@ const props = defineProps<{
 				</div>
 			</div>
 		</div>
-		<div class="right">
+		<div>
 			<span>
 				Feels like: {{ convertTemp(metric, weather.current.feels_like) }}
 			</span>
@@ -51,24 +51,25 @@ const props = defineProps<{
 
 <style scoped lang="scss">
 .current-weather {
+	flex: 1;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
 	gap: 1rem;
+	padding: 1rem;
 	text-transform: capitalize;
 
-	.date {
-		color: var(--color-text-alt);
-		font-weight: 600;
-	}
-
-	.left,
-	.right {
+	>div {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		gap: 1rem;
 		text-align: center;
+	}
+
+	.date {
+		color: var(--color-text-alt);
+		font-weight: 600;
 	}
 
 	.right {
