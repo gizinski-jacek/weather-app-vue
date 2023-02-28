@@ -10,15 +10,16 @@ const positionV = ref<'top' | 'bottom'>('bottom')
 
 function renderFrom(e: MouseEvent) {
 	if (!e.target || typeof window === 'undefined') return
-	const container = e.target as HTMLDivElement
-	const content = container.getElementsByClassName('tooltip-content')[0] as HTMLDivElement
-	const coords = content.getBoundingClientRect();
-	if (coords.right + coords.width > window.innerWidth) {
-		positionH.value = 'right';
-	} else {
+	const container = e.target as HTMLDivElement;
+	const conCoords = container.getBoundingClientRect();
+	const content = container.getElementsByClassName('tooltip-content')[0] as HTMLDivElement;
+	const { left, right, width, height } = content.getBoundingClientRect();
+	if (left < 0) {
 		positionH.value = 'left';
+	} else if (right + width > window.innerWidth) {
+		positionH.value = 'right';
 	}
-	if (coords.top - coords.height < 0) {
+	if (height > conCoords.top) {
 		positionV.value = 'top';
 	} else {
 		positionV.value = 'bottom';
@@ -56,7 +57,6 @@ function renderFrom(e: MouseEvent) {
 		opacity: 1;
 		transition: 0.15s ease-in-out;
 		transition-delay: 0.25s;
-		z-index: 20;
 
 		&.left {
 			left: 0;
