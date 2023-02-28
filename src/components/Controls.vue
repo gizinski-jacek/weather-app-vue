@@ -42,8 +42,7 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 					result)">
 					<div>{{ result.country }}</div>
 					<div>{{ result.name }}</div>
-					<!-- Not working with roundToDecimal() -->
-					<div>{{ roundToDecimal(result.lat, 3) }}, {{ roundToDecimal(result.lon, 3) }}</div>
+					<div>{{ roundToDecimal(result.lat, 3) }} {{ roundToDecimal(result.lon, 3) }}</div>
 				</div>
 			</div>
 		</div>
@@ -68,13 +67,13 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 	.units {
 		min-width: 84px;
 	}
-
 }
 
 .search {
 	flex: 1;
 	display: flex;
 	width: fit-content;
+	max-width: 320px;
 	background-color: var(--color-background);
 	border: 2px solid var(--color-text);
 	border-radius: 4px;
@@ -132,34 +131,38 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 		}
 	}
 
-
-
 	.search-results {
 		position: absolute;
 		top: 100%;
 		left: -2px;
 		right: -2px;
-		z-index: 20;
+		z-index: 75;
 
 		.result {
-			display: flex;
-			gap: 1rem;
-			padding: 0.25rem;
+			display: grid;
+			grid-template-columns: 30px 1fr min-content;
+			grid-auto-flow: column;
+			align-items: center;
+			gap: 0.25rem;
+			padding: 0.25rem 0.5rem;
 			background-color: var(--color-background);
 			border: 2px solid var(--color-text);
 			border-bottom-width: 0;
 			cursor: pointer;
 
-			>div:first-child {
-				width: 28px;
+			>div:nth-child(2) {
+				font-weight: 600;
+				margin-right: 0.25rem;
 			}
 
-			>div:nth-child(2) {
-				flex: 1;
+			>div:last-child {
+				font-size: 0.8rem;
+				text-align: end;
 			}
 
 			&:last-child {
 				border-bottom-width: 2px;
+				border-radius: 0 0 4px 4px;
 			}
 
 			&:hover {
@@ -179,7 +182,7 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 }
 
 .geolocation {
-	padding: 0 0.1rem;
+	padding: 0;
 	margin-left: auto;
 
 	&:hover {
