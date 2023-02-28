@@ -23,7 +23,7 @@ const props = defineProps<{
 <template>
 	<div v-if="weather" class="extra-widgets">
 		<div>
-			<div class="icon">
+			<div>
 				<Tooltip :content="'Wind speed'" />
 				<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
 					<path
@@ -33,7 +33,7 @@ const props = defineProps<{
 			<span>{{ convertSpeed(metric, weather.current.wind_speed) }}</span>
 		</div>
 		<div>
-			<div class="icon">
+			<div>
 				<Tooltip :content="'Wind direction'" />
 				<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 					<path fill-rule="evenodd" clip-rule="evenodd"
@@ -45,7 +45,7 @@ const props = defineProps<{
 			<span>{{ degreesToCompassDirection(weather.current.wind_deg) }}</span>
 		</div>
 		<div v-if="weather.current.rain">
-			<div class="icon">
+			<div>
 				<Tooltip :content="'Rain precipitation within an hour'" />
 				<svg viewBox="0 0 410.823 410.823" xmlns="http://www.w3.org/2000/svg">
 					<g>
@@ -61,7 +61,7 @@ const props = defineProps<{
 			<span>{{ convertPrecipitation(metric, weather.current.rain["1h"]) }}</span>
 		</div>
 		<div v-if="weather.current.snow">
-			<div class="icon">
+			<div>
 				<Tooltip :content="'Snow precipitation within an hour'" />
 				<svg height="40px" width="40px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
 					<g>
@@ -73,7 +73,7 @@ const props = defineProps<{
 			<span>{{ convertPrecipitation(metric, weather.current.snow["1h"]) }}</span>
 		</div>
 		<div>
-			<div class="icon">
+			<div>
 				<Tooltip :content="'Atmospheric pressure'" />
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
 					<g>
@@ -103,7 +103,7 @@ const props = defineProps<{
 			<span>{{ weather.current.pressure }}hPa</span>
 		</div>
 		<div v-if="weather.current.wind_gust">
-			<div class="icon">
+			<div>
 				<Tooltip :content="'Wind gust'" />
 				<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 					<path
@@ -113,7 +113,7 @@ const props = defineProps<{
 			<span>{{ convertSpeed(metric, weather.current.wind_gust) }}</span>
 		</div>
 		<div>
-			<div class="icon">
+			<div>
 				<Tooltip :content="'Visibility'" />
 				<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
 					<rect x="0" fill="none" width="20" height="20" />
@@ -126,7 +126,7 @@ const props = defineProps<{
 			<span>{{ convertVisibility(metric, weather.current.visibility) }}</span>
 		</div>
 		<div>
-			<div class="icon">
+			<div>
 				<Tooltip :content="'Humidity'" />
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 328.611 328.611">
 					<g>
@@ -144,7 +144,7 @@ const props = defineProps<{
 			<span>{{ weather.current.humidity }}%</span>
 		</div>
 		<div>
-			<div class="icon">
+			<div>
 				<Tooltip :content="'Dew Point'" />
 				<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
 					<path
@@ -154,7 +154,7 @@ const props = defineProps<{
 			<span>{{ convertTemp(metric, weather.current.dew_point) }}</span>
 		</div>
 		<div>
-			<div class="icon">
+			<div>
 				<Tooltip :content="'Cloudiness'" />
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.013 512.013">
 					<g>
@@ -172,7 +172,7 @@ const props = defineProps<{
 			<span>{{ weather.current.clouds }}%</span>
 		</div>
 		<div>
-			<div class="icon">
+			<div>
 				<Tooltip>
 					<div class="uv-description">
 						<div>Ultraviolet index: <span>{{ weather.current.uvi }}</span></div>
