@@ -39,6 +39,12 @@ function scrollToTop(e: MouseEvent) {
   margin: 0.5rem;
   width: 28px;
   height: 28px;
+  opacity: 0.5;
+
+  &:hover,
+  &:active {
+    opacity: 1;
+  }
 
   span {
     display: block;
