@@ -54,7 +54,7 @@ const props = defineProps<{
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
+	align-items: center;
 	gap: 1rem;
 	padding: 1rem;
 	text-transform: capitalize;
@@ -63,7 +63,7 @@ const props = defineProps<{
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		gap: 1rem;
+		gap: 2rem;
 		text-align: center;
 	}
 
@@ -71,9 +71,11 @@ const props = defineProps<{
 		color: var(--color-text-alt);
 		font-weight: 600;
 	}
+}
 
-	.right {
-		justify-content: space-between;
+@media (min-width:640px) {
+	.current-weather {
+		align-items: unset;
 	}
 }
 </style>
