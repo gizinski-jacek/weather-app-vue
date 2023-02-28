@@ -69,7 +69,6 @@ async function updateAppData(location: GeocodingData) {
 	}
 }
 
-
 async function searchLocation(query: string | GeocodingData) {
 	try {
 		if (!query) return;
@@ -151,7 +150,6 @@ function getCurrentLocation(): Promise<null> {
 	});
 };
 
-
 </script>
 
 <template>
@@ -190,11 +188,6 @@ main {
 	flex-direction: column;
 	justify-content: space-between;
 	gap: 2rem;
-
-	.basic {
-		flex: 1;
-		max-width: 450px;
-	}
 }
 
 .error {
@@ -223,6 +216,11 @@ main {
 	.top {
 		flex-direction: row;
 		gap: 5rem;
+
+		.basic {
+			flex: 1;
+			max-width: 450px;
+		}
 	}
 }
 </style>
