@@ -30,12 +30,12 @@ onMounted(async () => {
 			metric.value = JSON.parse(localStorage.userMetric)
 		}
 		if (localStorage.userLocation) {
-			updateAppData(JSON.parse(localStorage.userLocation));
+			await updateAppData(JSON.parse(localStorage.userLocation));
 		} else {
 			await getCurrentLocation()
 		}
 	} catch (error: any) {
-		console.log(error.message)
+		console.error(error.message)
 		geolocation.value = defaultLocation;
 	}
 });
@@ -53,6 +53,9 @@ watch(geolocation, async (newLocation) => {
 		} else {
 			dataError.value = 'Request error, try again.'
 		}
+		if (!apiData) {
+			geolocation.value = defaultLocation;
+		}
 	}
 });
 
@@ -64,8 +67,8 @@ async function updateAppData(location: GeocodingData) {
 		airPollutionData.value = pollution;
 		geolocation.value = location;
 	} catch (error) {
-		console.log(error)
-		dataError.value = 'Error getting weather data, try again.'
+		console.error(error)
+		throw new Error('Error getting weather data, try again.')
 	}
 }
 
@@ -75,18 +78,16 @@ async function searchLocation(query: string | GeocodingData) {
 		if (typeof query === 'string') {
 			const results = await fetchByQuery(query);
 			if (!results.length) {
-				dataError.value = `No results for ${query}.`;
-				searchResults.value = null;
+				throw new Error(`No results for ${query}.`)
 			} else {
 				searchResults.value = results;
-				dataError.value = null;
 			}
 		} else if (typeof query === 'object') {
 			const geolocation = await fetchByCoords(query.lat, query.lon);
-			updateAppData(geolocation);
-			dataError.value = null;
+			await updateAppData(geolocation);
 			searchResults.value = null;
 		}
+		dataError.value = null;
 	} catch (error: any) {
 		console.error(error.message)
 		if (error instanceof AxiosError) {
@@ -94,7 +95,7 @@ async function searchLocation(query: string | GeocodingData) {
 				dataError.value = 'City not found. Did you enter correct name?'
 			}
 		} else {
-			dataError.value = 'Error searching for city, try again.'
+			dataError.value = error.message || 'Error searching for city, try again.'
 		}
 		searchResults.value = null;
 	}
@@ -116,14 +117,8 @@ async function requestUserGeolocation() {
 	try {
 		await getCurrentLocation();
 	} catch (error: any) {
-		if (error.type === 'Unsupported') {
-			console.log(error.message)
-		} else if (error.name === 'PositionError') {
-			dataError.value = error.message
-		} else {
-			console.error(error.message)
-			dataError.value = error.message
-		}
+		console.error(error.message)
+		dataError.value = error.message
 	}
 }
 
@@ -135,17 +130,17 @@ function getCurrentLocation(): Promise<null> {
 					try {
 						const { latitude, longitude } = position.coords;
 						const geolocation = await fetchByCoords(latitude, longitude);
-						updateAppData(geolocation)
+						await updateAppData(geolocation)
 						localStorage.setItem('userLocation', JSON.stringify(geolocation))
 						resolve(null)
 					} catch (error: any) {
 						reject(error)
 					}
 				}, (error) =>
-				reject(new Error('Geolocation request error. Displaying default location: Amsterdam.'))
+				reject(new Error('Geolocation request error.'))
 			)
 		} else {
-			reject(new Error('Geolocation is not supported by this browser'))
+			reject(new Error('Geolocation is not supported by this browser.'))
 		}
 	});
 };
