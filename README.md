@@ -1,6 +1,39 @@
-# weather-app-vue
+# Weather App Vue
 
-This template should help get you started developing with Vue 3 in Vite.
+A refresh of my old Weather App project build to practice Vuejs using [OpenWeatherMap API](https://openweathermap.org/api) for weather data.
+
+## Table of contents
+
+- [Github & Live](#github--live)
+- [Getting Started](#getting-started)
+- [Deploy](#deploy)
+- [Features](#features)
+- [Status](#status)
+- [Contact](#contact)
+
+# Github & Live
+
+Github repo can be found [here](https://github.com/gizinski-jacek/weather-app-vue).
+
+Live demo can be found on [Vercel](https://vercel.com/jacektrgvercel/weather-app-vue).
+
+# Getting Started
+
+Install all dependancies by running:
+
+```bash
+npm install
+```
+
+In the project root directory run the app with:
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) with your browser to see the result.
+
+Don't forget to add **.env** file with OpenWeather VITE_API_KEY environment variable.
 
 ## Recommended IDE Setup
 
@@ -21,18 +54,6 @@ If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has a
 
 See [Vite Configuration Reference](https://vitejs.dev/config/).
 
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
 ### Type-Check, Compile and Minify for Production
 
 ```sh
@@ -43,4 +64,35 @@ npm run build
 
 ```sh
 npm run test:unit
+```
+
+## Deploy
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Don't forget to add **.env** file with environment variables for the app.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Features
+
+- Display current, hourly and daily weather forecast data for given location
+- Widgets with extra weather information (e.g. pressure, UVI, wind speed, air pollution)
+- Overlay tooltips for icons and extra data
+- Search by city name and display results
+- Support for geolocation
+- Display data in metric or imperial units
+- Save user's geolocation and unit preferences in local storage
+- Built with RWD in mind
+
+## Status
+
+Project status: **_FINISHED_**
+
+## Contact
+
+Feel free to contact me at:
+
+```
+gizinski.jacek.tr@gmail.com
 ```
