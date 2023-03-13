@@ -15,7 +15,7 @@ A refresh of my old Weather App project build to practice Vuejs using [OpenWeath
 
 Github repo can be found [here](https://github.com/gizinski-jacek/weather-app-vue).
 
-Live demo can be found on [Vercel](https://vercel.com/jacektrgvercel/weather-app-vue).
+Live demo can be found on [Vercel](https://weather-app-vue-sandy.vercel.app/).
 
 # Getting Started
 
