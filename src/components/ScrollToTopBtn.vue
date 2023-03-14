@@ -35,11 +35,11 @@ function scrollToTop(e: MouseEvent) {
 .scroll-to-top-btn {
   position: fixed;
   bottom: 0;
-  right: 0;
-  margin: 0.5rem;
-  width: 28px;
-  height: 28px;
-  opacity: 0.5;
+  left: 0;
+  margin: 0.25rem;
+  width: 24px;
+  height: 24px;
+  opacity: 0.75;
 
   &:hover,
   &:active {
@@ -54,18 +54,18 @@ function scrollToTop(e: MouseEvent) {
     &:after {
       display: block;
       content: "";
-      width: 4px;
-      height: 14px;
+      width: 3px;
+      height: 12px;
       background-color: var(--color-heading);
       border-radius: 4px;
-      transform: translateX(-1px) rotate(40deg);
+      transform: translateX(-2px) rotate(40deg);
       cursor: pointer;
       transition: 0.25s ease-in-out;
     }
 
     &:after {
       border-radius: 4px;
-      transform: translateX(6px) translateY(-14px) rotate(-40deg);
+      transform: translateX(4px) translateY(-12px) rotate(-40deg);
     }
 
     &:hover:before,
@@ -77,6 +77,29 @@ function scrollToTop(e: MouseEvent) {
   &:active span:before,
   &:active span:after {
     background-color: var(--color-text-alt);
+  }
+}
+
+@media (min-width: 640px) {
+  .scroll-to-top-btn {
+    right: 0;
+    width: 32px;
+    height: 32px;
+    opacity: 0.5;
+
+    span {
+
+      &:before,
+      &:after {
+        width: 4px;
+        height: 16px;
+        transform: translateX(0) translateY(2px) rotate(40deg);
+      }
+
+      &:after {
+        transform: translateX(8px) translateY(-14px) rotate(-40deg);
+      }
+    }
   }
 }
 </style>
