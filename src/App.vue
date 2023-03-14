@@ -66,8 +66,8 @@ async function updateAppData(location: GeocodingData) {
 		apiData.value = weather;
 		airPollutionData.value = pollution;
 		geolocation.value = location;
-	} catch (error) {
-		console.error(error)
+	} catch (error: any) {
+		console.error(error.message)
 		throw new Error('Error getting weather data, try again.')
 	}
 }
