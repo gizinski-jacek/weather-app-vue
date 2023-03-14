@@ -26,7 +26,7 @@ export function convertVisibility(
 }
 
 // Convert precipitation to imperial units or return default value in metric.
-export function convertPrecipitation(
+export function convertPrecipitationVolume(
 	metric: boolean = true,
 	volume: number
 ): string {
