@@ -14,7 +14,7 @@ function renderFrom(e: MouseEvent) {
 	const conCoords = container.getBoundingClientRect();
 	const content = container.getElementsByClassName('tooltip-content')[0] as HTMLDivElement;
 	const { left, right, width, height } = content.getBoundingClientRect();
-	if (left < 0) {
+	if (left < width) {
 		positionH.value = 'left';
 	} else if (right + width > window.innerWidth) {
 		positionH.value = 'right';
