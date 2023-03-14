@@ -58,6 +58,8 @@ export interface HourlyForecast {
 	wind_deg: number;
 	wind_gust?: number;
 	wind_speed: number;
+	rain?: { '1h': number };
+	snow?: { '1h': number };
 }
 
 export interface DailyForecast {
