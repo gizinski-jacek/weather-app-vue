@@ -4,7 +4,7 @@
 	--vt-c-white-soft: rgb(200, 200, 200);
 
 	--vt-c-black: rgb(0, 0, 0);
-	--vt-c-black-soft: rgb(50, 50, 50);
+	--vt-c-black-soft: rgb(35, 35, 35);
 
 	--vt-c-gold-dark: rgb(225, 175, 0);
 	--vt-c-gold-light: rgb(150, 100, 0);
@@ -24,10 +24,7 @@
 	--vt-c-purple-dark: rgb(100, 0, 175);
 	--vt-c-purple-light: rgb(175, 0, 255);
 
-	--vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
-	--vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
-	--vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
-	--vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
+	--vt-c-border-dark: rgb(75, 75, 75);
 
 	--vt-c-text-light-1: var(--vt-c-black);
 	--vt-c-text-light-2: var(--vt-c-black-soft);
@@ -40,8 +37,9 @@
 	--color-background: var(--vt-c-white);
 	--color-background-soft: var(--vt-c-white-soft);
 
-	--color-border: var(--vt-c-divider-light-2);
+	--color-border: var(--vt-c-border-dark);
 	--color-border-hover: var(--vt-c-divider-light-1);
+	--color-border-active: var(--vt-c-gold-light);
 
 	--color-heading: var(--vt-c-text-light-2);
 	--color-text: var(--vt-c-text-light-1);
@@ -59,8 +57,9 @@
 		--color-background: var(--vt-c-black);
 		--color-background-soft: var(--vt-c-black-soft);
 
-		--color-border: var(--vt-c-divider-dark-2);
-		--color-border-hover: var(--vt-c-divider-dark-1);
+		--color-border: var(--vt-c-text-dark-2);
+		--color-border-hover: var(--vt-c-text-dark-1);
+		--color-border-active: var(--vt-c-gold-dark);
 
 		--color-heading: var(--vt-c-text-dark-2);
 		--color-text: var(--vt-c-text-dark-1);
