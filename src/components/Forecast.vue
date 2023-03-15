@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from "vue";
 import type { OneCallWeatherData } from "../types/types";
-import { convertPrecipitationVolume, convertSpeed, convertTemp, convertToPercentage, splitIntoGroups, degreesToCompassDirection, convertVisibility } from "../utilities/converters";
+import { convertPrecipitationVolume, convertSpeed, convertTemp, convertToPercentage, splitIntoGroups, convertVisibility } from "../utilities/converters";
 import ScrollToTopBtn from "../components/ScrollToTopBtn.vue";
 import Tooltip from "./Tooltip.vue";
 
@@ -152,24 +152,18 @@ watch(pageView, () => {
 						<Tooltip>
 							<div class="tooltip">
 								<div v-if="day.rain" class="precipitation">
-									<svg viewBox="0 0 410.823 410.823" xmlns="http://www.w3.org/2000/svg">
-										<g>
-											<path
-												d="M5.595,254.875c-17.185,46.513,6.539,98.118,53.048,115.317c46.474,17.203,98.103-6.577,115.312-53.046 c17.175-46.468-31.479-173.544-31.479-173.544S22.821,208.372,5.595,254.875z M35.054,273.141    c5.685,50.553,34.358,67.908,34.358,67.908C18.311,325.793,35.054,273.141,35.054,273.141z" />
-											<path
-												d="M395.391,259.702c0,0-52.531,28.454-60.083,48.864c-7.54,20.411,2.873,43.066,23.285,50.616 c20.399,7.535,43.06-2.884,50.614-23.278C416.761,315.505,395.391,259.702,395.391,259.702z M348.232,316.572    c2.503,22.202,15.086,29.817,15.086,29.817C340.889,339.719,348.232,316.572,348.232,316.572z" />
-											<path
-												d="M368.837,177.115c14.061-38.057-25.778-142.083-25.778-142.083s-97.944,53.086-112.03,91.106 c-14.074,38.028,5.364,80.34,43.398,94.384C312.473,234.624,354.746,215.17,368.837,177.115z M255.121,141.088    c4.663,41.38,28.137,55.596,28.137,55.596C241.416,184.205,255.121,141.088,255.121,141.088z" />
-										</g>
+									<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+										<path
+											d="M6.316 21H5.212l.935-2h1.105zm2.065 2l1.871-4H9.147l-1.87 4zm3.468-1l1.403-3h-1.105l-1.403 3zm3.298-3l-2.338 5h1.104l2.339-5zm3 0l-.935 2h1.104l.936-2zM23 13.187a4.805 4.805 0 0 0-3.05-4.468 5.409 5.409 0 0 0-6.454-3.557 1.485 1.485 0 0 1-.493.47l-.247.142a1.503 1.503 0 0 1-.043.721 4.48 4.48 0 0 1 6.29 2.548l.15.436.43.17A3.807 3.807 0 0 1 18.187 17H5.438a2.432 2.432 0 0 1-.373-4.835 1.488 1.488 0 0 1-.45-.59 1.505 1.505 0 0 1-.088-.313A3.43 3.43 0 0 0 5.437 18h12.75A4.813 4.813 0 0 0 23 13.187zM5.219 9.55l.366-1.366L7 7.366V10l-1 1h1v1h1v-1h1l-1-1V7.366l1.415.817.366 1.366.5-.866 1.472.85.5-.866-1.472-.85.5-.866-1.366.366L8.5 6.5l1.415-.817 1.366.366-.5-.866 1.472-.85-.5-.866-1.472.85-.5-.866-.366 1.366L8 5.634V3l1-1H8V1H7v1H6l1 1v2.634l-1.415-.817-.366-1.366-.5.866-1.472-.85-.5.866 1.472.85-.5.866 1.366-.366L6.5 6.5l-1.415.817-1.366-.366.5.866-1.472.85.5.866 1.472-.85z" />
+										<path fill="none" stroke-width="0" d="M0 0h24v24H0z" />
 									</svg>
 									<span>{{ convertPrecipitationVolume(metric, day.rain) }} ({{ convertToPercentage(day.pop) }})</span>
 								</div>
-								<div v-if="day.snow" class="precipitation">
-									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-										<g>
-											<path
-												d="M458.071,306.273l-9.519-21.579l-65.885,29.07l-43.103-24.899l74.607-32.879l-74.589-32.87l43.085-24.863   l65.885,29.07l9.536-21.624l-50.088-22.103l76.363-44.053l-13.318-23.044l-76.362,44.08l5.917-54.422l-23.47-2.561l-7.782,71.576   l-43.085,24.89l8.83-81.022l-65.777,48.152V117.43l58.123-42.542l-13.934-19.055l-44.19,32.354V0h-26.6v88.187l-44.17-32.354   l-13.952,19.055l58.122,42.542v49.762l-65.777-48.134l8.795,80.995l-43.049-24.882l-7.799-71.576l-23.47,2.561l5.916,54.422   l-76.344-44.08l-13.318,23.044l76.363,44.053l-50.088,22.103l9.519,21.624l65.867-29.07l43.122,24.863l-74.59,32.888l24.501,10.803   l50.089,22.076l-43.104,24.882l-65.885-29.07l-9.536,21.579l50.106,22.112l-76.399,44.099l13.354,23.054l76.363-44.098   l-5.935,54.412l23.47,2.551l7.781-71.594l43.068-24.863l-8.813,81.013l65.794-48.151v49.771l-58.122,42.525l13.952,19.036   l44.17-32.328V512h26.6v-88.188l44.19,32.328l13.934-19.036l-58.123-42.542v-49.736l65.777,48.143l-8.812-81.022l43.067,24.863   l7.818,71.594l23.434-2.551l-5.9-54.412l76.345,44.098l13.318-23.054l-76.381-44.099L458.071,306.273z M156.385,256.004   l41.366-18.24l31.631,18.24l-31.612,18.268L156.385,256.004z M242.718,315.556l-36.534,26.727l4.904-44.958l31.63-18.267V315.556z    M242.718,232.942l-31.63-18.25l-4.904-44.967l36.534,26.718V232.942z M269.318,196.443l36.535-26.718l-4.922,44.967l-31.613,18.25   V196.443z M269.318,315.556v-36.498l31.613,18.267l4.922,44.958L269.318,315.556z M314.248,274.272l-31.612-18.268l31.631-18.24   l41.384,18.24L314.248,274.272z" />
-										</g>
+								<div v-else-if="day.snow" class="precipitation">
+									<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+										<path
+											d="M6.316 21H5.212l.935-2h1.105zm2.065 2l1.871-4H9.147l-1.87 4zm3.468-1l1.403-3h-1.105l-1.403 3zm3.298-3l-2.338 5h1.104l2.339-5zm3 0l-.935 2h1.104l.936-2zM23 13.187a4.805 4.805 0 0 0-3.05-4.468 5.409 5.409 0 0 0-6.454-3.557 1.485 1.485 0 0 1-.493.47l-.247.142a1.503 1.503 0 0 1-.043.721 4.48 4.48 0 0 1 6.29 2.548l.15.436.43.17A3.807 3.807 0 0 1 18.187 17H5.438a2.432 2.432 0 0 1-.373-4.835 1.488 1.488 0 0 1-.45-.59 1.505 1.505 0 0 1-.088-.313A3.43 3.43 0 0 0 5.437 18h12.75A4.813 4.813 0 0 0 23 13.187zM5.219 9.55l.366-1.366L7 7.366V10l-1 1h1v1h1v-1h1l-1-1V7.366l1.415.817.366 1.366.5-.866 1.472.85.5-.866-1.472-.85.5-.866-1.366.366L8.5 6.5l1.415-.817 1.366.366-.5-.866 1.472-.85-.5-.866-1.472.85-.5-.866-.366 1.366L8 5.634V3l1-1H8V1H7v1H6l1 1v2.634l-1.415-.817-.366-1.366-.5.866-1.472-.85-.5.866 1.472.85-.5.866 1.366-.366L6.5 6.5l-1.415.817-1.366-.366.5.866-1.472.85.5.866 1.472-.85z" />
+										<path fill="none" stroke-width="0" d="M0 0h24v24H0z" />
 									</svg>
 									<span>{{ convertPrecipitationVolume(metric, day.snow) }} ({{ convertToPercentage(day.pop) }})</span>
 								</div>
@@ -206,16 +200,6 @@ watch(pageView, () => {
 										</g>
 									</svg>
 									<span>{{ day.pressure }}</span>
-								</div>
-								<div>
-									<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-										<rect x="0" fill="none" width="20" height="20" />
-										<g>
-											<path
-												d="M18.3 9.5C15 4.9 8.5 3.8 3.9 7.2c-1.2.9-2.2 2.1-3 3.4.2.4.5.8.8 1.2 3.3 4.6 9.6 5.6 14.2 2.4.9-.7 1.7-1.4 2.4-2.4.3-.4.5-.8.8-1.2-.3-.4-.5-.8-.8-1.1zm-8.2-2.3c.5-.5 1.3-.5 1.8 0s.5 1.3 0 1.8-1.3.5-1.8 0-.5-1.3 0-1.8zm-.1 7.7c-3.1 0-6-1.6-7.7-4.2C3.5 9 5.1 7.8 7 7.2c-.7.8-1 1.7-1 2.7 0 2.2 1.7 4.1 4 4.1 2.2 0 4.1-1.7 4.1-4v-.1c0-1-.4-2-1.1-2.7 1.9.6 3.5 1.8 4.7 3.5-1.7 2.6-4.6 4.2-7.7 4.2z" />
-										</g>
-									</svg>
-									<span>{{ convertVisibility(metric, day.visibility) }}%</span>
 								</div>
 								<div>
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 328.611 328.611">
@@ -291,14 +275,11 @@ watch(pageView, () => {
 							</div>
 						</Tooltip>
 						<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+							<path d="M9 12H15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+							<path d="M12 9L12 15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
 							<path
-								d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z" />
-							<path
-								d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z"
+								d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
 								stroke-width="2" />
-							<path d="M8 12H8.01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-							<path d="M12 12H12.01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-							<path d="M16 12H16.01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
 						</svg>
 					</div>
 				</div>
@@ -341,7 +322,7 @@ watch(pageView, () => {
 									<span>{{ convertPrecipitationVolume(metric, hour.rain["1h"]) }} ({{ convertToPercentage(hour.pop)
 									}})</span>
 								</div>
-								<div v-if="hour.snow" class="precipitation">
+								<div v-else-if="hour.snow" class="precipitation">
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
 										<g>
 											<path
@@ -393,7 +374,7 @@ watch(pageView, () => {
 												d="M18.3 9.5C15 4.9 8.5 3.8 3.9 7.2c-1.2.9-2.2 2.1-3 3.4.2.4.5.8.8 1.2 3.3 4.6 9.6 5.6 14.2 2.4.9-.7 1.7-1.4 2.4-2.4.3-.4.5-.8.8-1.2-.3-.4-.5-.8-.8-1.1zm-8.2-2.3c.5-.5 1.3-.5 1.8 0s.5 1.3 0 1.8-1.3.5-1.8 0-.5-1.3 0-1.8zm-.1 7.7c-3.1 0-6-1.6-7.7-4.2C3.5 9 5.1 7.8 7 7.2c-.7.8-1 1.7-1 2.7 0 2.2 1.7 4.1 4 4.1 2.2 0 4.1-1.7 4.1-4v-.1c0-1-.4-2-1.1-2.7 1.9.6 3.5 1.8 4.7 3.5-1.7 2.6-4.6 4.2-7.7 4.2z" />
 										</g>
 									</svg>
-									<span>{{ convertVisibility(metric, hour.visibility) }}%</span>
+									<span>{{ convertVisibility(metric, hour.visibility) }}</span>
 								</div>
 								<div>
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 328.611 328.611">
@@ -453,14 +434,11 @@ watch(pageView, () => {
 							</div>
 						</Tooltip>
 						<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+							<path d="M9 12H15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+							<path d="M12 9L12 15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
 							<path
-								d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z" />
-							<path
-								d="M3 12C3 4.5885 4.5885 3 12 3C19.4115 3 21 4.5885 21 12C21 19.4115 19.4115 21 12 21C4.5885 21 3 19.4115 3 12Z"
+								d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
 								stroke-width="2" />
-							<path d="M8 12H8.01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-							<path d="M12 12H12.01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-							<path d="M16 12H16.01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
 						</svg>
 					</div>
 				</div>
@@ -642,6 +620,7 @@ watch(pageView, () => {
 			height: 24px;
 
 			svg {
+				display: block;
 				width: 24px;
 				height: 24px;
 				fill: transparent;
@@ -668,7 +647,6 @@ watch(pageView, () => {
 
 					&.precipitation {
 						grid-column: span 2;
-						margin: 0 auto;
 					}
 
 					svg {
