@@ -25,27 +25,21 @@ const props = defineProps<{
 		<div v-if="weather.current.rain">
 			<div>
 				<Tooltip :content="'Rain precipitation within an hour'" />
-				<svg viewBox="0 0 410.823 410.823" xmlns="http://www.w3.org/2000/svg">
-					<g>
-						<path
-							d="M5.595,254.875c-17.185,46.513,6.539,98.118,53.048,115.317c46.474,17.203,98.103-6.577,115.312-53.046 c17.175-46.468-31.479-173.544-31.479-173.544S22.821,208.372,5.595,254.875z M35.054,273.141    c5.685,50.553,34.358,67.908,34.358,67.908C18.311,325.793,35.054,273.141,35.054,273.141z" />
-						<path
-							d="M395.391,259.702c0,0-52.531,28.454-60.083,48.864c-7.54,20.411,2.873,43.066,23.285,50.616 c20.399,7.535,43.06-2.884,50.614-23.278C416.761,315.505,395.391,259.702,395.391,259.702z M348.232,316.572    c2.503,22.202,15.086,29.817,15.086,29.817C340.889,339.719,348.232,316.572,348.232,316.572z" />
-						<path
-							d="M368.837,177.115c14.061-38.057-25.778-142.083-25.778-142.083s-97.944,53.086-112.03,91.106 c-14.074,38.028,5.364,80.34,43.398,94.384C312.473,234.624,354.746,215.17,368.837,177.115z M255.121,141.088    c4.663,41.38,28.137,55.596,28.137,55.596C241.416,184.205,255.121,141.088,255.121,141.088z" />
-					</g>
+				<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<path
+						d="M6.316 21H5.212l.935-2h1.105zm2.065 2l1.871-4H9.147l-1.87 4zm3.468-1l1.403-3h-1.105l-1.403 3zm3.298-3l-2.338 5h1.104l2.339-5zm3 0l-.935 2h1.104l.936-2zM23 13.187a4.805 4.805 0 0 0-3.05-4.468 5.409 5.409 0 0 0-6.454-3.557 1.485 1.485 0 0 1-.493.47l-.247.142a1.503 1.503 0 0 1-.043.721 4.48 4.48 0 0 1 6.29 2.548l.15.436.43.17A3.807 3.807 0 0 1 18.187 17H5.438a2.432 2.432 0 0 1-.373-4.835 1.488 1.488 0 0 1-.45-.59 1.505 1.505 0 0 1-.088-.313A3.43 3.43 0 0 0 5.437 18h12.75A4.813 4.813 0 0 0 23 13.187zM5.219 9.55l.366-1.366L7 7.366V10l-1 1h1v1h1v-1h1l-1-1V7.366l1.415.817.366 1.366.5-.866 1.472.85.5-.866-1.472-.85.5-.866-1.366.366L8.5 6.5l1.415-.817 1.366.366-.5-.866 1.472-.85-.5-.866-1.472.85-.5-.866-.366 1.366L8 5.634V3l1-1H8V1H7v1H6l1 1v2.634l-1.415-.817-.366-1.366-.5.866-1.472-.85-.5.866 1.472.85-.5.866 1.366-.366L6.5 6.5l-1.415.817-1.366-.366.5.866-1.472.85.5.866 1.472-.85z" />
+					<path fill="none" stroke-width="0" d="M0 0h24v24H0z" />
 				</svg>
 			</div>
 			<span>{{ convertPrecipitationVolume(metric, weather.current.rain["1h"]) }}</span>
 		</div>
-		<div v-if="weather.current.snow">
+		<div v-else-if="weather.current.snow">
 			<div>
 				<Tooltip :content="'Snow precipitation within an hour'" />
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-					<g>
-						<path
-							d="M458.071,306.273l-9.519-21.579l-65.885,29.07l-43.103-24.899l74.607-32.879l-74.589-32.87l43.085-24.863   l65.885,29.07l9.536-21.624l-50.088-22.103l76.363-44.053l-13.318-23.044l-76.362,44.08l5.917-54.422l-23.47-2.561l-7.782,71.576   l-43.085,24.89l8.83-81.022l-65.777,48.152V117.43l58.123-42.542l-13.934-19.055l-44.19,32.354V0h-26.6v88.187l-44.17-32.354   l-13.952,19.055l58.122,42.542v49.762l-65.777-48.134l8.795,80.995l-43.049-24.882l-7.799-71.576l-23.47,2.561l5.916,54.422   l-76.344-44.08l-13.318,23.044l76.363,44.053l-50.088,22.103l9.519,21.624l65.867-29.07l43.122,24.863l-74.59,32.888l24.501,10.803   l50.089,22.076l-43.104,24.882l-65.885-29.07l-9.536,21.579l50.106,22.112l-76.399,44.099l13.354,23.054l76.363-44.098   l-5.935,54.412l23.47,2.551l7.781-71.594l43.068-24.863l-8.813,81.013l65.794-48.151v49.771l-58.122,42.525l13.952,19.036   l44.17-32.328V512h26.6v-88.188l44.19,32.328l13.934-19.036l-58.123-42.542v-49.736l65.777,48.143l-8.812-81.022l43.067,24.863   l7.818,71.594l23.434-2.551l-5.9-54.412l76.345,44.098l13.318-23.054l-76.381-44.099L458.071,306.273z M156.385,256.004   l41.366-18.24l31.631,18.24l-31.612,18.268L156.385,256.004z M242.718,315.556l-36.534,26.727l4.904-44.958l31.63-18.267V315.556z    M242.718,232.942l-31.63-18.25l-4.904-44.967l36.534,26.718V232.942z M269.318,196.443l36.535-26.718l-4.922,44.967l-31.613,18.25   V196.443z M269.318,315.556v-36.498l31.613,18.267l4.922,44.958L269.318,315.556z M314.248,274.272l-31.612-18.268l31.631-18.24   l41.384,18.24L314.248,274.272z" />
-					</g>
+				<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<path
+						d="M6.316 21H5.212l.935-2h1.105zm2.065 2l1.871-4H9.147l-1.87 4zm3.468-1l1.403-3h-1.105l-1.403 3zm3.298-3l-2.338 5h1.104l2.339-5zm3 0l-.935 2h1.104l.936-2zM23 13.187a4.805 4.805 0 0 0-3.05-4.468 5.409 5.409 0 0 0-6.454-3.557 1.485 1.485 0 0 1-.493.47l-.247.142a1.503 1.503 0 0 1-.043.721 4.48 4.48 0 0 1 6.29 2.548l.15.436.43.17A3.807 3.807 0 0 1 18.187 17H5.438a2.432 2.432 0 0 1-.373-4.835 1.488 1.488 0 0 1-.45-.59 1.505 1.505 0 0 1-.088-.313A3.43 3.43 0 0 0 5.437 18h12.75A4.813 4.813 0 0 0 23 13.187zM5.219 9.55l.366-1.366L7 7.366V10l-1 1h1v1h1v-1h1l-1-1V7.366l1.415.817.366 1.366.5-.866 1.472.85.5-.866-1.472-.85.5-.866-1.366.366L8.5 6.5l1.415-.817 1.366.366-.5-.866 1.472-.85-.5-.866-1.472.85-.5-.866-.366 1.366L8 5.634V3l1-1H8V1H7v1H6l1 1v2.634l-1.415-.817-.366-1.366-.5.866-1.472-.85-.5.866 1.472.85-.5.866 1.366-.366L6.5 6.5l-1.415.817-1.366-.366.5.866-1.472.85.5.866 1.472-.85z" />
+					<path fill="none" stroke-width="0" d="M0 0h24v24H0z" />
 				</svg>
 			</div>
 			<span>{{ convertPrecipitationVolume(metric, weather.current.snow["1h"]) }}</span>
@@ -171,36 +165,41 @@ const props = defineProps<{
 			</div>
 			<span>{{ weather.current.clouds }}%</span>
 		</div>
-		<div>
+		<div class="uvi">
 			<div>
 				<Tooltip>
 					<div class="uv-description">
 						<div>Ultraviolet index: <span>{{ weather.current.uvi }}</span></div>
 					</div>
 					<div class="uv-details">
-						<div><span class="low" :class="{
-							active: weather.current.uvi <= 2
-						}"></span>
+						<div>
+							<span class="low" :class="{
+								active: weather.current.uvi <= 2
+							}"></span>
 							<h5>0-2</h5>
 						</div>
-						<div><span class="moderate" :class="{
-							active: weather.current.uvi >= 3 && weather.current.uvi <= 5
-						}"></span>
+						<div>
+							<span class="moderate" :class="{
+								active: weather.current.uvi >= 3 && weather.current.uvi <= 5
+							}"></span>
 							<h5>3-5</h5>
 						</div>
-						<div><span class="high" :class="{
-							active: weather.current.uvi >= 6 && weather.current.uvi <= 7
-						}"></span>
+						<div>
+							<span class="high" :class="{
+								active: weather.current.uvi >= 6 && weather.current.uvi <= 7
+							}"></span>
 							<h5>6-7</h5>
 						</div>
-						<div><span class="very-high" :class="{
-							active: weather.current.uvi >= 8 && weather.current.uvi <= 10
-						}"></span>
+						<div>
+							<span class="very-high" :class="{
+								active: weather.current.uvi >= 8 && weather.current.uvi <= 10
+							}"></span>
 							<h5>8-10</h5>
 						</div>
-						<div><span class="extreme" :class="{
-							active: weather.current.uvi >= 11
-						}"></span>
+						<div>
+							<span class="extreme" :class="{
+								active: weather.current.uvi >= 11
+							}"></span>
 							<h5>11+</h5>
 						</div>
 					</div>
@@ -221,7 +220,7 @@ const props = defineProps<{
 			</div>
 			<span>{{ ultravioletIndexToDescription(weather.current.uvi) }}</span>
 		</div>
-		<div v-if="pollution">
+		<div v-if="pollution" class="pollution">
 			<div>
 				<Tooltip>
 					<div class="air-pollution-description">
@@ -258,11 +257,10 @@ const props = defineProps<{
 <style scoped lang="scss">
 .extra-widgets {
 	display: grid;
-	grid-template-columns: repeat(3, 1fr);
+	grid-template-columns: repeat(3, minmax(68px, 1fr));
 	grid-gap: 1rem;
 	justify-content: space-between;
 	height: fit-content;
-	text-transform: capitalize;
 
 	>div {
 		display: flex;
@@ -278,6 +276,13 @@ const props = defineProps<{
 		width: 40px;
 		height: 40px;
 		fill: var(--color-text);
+	}
+
+	.uvi,
+	.pollution {
+		>span {
+			text-transform: capitalize !important;
+		}
 	}
 
 	.uv-description span {
@@ -400,7 +405,7 @@ const props = defineProps<{
 
 @media (min-width: 940px) {
 	.extra-widgets {
-		grid-template-columns: repeat(5, 1fr);
+		grid-template-columns: repeat(5, minmax(68px, 1fr));
 	}
 }
 </style>
