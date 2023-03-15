@@ -145,6 +145,9 @@ function getCurrentLocation(): Promise<null> {
 	});
 };
 
+function clearSearchResults() {
+	searchResults.value = null
+}
 </script>
 
 <template>
@@ -152,7 +155,8 @@ function getCurrentLocation(): Promise<null> {
 		<div class="top">
 			<div class="basic">
 				<Controls @changeUnits="changeUnits" @searchLocation="searchLocation"
-					@requestUserGeolocation="requestUserGeolocation" :metric="metric" :searchResults="searchResults" />
+					@requestUserGeolocation="requestUserGeolocation" @clearResults="clearSearchResults" :metric="metric"
+					:searchResults="searchResults" />
 				<Current :weather="apiData" :location="geolocation" :metric="metric" />
 			</div>
 			<Extra :weather="apiData" :pollution="airPollutionData" :metric="metric" />
@@ -195,8 +199,8 @@ main {
 	justify-content: center;
 	align-items: center;
 	background-color: var(--color-red);
-	border: 3px solid var(--color-text-alt);
-	padding: 1rem 2rem;
+	border: 3px solid var(--color-border-active);
+	padding: 1rem;
 	margin: 0.5rem;
 	border-radius: 8px;
 	z-index: 100;
@@ -210,7 +214,7 @@ main {
 @media (min-width: 640px) {
 	.top {
 		flex-direction: row;
-		gap: 5rem;
+		gap: 3rem;
 
 		.basic {
 			flex: 1;
