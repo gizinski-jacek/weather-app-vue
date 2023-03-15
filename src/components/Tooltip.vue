@@ -13,12 +13,14 @@ function renderFrom(e: MouseEvent) {
 	const container = e.target as HTMLDivElement;
 	const conCoords = container.getBoundingClientRect();
 	const content = container.getElementsByClassName('tooltip-content')[0] as HTMLDivElement;
-	const { left, right, width, height } = content.getBoundingClientRect();
-	if (left < width) {
-		positionH.value = 'left';
-	} else if (right + width > window.innerWidth) {
+	const { width, height } = content.getBoundingClientRect();
+
+	if (width + conCoords.right > window.innerWidth) {
 		positionH.value = 'right';
+	} else {
+		positionH.value = 'left';
 	}
+
 	if (height > conCoords.top) {
 		positionV.value = 'top';
 	} else {
