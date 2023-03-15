@@ -13,7 +13,7 @@
 button {
 	color: var(--color-heading);
 	background-color: var(--color-background);
-	border: 2px solid var(--color-heading);
+	border: 2px solid var(--color-border);
 	text-transform: uppercase;
 	border-radius: 4px;
 	font-size: 0.75rem;
@@ -23,12 +23,12 @@ button {
 	transition: 0.25s ease-in-out;
 
 	&:hover {
-		border: 2px solid var(--color-text);
+		border: 2px solid var(--color-border-hover);
 		color: var(--color-text);
 	}
 
 	&:active {
-		border-color: var(--color-text-alt);
+		border-color: var(--color-border-active);
 		color: var(--color-text-alt);
 	}
 }
@@ -55,6 +55,7 @@ input {
 
 img {
 	display: block;
+	user-select: none;
 }
 
 h1 {
