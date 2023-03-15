@@ -5,13 +5,14 @@ import { ref } from "vue";
 
 const props = defineProps<{ metric: boolean, searchResults: GeocodingData[] | null }>();
 
-const emit = defineEmits(["changeUnits", "searchLocation", "requestUserGeolocation"]);
+const emit = defineEmits(["changeUnits", "searchLocation", "requestUserGeolocation", "clearResults"]);
 const searchValue = ref<string>("");
 const input = ref<HTMLInputElement | null>(null);
 const svgBtn = ref<SVGElement | null>(null);
 
-function clearInput() {
+function clearInputAndResults() {
 	searchValue.value = "";
+	emit("clearResults");
 }
 
 function triggerSearch(e: KeyboardEvent | MouseEvent) {
@@ -30,7 +31,7 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 		<div class="search">
 			<input ref="input" type="text" id="search" name="search" v-model="searchValue" placeholder="Search city..."
 				@keypress.enter="triggerSearch" />
-			<div v-if="searchValue" class="clear" @click="clearInput"></div>
+			<div v-if="searchValue || searchResults" class="clear" @click="clearInputAndResults"></div>
 			<div class="mag-icon">
 				<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" @click="triggerSearch">
 					<circle cx="10" cy="10" r="6" />
@@ -145,8 +146,9 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 			align-items: center;
 			gap: 0.25rem;
 			padding: 0.25rem 0.5rem;
+			color: var(--color-heading);
 			background-color: var(--color-background);
-			border: 2px solid var(--color-text);
+			border: 2px solid var(--color-border);
 			border-bottom-width: 0;
 			cursor: pointer;
 
@@ -166,8 +168,9 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 			}
 
 			&:hover {
-				color: var(--color-text-alt);
-				border: 2px solid var(--color-text-alt);
+				color: var(--color-text);
+				background-color: var(--color-background-soft);
+				border: 2px solid var(--color-border-hover);
 
 				&+div {
 					border-top: 0;
@@ -175,7 +178,8 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 			}
 
 			&:active {
-				filter: brightness(125%);
+				color: var(--color-text-alt);
+				border: 2px solid var(--color-border-active);
 			}
 		}
 	}
