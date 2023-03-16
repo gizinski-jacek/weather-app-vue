@@ -40,6 +40,7 @@ function scrollToTop(e: MouseEvent) {
   width: 24px;
   height: 24px;
   opacity: 0.75;
+  transition: 0.25s ease-in-out;
 
   &:hover,
   &:active {
@@ -56,7 +57,7 @@ function scrollToTop(e: MouseEvent) {
       content: "";
       width: 3px;
       height: 12px;
-      background-color: var(--color-heading);
+      background-color: var(--color-text);
       border-radius: 4px;
       transform: translateX(-2px) rotate(40deg);
       cursor: pointer;
@@ -66,11 +67,6 @@ function scrollToTop(e: MouseEvent) {
     &:after {
       border-radius: 4px;
       transform: translateX(4px) translateY(-12px) rotate(-40deg);
-    }
-
-    &:hover:before,
-    &:hover:after {
-      background-color: var(--color-text);
     }
   }
 
