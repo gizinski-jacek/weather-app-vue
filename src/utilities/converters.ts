@@ -15,16 +15,6 @@ export function convertSpeed(metric: boolean = true, speed: number): string {
 		: roundToDecimal(speed * 2.236936) + 'mi/h';
 }
 
-// Convert visibility distance to imperial units or return default value in metric.
-export function convertVisibility(
-	metric: boolean = true,
-	visibility: number
-): string {
-	return metric
-		? roundToDecimal(visibility / 1000) + 'km'
-		: roundToDecimal(visibility / 1609.344) + 'mi';
-}
-
 // Convert precipitation to imperial units or return default value in metric.
 export function convertPrecipitationVolume(
 	metric: boolean = true,
