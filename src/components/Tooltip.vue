@@ -48,13 +48,25 @@ function renderFrom(e: MouseEvent) {
 	right: 0;
 	z-index: 50;
 
+	.tooltip-content {
+		position: absolute;
+		height: 0;
+		width: 0;
+		overflow: hidden;
+		text-transform: capitalize;
+		color: var(--color-text);
+		background-color: var(--color-background);
+		opacity: 0;
+		transition: 0;
+	}
+
 	&:hover .tooltip-content {
 		height: max-content;
 		width: max-content;
 		max-width: 280px;
 		text-align: center;
 		padding: 0.5rem;
-		border: 2px solid var(--color-text-alt);
+		border: 2px solid var(--color-border-active);
 		border-radius: 4px;
 		opacity: 1;
 		transition: 0.15s ease-in-out;
@@ -76,16 +88,5 @@ function renderFrom(e: MouseEvent) {
 			bottom: 0;
 		}
 	}
-}
-
-.tooltip-content {
-	position: absolute;
-	height: 0;
-	width: 0;
-	overflow: hidden;
-	text-transform: capitalize;
-	color: var(--color-text);
-	background-color: var(--color-background);
-	opacity: 0;
 }
 </style>
