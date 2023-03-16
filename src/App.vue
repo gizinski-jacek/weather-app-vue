@@ -19,23 +19,32 @@ const defaultLocation: GeocodingData = {
 
 const metric = ref<boolean>(true);
 const geolocation = ref<GeocodingData | null>(null);
-const searchResults = ref<GeocodingData[] | null>(null)
+const searchResults = ref<GeocodingData[] | null>(null);
 const apiData = ref<OneCallWeatherData | null>(null);
-const airPollutionData = ref<AirPollution | null>(null)
+const airPollutionData = ref<AirPollution | null>(null);
 const dataError = ref<string | null>(null);
+const themeLight = ref<boolean>(false);
 
 onMounted(async () => {
 	try {
+		const preferLight = window.matchMedia(
+			'(prefers-color-scheme: light)'
+		).matches;
+		if (localStorage.themeLight) {
+			themeLight.value = JSON.parse(localStorage.themeLight);
+		} else {
+			themeLight.value = preferLight;
+		}
 		if (localStorage.userMetric) {
-			metric.value = JSON.parse(localStorage.userMetric)
+			metric.value = JSON.parse(localStorage.userMetric);
 		}
 		if (localStorage.userLocation) {
 			await updateAppData(JSON.parse(localStorage.userLocation));
 		} else {
-			await getCurrentLocation()
+			await getCurrentLocation();
 		}
 	} catch (error: any) {
-		console.error(error.message)
+		console.error(error.message);
 		geolocation.value = defaultLocation;
 	}
 });
@@ -58,6 +67,45 @@ watch(geolocation, async (newLocation) => {
 		}
 	}
 });
+
+watch(metric, (newMetric) => {
+	localStorage.setItem('userMetric', JSON.stringify(newMetric));
+})
+
+watch(searchResults, (newSearchResults) => {
+	if (newSearchResults) {
+		document.body.addEventListener('click', watchResultsClick)
+	}
+})
+
+watch(themeLight, (newThemeLight) => {
+	localStorage.setItem('themeLight', JSON.stringify(newThemeLight));
+})
+
+function changeUnits() {
+	metric.value = !metric.value;
+}
+
+function dismissError() {
+	dataError.value = null;
+}
+
+function clearSearchResults() {
+	searchResults.value = null
+}
+
+function watchResultsClick(e: MouseEvent) {
+	const el = e.target as HTMLDivElement
+	if (el.className !== 'result') {
+		clearSearchResults()
+		document.body.removeEventListener('click', watchResultsClick)
+	}
+}
+
+function toggleTheme() {
+	console.log(themeLight.value)
+	themeLight.value = !themeLight.value
+}
 
 async function updateAppData(location: GeocodingData) {
 	try {
@@ -92,7 +140,7 @@ async function searchLocation(query: string | GeocodingData) {
 		console.error(error.message)
 		if (error instanceof AxiosError) {
 			if (error.response?.status === 400) {
-				dataError.value = 'City not found. Did you enter correct name?'
+				dataError.value = 'City not found.'
 			}
 		} else {
 			dataError.value = error.message || 'Error searching for city, try again.'
@@ -101,19 +149,7 @@ async function searchLocation(query: string | GeocodingData) {
 	}
 }
 
-function changeUnits() {
-	metric.value = !metric.value;
-}
-
-function dismissError() {
-	dataError.value = null;
-}
-
-watch(metric, (newMetric) => {
-	localStorage.setItem('userMetric', JSON.stringify(newMetric));
-})
-
-async function requestUserGeolocation() {
+async function requestLocation() {
 	try {
 		await getCurrentLocation();
 	} catch (error: any) {
@@ -144,34 +180,38 @@ function getCurrentLocation(): Promise<null> {
 		}
 	});
 };
-
-function clearSearchResults() {
-	searchResults.value = null
-}
 </script>
 
 <template>
-	<main v-if="apiData">
-		<div class="top">
-			<div class="basic">
-				<Controls @changeUnits="changeUnits" @searchLocation="searchLocation"
-					@requestUserGeolocation="requestUserGeolocation" @clearResults="clearSearchResults" :metric="metric"
-					:searchResults="searchResults" />
-				<Current :weather="apiData" :location="geolocation" :metric="metric" />
+	<div class="main-container" :class="{ light: themeLight }">
+		<main v-if="apiData">
+			<div class="top">
+				<section class="basic">
+					<Controls @changeUnits="changeUnits" @searchLocation="searchLocation" @requestLocation="requestLocation"
+						@clearResults="clearSearchResults" @toggleTheme="toggleTheme" :metric="metric" :searchResults="searchResults"
+						:themeLight="themeLight" />
+					<Current :weather="apiData" :location="geolocation" :metric="metric" />
+				</section>
+				<Extra :weather="apiData" :pollution="airPollutionData" :metric="metric" />
 			</div>
-			<Extra :weather="apiData" :pollution="airPollutionData" :metric="metric" />
-		</div>
-		<Forecast :weather="apiData" :metric="metric" />
-		<div v-if="dataError" class="error" @click="dismissError">
-			<h4>{{ dataError }}</h4>
-		</div>
-	</main>
-	<Spinner v-else />
+			<Forecast :weather="apiData" :metric="metric" />
+			<div v-if="dataError" class="error" @click="dismissError">
+				<h4>{{ dataError }}</h4>
+			</div>
+		</main>
+		<Spinner v-else />
+	</div>
 </template>
 
 <style scoped lang="scss">
+.main-container {
+	height: 100vh;
+	color: var(--color-text);
+	background: var(--color-background-soft);
+}
+
 main {
-	height: 100%;
+	min-height: 100vh;
 	max-width: 1300px;
 	display: flex;
 	flex-direction: column;
@@ -180,6 +220,8 @@ main {
 	margin: 0 auto;
 	padding: 1rem;
 	position: relative;
+	color: var(--color-text);
+	background: var(--color-background-soft);
 }
 
 .top {
@@ -215,11 +257,11 @@ main {
 	.top {
 		flex-direction: row;
 		gap: 3rem;
+	}
 
-		.basic {
-			flex: 1;
-			max-width: 450px;
-		}
+	.basic {
+		flex: 1;
+		max-width: 450px;
 	}
 }
 </style>
