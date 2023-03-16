@@ -2,7 +2,6 @@
 import type { OneCallWeatherData, AirPollution } from "../types/types";
 import {
 	convertSpeed,
-	convertVisibility,
 	degreesToCompassDirection,
 	convertPrecipitationVolume,
 	convertTemp,
@@ -21,7 +20,7 @@ const props = defineProps<{
 </script>
 
 <template>
-	<div v-if="weather" class="extra-widgets">
+	<section v-if="weather" class="extra-widgets">
 		<div v-if="weather.current.rain">
 			<div>
 				<Tooltip :content="'Rain precipitation within an hour'" />
@@ -105,19 +104,6 @@ const props = defineProps<{
 				</svg>
 			</div>
 			<span>{{ convertSpeed(metric, weather.current.wind_gust) }}</span>
-		</div>
-		<div>
-			<div>
-				<Tooltip :content="'Visibility'" />
-				<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-					<rect x="0" fill="none" width="20" height="20" />
-					<g>
-						<path
-							d="M18.3 9.5C15 4.9 8.5 3.8 3.9 7.2c-1.2.9-2.2 2.1-3 3.4.2.4.5.8.8 1.2 3.3 4.6 9.6 5.6 14.2 2.4.9-.7 1.7-1.4 2.4-2.4.3-.4.5-.8.8-1.2-.3-.4-.5-.8-.8-1.1zm-8.2-2.3c.5-.5 1.3-.5 1.8 0s.5 1.3 0 1.8-1.3.5-1.8 0-.5-1.3 0-1.8zm-.1 7.7c-3.1 0-6-1.6-7.7-4.2C3.5 9 5.1 7.8 7 7.2c-.7.8-1 1.7-1 2.7 0 2.2 1.7 4.1 4 4.1 2.2 0 4.1-1.7 4.1-4v-.1c0-1-.4-2-1.1-2.7 1.9.6 3.5 1.8 4.7 3.5-1.7 2.6-4.6 4.2-7.7 4.2z" />
-					</g>
-				</svg>
-			</div>
-			<span>{{ convertVisibility(metric, weather.current.visibility) }}</span>
 		</div>
 		<div>
 			<div>
@@ -251,7 +237,7 @@ const props = defineProps<{
 				{{ airQualityIndexDescription[pollution.list[0].main.aqi - 1] }}
 			</span>
 		</div>
-	</div>
+	</section>
 </template>
 
 <style scoped lang="scss">
@@ -277,129 +263,129 @@ const props = defineProps<{
 		height: 40px;
 		fill: var(--color-text);
 	}
+}
 
-	.uvi,
-	.pollution {
-		>span {
-			text-transform: capitalize !important;
+.uvi,
+.pollution {
+	>span {
+		text-transform: capitalize !important;
+	}
+}
+
+.uv-description span {
+	color: var(--color-text-alt);
+	font-weight: 700;
+}
+
+.uv-details {
+	margin-top: 0.5rem;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	gap: 0.25rem;
+
+	div {
+		text-align: center;
+
+		h5 {
+			color: var(--color-heading);
 		}
-	}
 
-	.uv-description span {
-		color: var(--color-text-alt);
-		font-weight: 700;
-	}
+		span {
+			display: block;
+			width: 24px;
+			border: 1px solid var(--color-text);
+			opacity: 0.5;
 
-	.uv-details {
-		margin-top: 0.5rem;
-		display: flex;
-		align-items: flex-end;
-		justify-content: center;
-		gap: 0.25rem;
+			&.active {
+				opacity: 1;
 
-		div {
-			text-align: center;
-
-			h5 {
-				color: var(--color-heading);
-			}
-
-			span {
-				display: block;
-				width: 24px;
-				border: 1px solid var(--color-text);
-				opacity: 0.5;
-
-				&.active {
-					opacity: 1;
-
-					&+h5 {
-						color: var(--color-text-alt);
-						font-weight: 800;
-					}
-				}
-			}
-
-			.low {
-				height: 16px;
-				background-color: var(--color-green);
-			}
-
-			.moderate {
-				height: 23px;
-				background-color: var(--color-yellow);
-			}
-
-			.high {
-				height: 30px;
-				background-color: var(--color-orange);
-			}
-
-			.very-high {
-				height: 37px;
-				background-color: var(--color-red);
-			}
-
-			.extreme {
-				height: 44px;
-				background-color: var(--color-purple);
-			}
-		}
-	}
-
-	.air-pollution-description {
-		div {
-			&:first-child {
-				span {
+				&+h5 {
 					color: var(--color-text-alt);
-					font-weight: 700;
+					font-weight: 800;
 				}
 			}
-
-			&:nth-child(2) {
-				text-transform: none;
-			}
-		}
-	}
-
-	.air-pollution-details {
-		margin-top: 0.5rem;
-		margin-bottom: 0.25rem;
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		border: 1px solid var(--color-text);
-		gap: 1px;
-		background-color: var(--color-text);
-
-		>div {
-			padding: 0.25rem 0.5rem;
-			text-transform: none;
-			background-color: var(--color-background-soft);
-
-			span {
-				font-weight: 600;
-			}
 		}
 
-		.good {
+		.low {
+			height: 16px;
 			background-color: var(--color-green);
 		}
 
-		.fair {
+		.moderate {
+			height: 23px;
 			background-color: var(--color-yellow);
 		}
 
-		.moderate {
+		.high {
+			height: 30px;
 			background-color: var(--color-orange);
 		}
 
-		.poor {
+		.very-high {
+			height: 37px;
 			background-color: var(--color-red);
 		}
 
-		.very-poor {
+		.extreme {
+			height: 44px;
 			background-color: var(--color-purple);
 		}
+	}
+}
+
+.air-pollution-description {
+	div {
+		&:first-child {
+			span {
+				color: var(--color-text-alt);
+				font-weight: 700;
+			}
+		}
+
+		&:nth-child(2) {
+			text-transform: none;
+		}
+	}
+}
+
+.air-pollution-details {
+	margin-top: 0.5rem;
+	margin-bottom: 0.25rem;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	border: 1px solid var(--color-text);
+	gap: 1px;
+	background-color: var(--color-text);
+
+	>div {
+		padding: 0.25rem 0.5rem;
+		text-transform: none;
+		background-color: var(--color-background-soft);
+
+		span {
+			font-weight: 600;
+		}
+	}
+
+	.good {
+		background-color: var(--color-green);
+	}
+
+	.fair {
+		background-color: var(--color-yellow);
+	}
+
+	.moderate {
+		background-color: var(--color-orange);
+	}
+
+	.poor {
+		background-color: var(--color-red);
+	}
+
+	.very-poor {
+		background-color: var(--color-purple);
 	}
 }
 
