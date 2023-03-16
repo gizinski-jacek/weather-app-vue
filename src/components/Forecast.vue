@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from "vue";
 import type { OneCallWeatherData } from "../types/types";
-import { convertPrecipitationVolume, convertSpeed, convertTemp, convertToPercentage, splitIntoGroups, convertVisibility } from "../utilities/converters";
+import { convertPrecipitationVolume, convertSpeed, convertTemp, convertToPercentage, splitIntoGroups } from "../utilities/converters";
 import ScrollToTopBtn from "../components/ScrollToTopBtn.vue";
 import Tooltip from "./Tooltip.vue";
 
@@ -96,7 +96,7 @@ watch(pageView, () => {
 </script>
 
 <template>
-	<div v-if="weather" class="weather-forecast">
+	<section v-if="weather" class="weather-forecast">
 		<div class="forecast-controls">
 			<div class="time-controls">
 				<button type="button" @click="changeForecast('daily')" :class="{ active: displayedForecast === 'daily' }">
@@ -367,16 +367,6 @@ watch(pageView, () => {
 									<span>{{ hour.pressure }}</span>
 								</div>
 								<div>
-									<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-										<rect x="0" fill="none" width="20" height="20" />
-										<g>
-											<path
-												d="M18.3 9.5C15 4.9 8.5 3.8 3.9 7.2c-1.2.9-2.2 2.1-3 3.4.2.4.5.8.8 1.2 3.3 4.6 9.6 5.6 14.2 2.4.9-.7 1.7-1.4 2.4-2.4.3-.4.5-.8.8-1.2-.3-.4-.5-.8-.8-1.1zm-8.2-2.3c.5-.5 1.3-.5 1.8 0s.5 1.3 0 1.8-1.3.5-1.8 0-.5-1.3 0-1.8zm-.1 7.7c-3.1 0-6-1.6-7.7-4.2C3.5 9 5.1 7.8 7 7.2c-.7.8-1 1.7-1 2.7 0 2.2 1.7 4.1 4 4.1 2.2 0 4.1-1.7 4.1-4v-.1c0-1-.4-2-1.1-2.7 1.9.6 3.5 1.8 4.7 3.5-1.7 2.6-4.6 4.2-7.7 4.2z" />
-										</g>
-									</svg>
-									<span>{{ convertVisibility(metric, hour.visibility) }}</span>
-								</div>
-								<div>
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 328.611 328.611">
 										<g>
 											<path
@@ -445,7 +435,7 @@ watch(pageView, () => {
 			</div>
 		</div>
 		<ScrollToTopBtn />
-	</div>
+	</section>
 </template>
 
 <style scoped lang="scss">
@@ -458,7 +448,7 @@ watch(pageView, () => {
 	text-transform: capitalize;
 
 	button.active {
-		color: var(--color-text-alt);
+		color: var(--color-border-active);
 		border-color: var(--color-text);
 	}
 }
@@ -469,110 +459,109 @@ watch(pageView, () => {
 	justify-content: space-between;
 	align-items: center;
 	gap: 1rem;
+}
 
-	.time-controls {
-		button:not(.active) {
-			background-color: transparent;
-			border-color: var(--color-heading) transparent;
-			border-radius: 0;
+.time-controls {
+	button:not(.active) {
+		background-color: transparent;
+		border-color: var(--color-border) transparent;
+		border-radius: 0;
 
-			&:hover {
-				background-color: var(--color-background);
-				border-color: var(--color-text);
-				border-radius: 4px;
-			}
+		&:hover {
+			background-color: var(--color-background);
+			border-color: var(--color-text);
+			border-radius: 4px;
+		}
 
-			&:active {
-				border-color: var(--color-text-alt);
-			}
+		&:active {
+			border-color: var(--color-border-active);
+		}
+	}
+}
+
+.display-controls {
+	display: flex;
+	align-items: center;
+	gap: 2rem;
+}
+
+.time-controls {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+.page-controls {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+
+	.dot {
+		display: block;
+		width: 14px;
+		height: 14px;
+		margin: 0 0.25rem;
+		border-radius: 50%;
+		border: 2px solid var(--color-heading);
+		user-select: none;
+		cursor: pointer;
+
+		&:hover {
+			background-color: var(--color-border-hover);
+			border-color: var(--color-text);
+		}
+
+		&:active {
+			background-color: var(--color-border-active);
+		}
+
+		&.active {
+			background-color: var(--color-text);
+			border-color: var(--color-text);
 		}
 	}
 
-	.display-controls {
-		display: flex;
-		align-items: center;
-		gap: 2rem;
-	}
+	.arrow-prev,
+	.arrow-next {
+		width: 20px;
+		height: 20px;
+		cursor: pointer;
 
-	.time-controls {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-	}
-
-	.page-controls {
-		display: flex;
-		align-items: center;
-		gap: 0.25rem;
-
-		.dot {
+		&:before,
+		&:after {
 			display: block;
-			width: 14px;
-			height: 14px;
+			margin: auto;
+			content: "";
+			width: 12px;
+			height: 4px;
+			background-color: var(--color-heading);
+			transform: translateY(5px) rotate(-45deg);
 			margin: 0 0.25rem;
-			border-radius: 50%;
-			border: 2px solid var(--color-heading);
-			user-select: none;
-			cursor: pointer;
 			transition: 0.25s ease-in-out;
-
-			&:hover {
-				background-color: var(--color-border-hover);
-				border-color: var(--color-text);
-			}
-
-			&:active {
-				background-color: var(--color-text-alt);
-			}
-
-			&.active {
-				background-color: var(--color-text);
-				border-color: var(--color-text);
-			}
 		}
 
-		.arrow-prev,
-		.arrow-next {
-			width: 20px;
-			height: 20px;
-			cursor: pointer;
-
-			&:before,
-			&:after {
-				display: block;
-				margin: auto;
-				content: "";
-				width: 12px;
-				height: 4px;
-				background-color: var(--color-heading);
-				transform: translateY(5px) rotate(-45deg);
-				margin: 0 0.25rem;
-				transition: 0.25s ease-in-out;
-			}
-
-			&:after {
-				transform: translateY(7px) rotate(45deg);
-			}
-
-			&:hover:before,
-			&:hover:after {
-				background-color: var(--color-text);
-			}
-
-			&:active:before,
-			&:active:after {
-				background-color: var(--color-text-alt);
-			}
+		&:after {
+			transform: translateY(7px) rotate(45deg);
 		}
 
-		.arrow-next {
-			transform: scaleX(-1);
+		&:hover:before,
+		&:hover:after {
+			background-color: var(--color-text);
+		}
+
+		&:active:before,
+		&:active:after {
+			background-color: var(--color-text-alt);
 		}
 	}
 
-	.scroll-controls {
-		display: none;
+	.arrow-next {
+		transform: scaleX(-1);
 	}
+}
+
+.scroll-controls {
+	display: none;
 }
 
 #forecast-display {
@@ -600,61 +589,63 @@ watch(pageView, () => {
 		display: flex;
 		flex-direction: column;
 	}
+}
 
-	.day,
-	.hour {
-		display: grid;
-		grid-template-columns: 1fr 50px 50px 1fr 24px;
-		grid-auto-flow: column;
-		align-items: center;
-		padding: 0 1rem;
-		gap: 0.5rem;
-		border-radius: 8px;
+.day,
+.hour {
+	display: grid;
+	grid-template-columns: 1fr 50px 50px 1fr 24px;
+	grid-auto-flow: column;
+	align-items: center;
+	padding: 0 1rem;
+	gap: 0.5rem;
+	border-radius: 8px;
 
-		&:nth-child(2n) {
-			background-color: var(--color-background);
-		}
+	&:nth-child(2n) {
+		background-color: var(--color-background);
+	}
 
-		>div:last-child {
+	>div:last-child {
+		width: 24px;
+		height: 24px;
+
+		svg {
+			display: block;
 			width: 24px;
 			height: 24px;
+			fill: transparent;
 
-			svg {
-				display: block;
-				width: 24px;
-				height: 24px;
-				fill: transparent;
-
-				path {
-					stroke: var(--color-text);
-				}
+			path {
+				stroke: var(--color-text);
 			}
+		}
 
-			.tooltip {
-				display: grid;
-				grid-template-columns: repeat(3, 1fr);
-				justify-content: space-between;
-				column-gap: 1rem;
-				row-gap: 0.5rem;
-				width: 100%;
-				height: 100%;
 
-				div {
-					display: flex;
-					align-items: center;
-					gap: 0.5rem;
-					font-size: 0.75rem;
+	}
+}
 
-					&.precipitation {
-						grid-column: span 2;
-					}
+.tooltip {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	justify-content: space-between;
+	column-gap: 1rem;
+	row-gap: 0.5rem;
+	width: 100%;
+	height: 100%;
 
-					svg {
-						fill: var(--color-text);
-						stroke-width: 0.5px;
-					}
-				}
-			}
+	div {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.75rem;
+
+		&.precipitation {
+			grid-column: span 2;
+		}
+
+		svg {
+			fill: var(--color-text);
+			stroke-width: 0.5px;
 		}
 	}
 }
@@ -667,12 +658,10 @@ watch(pageView, () => {
 }
 
 @media (min-width: 940px) {
-	.forecast-controls {
-		.scroll-controls {
-			display: flex;
-			align-items: center;
-			gap: 0.5rem;
-		}
+	.scroll-controls {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
 	}
 
 	#forecast-display {
@@ -703,18 +692,18 @@ watch(pageView, () => {
 			grid-auto-columns: 1fr;
 			grid-auto-flow: column;
 		}
+	}
 
-		.day,
-		.hour {
-			display: grid;
-			grid-template-columns: unset;
-			grid-template-rows: 1fr 50px 50px 1fr 24px;
-			grid-auto-flow: column;
-			justify-items: center;
-			align-items: start;
-			padding: 1rem;
-			gap: 0;
-		}
+	.day,
+	.hour {
+		display: grid;
+		grid-template-columns: unset;
+		grid-template-rows: 1fr 50px 50px 1fr 24px;
+		grid-auto-flow: column;
+		justify-items: center;
+		align-items: start;
+		padding: 1rem;
+		gap: 0;
 	}
 }
 </style>
