@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { GeocodingData } from '@/types/types';
 import { roundToDecimal } from '@/utilities/converters';
-import { ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 
 const props = defineProps<{ metric: boolean, searchResults: GeocodingData[] | null, themeLight: boolean }>();
 
@@ -9,6 +9,29 @@ const emit = defineEmits(["changeUnits", "searchLocation", "requestLocation", "c
 const searchValue = ref<string>("");
 const input = ref<HTMLInputElement | null>(null);
 const svgBtn = ref<SVGElement | null>(null);
+
+onMounted(() => {
+	const tt = document.getElementById('search');
+	if (!tt) return;
+	tt.addEventListener('focus', watchFocus);
+	tt.addEventListener('blur', watchFocus);
+})
+
+onUnmounted(() => {
+	const input = document.getElementById('search');
+	if (!input) return;
+	input.removeEventListener('focus', watchFocus);
+	input.removeEventListener('blur', watchFocus);
+})
+
+function watchFocus(e: any) {
+	const div = document.getElementById('search-box') as HTMLDivElement;
+	if (e.target === document.activeElement) {
+		div.style.borderColor = "var(--color-text-alt)";
+	} else {
+		div.style.removeProperty('border-color')
+	}
+}
 
 function clearInputAndResults() {
 	searchValue.value = "";
@@ -28,7 +51,7 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 
 <template>
 	<div class="controls">
-		<div class="search">
+		<div id="search-box">
 			<input ref="input" type="text" id="search" name="search" v-model="searchValue" placeholder="Search city..."
 				@keypress.enter="triggerSearch" />
 			<div v-if="searchValue || searchResults" class="clear" @click="clearInputAndResults"></div>
@@ -105,7 +128,7 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 	height: 32px;
 }
 
-.search {
+#search-box {
 	flex: 1;
 	display: flex;
 	width: fit-content;
@@ -115,7 +138,7 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 	border-radius: 4px;
 	gap: 0.25rem;
 	position: relative;
-	// Style input when active? or nah? !!!
+	margin-right: auto;
 
 	input {
 		width: 100%;
@@ -198,7 +221,7 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 
 	.search-results {
 		position: absolute;
-		top: 100%;
+		top: 30px;
 		left: -2px;
 		right: -2px;
 		z-index: 75;
@@ -224,6 +247,10 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 			>div:last-child {
 				font-size: 0.8rem;
 				text-align: end;
+			}
+
+			&:first-child {
+				border-radius: 4px 4px 0 0;
 			}
 
 			&:last-child {
