@@ -24,7 +24,7 @@
 	--vt-c-purple-dark: rgb(100, 0, 175);
 	--vt-c-purple-light: rgb(175, 0, 255);
 
-	--vt-c-border-dark: rgb(75, 75, 75);
+	--vt-c-border-dark: rgb(100, 100, 100);
 
 	--vt-c-text-light-1: var(--vt-c-black);
 	--vt-c-text-light-2: var(--vt-c-black-soft);
@@ -34,11 +34,30 @@
 
 /* semantic color variables for this project */
 :root {
+	--color-background: var(--vt-c-black);
+	--color-background-soft: var(--vt-c-black-soft);
+
+	--color-border: var(--vt-c-text-dark-2);
+	--color-border-hover: var(--vt-c-text-dark-1);
+	--color-border-active: var(--vt-c-gold-dark);
+
+	--color-heading: var(--vt-c-text-dark-2);
+	--color-text: var(--vt-c-text-dark-1);
+	--color-text-alt: var(--vt-c-gold-dark);
+
+	--color-green: var(--vt-c-green-dark);
+	--color-yellow: var(--vt-c-yellow-dark);
+	--color-orange: var(--vt-c-orange-dark);
+	--color-red: var(--vt-c-red-dark);
+	--color-purple: var(--vt-c-purple-dark);
+}
+
+.light {
 	--color-background: var(--vt-c-white);
 	--color-background-soft: var(--vt-c-white-soft);
 
 	--color-border: var(--vt-c-border-dark);
-	--color-border-hover: var(--vt-c-divider-light-1);
+	--color-border-hover: var(--vt-c-text-light-1);
 	--color-border-active: var(--vt-c-gold-light);
 
 	--color-heading: var(--vt-c-text-light-2);
@@ -52,27 +71,6 @@
 	--color-purple: var(--vt-c-purple-light);
 }
 
-@media (prefers-color-scheme: dark) {
-	:root {
-		--color-background: var(--vt-c-black);
-		--color-background-soft: var(--vt-c-black-soft);
-
-		--color-border: var(--vt-c-text-dark-2);
-		--color-border-hover: var(--vt-c-text-dark-1);
-		--color-border-active: var(--vt-c-gold-dark);
-
-		--color-heading: var(--vt-c-text-dark-2);
-		--color-text: var(--vt-c-text-dark-1);
-		--color-text-alt: var(--vt-c-gold-dark);
-
-		--color-green: var(--vt-c-green-dark);
-		--color-yellow: var(--vt-c-yellow-dark);
-		--color-orange: var(--vt-c-orange-dark);
-		--color-red: var(--vt-c-red-dark);
-		--color-purple: var(--vt-c-purple-dark);
-	}
-}
-
 *,
 *::before,
 *::after {
@@ -83,10 +81,6 @@
 }
 
 body {
-	min-height: 100vh;
-	color: var(--color-text);
-	background: var(--color-background-soft);
-	transition: color 0.5s, background-color 0.5s;
 	line-height: 1.6;
 	font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
 		Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
