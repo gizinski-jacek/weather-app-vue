@@ -17,7 +17,7 @@
 
 .spinner {
 	border: 16px solid var(--color-background);
-	border-top: 16px solid var(--color-text-alt);
+	border-top: 16px solid var(--color-border-active);
 	border-radius: 50%;
 	width: 160px;
 	height: 160px;
