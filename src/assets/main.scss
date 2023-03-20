@@ -54,7 +54,8 @@ input {
 	}
 }
 
-img {
+img,
+svg {
 	display: block;
 	user-select: none;
 }
