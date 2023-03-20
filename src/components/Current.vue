@@ -98,7 +98,6 @@ function toggleAlert() {
 	z-index: 50;
 
 	svg {
-		display: block;
 		width: 48px;
 		height: 48px;
 		cursor: pointer;
@@ -132,13 +131,11 @@ function toggleAlert() {
 		transform-origin: 0 0;
 	}
 
-	&.show {
-		.alert-content {
-			height: fit-content;
-			padding: 0.25rem 0.5rem;
-			border-width: 3px;
-			transform: scale(1);
-		}
+	&.show .alert-content {
+		height: fit-content;
+		padding: 0.25rem 0.5rem;
+		border-width: 3px;
+		transform: scale(1);
 	}
 }
 
