@@ -158,7 +158,6 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 		margin: auto 0;
 
 		svg {
-			display: block;
 			width: 24px;
 			height: 24px;
 			fill: none;
@@ -294,7 +293,6 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 	height: 32px;
 
 	svg {
-		display: block;
 		width: 24px;
 		height: 24px;
 		margin: auto;
@@ -313,7 +311,6 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 	display: grid;
 
 	svg {
-		display: block;
 		width: 20px;
 		height: 20px;
 		margin: auto;
