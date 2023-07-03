@@ -104,6 +104,7 @@ function toggleAlert() {
 
 		path {
 			fill: var(--color-text-alt);
+			transition: 0.35s ease-in-out;
 		}
 
 		&:hover path {
@@ -159,6 +160,7 @@ function toggleAlert() {
 	.date {
 		color: var(--color-text-alt);
 		font-weight: 600;
+		transition: 0.35s ease-in-out;
 	}
 
 	img {

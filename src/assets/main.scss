@@ -2,9 +2,6 @@
 
 * {
 	box-sizing: border-box !important;
-	transition-timing-function: ease-in-out;
-	transition: background-color 0.5s, color 0.35s, fill 0.35s, stroke 0.35s,
-		border 0.35s;
 }
 
 #app {
@@ -23,6 +20,7 @@ button {
 	font-weight: 700 !important;
 	padding: 0.25rem 0.5rem;
 	cursor: pointer;
+	transition: 0.35s ease-in-out;
 
 	&:hover {
 		border: 2px solid var(--color-border-hover);
@@ -58,6 +56,7 @@ img,
 svg {
 	display: block;
 	user-select: none;
+	transition: 0.35s ease-in-out;
 }
 
 h1 {
@@ -68,10 +67,6 @@ h1 {
 h2 {
 	font-size: 1.5rem;
 	font-weight: 700;
-}
-
-h3 {
-	font-size: 1.25rem;
 }
 
 h4 {

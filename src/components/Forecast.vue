@@ -115,8 +115,8 @@ watch(pageView, () => {
 					<div class="arrow-next" @click="changePage(currentPage + 1)"></div>
 				</div>
 				<div v-else="pageView" class="scroll-controls">
-					<button type="button" class="scroll-to-start" @click="scrollToStart">Start</button>
-					<button type="button" class="scroll-to-end" @click="scrollToEnd">End</button>
+					<button type="button" @click="scrollToStart">Start</button>
+					<button type="button" @click="scrollToEnd">End</button>
 				</div>
 				<button type="button" @click="changeDisplay">
 					{{ pageView ? "Pages" : "Scroll" }}
@@ -505,6 +505,10 @@ watch(pageView, () => {
 	justify-content: space-between;
 	align-items: center;
 	gap: 1rem;
+
+	button {
+		min-width: 72px;
+	}
 }
 
 .time-controls {
@@ -551,6 +555,7 @@ watch(pageView, () => {
 		border: 2px solid var(--color-heading);
 		user-select: none;
 		cursor: pointer;
+		transition: 0.35s ease-in-out;
 
 		&:hover {
 			background-color: var(--color-border-hover);
@@ -583,7 +588,7 @@ watch(pageView, () => {
 			background-color: var(--color-heading);
 			transform: translateY(5px) rotate(-45deg);
 			margin: 0 0.25rem;
-			transition: 0.25s ease-in-out;
+			transition: 0.35s ease-in-out;
 		}
 
 		&:after {
@@ -608,6 +613,10 @@ watch(pageView, () => {
 
 .scroll-controls {
 	display: none;
+
+	button {
+		min-width: 60px;
+	}
 }
 
 #forecast-display {
@@ -646,6 +655,8 @@ watch(pageView, () => {
 	padding: 0 0.5rem;
 	gap: 0.5rem;
 	border-radius: 8px;
+	transition: 0.35s ease-in-out;
+	-webkit-transition: background-color 0.35s ease-in-out, color 0s;
 
 	&:nth-child(2n) {
 		background-color: var(--color-background);
@@ -675,6 +686,7 @@ watch(pageView, () => {
 
 				path {
 					fill: var(--color-text-alt);
+					transition: 0.35s ease-in-out;
 				}
 			}
 
@@ -755,12 +767,14 @@ watch(pageView, () => {
 	.forecast-daily,
 	.forecast-hourly {
 		grid-auto-flow: column;
+		// Container width is wrong for first page (why???)
 
 		&.active {
 			display: grid;
 			grid-template-columns: minmax(0, 1fr);
 			grid-auto-columns: 1fr;
 			grid-auto-flow: column;
+			min-width: fit-content !important;
 		}
 	}
 
@@ -773,6 +787,7 @@ watch(pageView, () => {
 		justify-items: center;
 		align-items: start;
 		padding: 1rem;
+		min-width: fit-content; // Required to prevent only first item on only first page from being overlapped by second item (why???)
 	}
 }
 </style>

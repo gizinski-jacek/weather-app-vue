@@ -205,9 +205,10 @@ function getCurrentLocation(): Promise<null> {
 
 <style scoped lang="scss">
 .main-container {
-	height: 100vh;
+	min-height: 100vh;
 	color: var(--color-text);
-	background: var(--color-background-soft);
+	background-color: var(--color-background-soft);
+	transition: 0.35s ease-in-out;
 }
 
 main {
@@ -220,8 +221,6 @@ main {
 	margin: 0 auto;
 	padding: 1rem;
 	position: relative;
-	color: var(--color-text);
-	background: var(--color-background-soft);
 }
 
 .top {
@@ -247,6 +246,8 @@ main {
 	border-radius: 8px;
 	z-index: 100;
 	cursor: pointer;
+	transition: 0.925 ease-in-out;
+	-webkit-transition: all 0.35s ease-in-out, color 0s;
 
 	h4 {
 		font-weight: 700;

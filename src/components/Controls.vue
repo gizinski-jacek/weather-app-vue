@@ -139,11 +139,13 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 	gap: 0.25rem;
 	position: relative;
 	margin-right: auto;
+	transition: 0.35s ease-in-out;
 
 	input {
 		width: 100%;
 		background-color: transparent;
 		border: none;
+		transition: 0.35s ease-in-out;
 
 		&:hover {
 			color: var(--color-text);
@@ -156,6 +158,7 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 
 	.mag-icon {
 		margin: auto 0;
+		transition: 0.35s ease-in-out;
 
 		svg {
 			width: 24px;
@@ -166,6 +169,7 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 			circle,
 			path {
 				stroke: var(--color-heading);
+				transition: 0.35s ease-in-out;
 			}
 
 			&:hover {
@@ -201,6 +205,7 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 			height: 2px;
 			background-color: var(--color-heading);
 			transform: translateY(9px) rotate(-45deg);
+			transition: 0.35s ease-in-out;
 		}
 
 		&:after {
@@ -315,7 +320,6 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 		height: 20px;
 		margin: auto;
 		cursor: pointer;
-		transition: 0.25s ease-in-out;
 		grid-column: 1;
 		grid-row: 1;
 
