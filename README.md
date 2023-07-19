@@ -70,7 +70,11 @@ npm run test:unit
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Don't forget to add **.env** file with environment variables for the app.
+Don't forget to add **.env** file with these environment variables for the app:
+
+```
+VITE_API_KEY
+```
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
