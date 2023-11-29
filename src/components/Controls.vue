@@ -77,7 +77,7 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 			</svg>
 		</button>
 		<button type="button" class="units" @click="emit('changeUnits')">
-			{{ metric ? "imperial" : "metric" }}
+			{{ metric ? "metric" : "imperial" }}
 		</button>
 		<button type="button" class="theme" :class="{ light: themeLight }" @click="emit('toggleTheme')">
 			<svg class="sun" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
