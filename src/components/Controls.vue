@@ -64,10 +64,16 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 			</div>
 			<div v-if="searchResults" class="search-results">
 				<div v-for="(result, index) in searchResults" :key="index" class="result" @click="emit('searchLocation',
-					result)">
-					<div>{{ result.country }}</div>
-					<div>{{ result.name }}</div>
-					<div>{{ roundToDecimal(result.lat, 3) }} {{ roundToDecimal(result.lon, 3) }}</div>
+				result)">
+					<h4>{{ result.country }}</h4>
+					<div>
+						<h4>{{ result.name }}</h4>
+						<h5>{{ result.state }}</h5>
+					</div>
+					<div>
+						<h5>{{ roundToDecimal(result.lat, 3) }}</h5>
+						<h5>{{ roundToDecimal(result.lon, 3) }}</h5>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -242,15 +248,18 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 			border: 2px solid var(--color-border);
 			border-bottom-width: 0;
 			cursor: pointer;
+			line-height: 1.25rem;
 
-			>div:nth-child(2) {
+			h4 {
 				font-weight: 600;
-				margin-right: 0.25rem;
 			}
 
-			>div:last-child {
-				font-size: 0.8rem;
-				text-align: end;
+			>div {
+
+				&:last-child {
+					margin-left: auto;
+					text-align: end;
+				}
 			}
 
 			&:first-child {
