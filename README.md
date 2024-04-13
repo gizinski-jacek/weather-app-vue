@@ -1,6 +1,6 @@
 # Weather App Vue
 
-A refresh of my old Weather App project build to practice Vuejs using [OpenWeatherMap API](https://openweathermap.org/api) for weather data.
+A refresh of my old Weather App project built to practice Vuejs using [OpenWeatherMap API](https://openweathermap.org/api) for weather data.
 
 ## Table of contents
 
