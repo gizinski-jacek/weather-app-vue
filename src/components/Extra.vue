@@ -160,32 +160,32 @@ const props = defineProps<{
 					<div class="uv-details">
 						<div>
 							<span class="low" :class="{
-								active: weather.current.uvi <= 2
-							}"></span>
+		active: weather.current.uvi <= 2
+	}"></span>
 							<h5>0-2</h5>
 						</div>
 						<div>
 							<span class="moderate" :class="{
-								active: weather.current.uvi >= 3 && weather.current.uvi <= 5
-							}"></span>
+		active: weather.current.uvi >= 3 && weather.current.uvi <= 5
+	}"></span>
 							<h5>3-5</h5>
 						</div>
 						<div>
 							<span class="high" :class="{
-								active: weather.current.uvi >= 6 && weather.current.uvi <= 7
-							}"></span>
+		active: weather.current.uvi >= 6 && weather.current.uvi <= 7
+	}"></span>
 							<h5>6-7</h5>
 						</div>
 						<div>
 							<span class="very-high" :class="{
-								active: weather.current.uvi >= 8 && weather.current.uvi <= 10
-							}"></span>
+		active: weather.current.uvi >= 8 && weather.current.uvi <= 10
+	}"></span>
 							<h5>8-10</h5>
 						</div>
 						<div>
 							<span class="extreme" :class="{
-								active: weather.current.uvi >= 11
-							}"></span>
+		active: weather.current.uvi >= 11
+	}"></span>
 							<h5>11+</h5>
 						</div>
 					</div>
@@ -195,7 +195,8 @@ const props = defineProps<{
 						transform="translate(0 0)" />
 					<polygon points="25 20 23.25 20 21 29.031 18.792 20 17 20 19.5 30 22.5 30 25 20" />
 					<rect x="15" y="2" width="2" height="5" />
-					<rect x="21.6675" y="6.8536" width="4.958" height="1.9998" transform="translate(1.5191 19.3744) rotate(-45)" />
+					<rect x="21.6675" y="6.8536" width="4.958" height="1.9998"
+						transform="translate(1.5191 19.3744) rotate(-45)" />
 					<rect x="25" y="15" width="5" height="2" />
 					<rect x="2" y="15" width="5" height="2" />
 					<rect x="6.8536" y="5.3745" width="1.9998" height="4.958" transform="translate(-3.253 7.8535) rotate(-45)" />
@@ -370,22 +371,27 @@ const props = defineProps<{
 
 	.good {
 		background-color: var(--color-green);
+		color: rgb(0, 0, 0);
 	}
 
 	.fair {
 		background-color: var(--color-yellow);
+		color: rgb(0, 0, 0);
 	}
 
 	.moderate {
 		background-color: var(--color-orange);
+		color: rgb(0, 0, 0);
 	}
 
 	.poor {
 		background-color: var(--color-red);
+		color: rgb(255, 255, 255);
 	}
 
 	.very-poor {
 		background-color: var(--color-purple);
+		color: rgb(255, 255, 255);
 	}
 }
 
