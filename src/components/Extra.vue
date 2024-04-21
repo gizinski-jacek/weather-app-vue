@@ -275,7 +275,6 @@ const props = defineProps<{
 
 .uv-description span {
 	color: var(--color-text-alt);
-	font-weight: 700;
 }
 
 .uv-details {
@@ -303,7 +302,6 @@ const props = defineProps<{
 
 				&+h5 {
 					color: var(--color-text-alt);
-					font-weight: 800;
 				}
 			}
 		}
@@ -340,7 +338,6 @@ const props = defineProps<{
 		&:first-child {
 			span {
 				color: var(--color-text-alt);
-				font-weight: 700;
 			}
 		}
 
@@ -363,10 +360,6 @@ const props = defineProps<{
 		padding: 0.25rem 0.5rem;
 		text-transform: none;
 		background-color: var(--color-background-soft);
-
-		span {
-			font-weight: 600;
-		}
 	}
 
 	.good {
