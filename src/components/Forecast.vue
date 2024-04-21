@@ -748,12 +748,11 @@ watch(pageView, () => {
 
 	#forecast-display {
 		flex-direction: row;
-		padding-bottom: 1.6rem;
+		padding-bottom: 1rem;
 
 		&.scroll {
 			overflow-x: scroll;
 			scrollbar-width: thin;
-			padding-bottom: 1rem;
 
 			.forecast-daily,
 			.forecast-hourly {
