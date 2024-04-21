@@ -188,8 +188,8 @@ function getCurrentLocation(): Promise<null> {
 			<div class="top">
 				<section class="basic">
 					<Controls @changeUnits="changeUnits" @searchLocation="searchLocation" @requestLocation="requestLocation"
-						@clearResults="clearSearchResults" @toggleTheme="toggleTheme" :metric="metric" :searchResults="searchResults"
-						:themeLight="themeLight" />
+						@clearResults="clearSearchResults" @toggleTheme="toggleTheme" :metric="metric"
+						:searchResults="searchResults" :themeLight="themeLight" />
 					<Current :weather="apiData" :location="geolocation" :metric="metric" />
 				</section>
 				<Extra :weather="apiData" :pollution="airPollutionData" :metric="metric" />
@@ -248,10 +248,6 @@ main {
 	cursor: pointer;
 	transition: 0.925 ease-in-out;
 	-webkit-transition: all 0.35s ease-in-out, color 0s;
-
-	h4 {
-		font-weight: 700;
-	}
 }
 
 @media (min-width: 640px) {
