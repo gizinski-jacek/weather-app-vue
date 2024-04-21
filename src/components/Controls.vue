@@ -152,6 +152,7 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 		background-color: transparent;
 		border: none;
 		transition: 0.35s ease-in-out;
+		font-weight: 700;
 
 		&:hover {
 			color: var(--color-text);
@@ -249,10 +250,6 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 			border-bottom-width: 0;
 			cursor: pointer;
 			line-height: 1.25rem;
-
-			h4 {
-				font-weight: 600;
-			}
 
 			>div {
 
