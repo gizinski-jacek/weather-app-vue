@@ -748,10 +748,12 @@ watch(pageView, () => {
 
 	#forecast-display {
 		flex-direction: row;
-		padding-bottom: 1.5rem;
+		padding-bottom: 1.6rem;
 
 		&.scroll {
 			overflow-x: scroll;
+			scrollbar-width: thin;
+			padding-bottom: 1rem;
 
 			.forecast-daily,
 			.forecast-hourly {
@@ -767,7 +769,6 @@ watch(pageView, () => {
 	.forecast-daily,
 	.forecast-hourly {
 		grid-auto-flow: column;
-		// Container width is wrong for first page (why???)
 
 		&.active {
 			display: grid;
