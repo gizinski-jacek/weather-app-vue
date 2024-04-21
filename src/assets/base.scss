@@ -77,7 +77,6 @@
 	box-sizing: border-box;
 	margin: 0;
 	position: relative;
-	font-weight: normal;
 }
 
 body {
@@ -86,6 +85,7 @@ body {
 		Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
 		sans-serif;
 	font-size: 15px;
+	font-weight: 700;
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
