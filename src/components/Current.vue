@@ -159,7 +159,6 @@ function toggleAlert() {
 
 	.date {
 		color: var(--color-text-alt);
-		font-weight: 600;
 		transition: 0.35s ease-in-out;
 	}
 
