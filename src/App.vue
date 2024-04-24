@@ -151,9 +151,9 @@ async function searchLocation(query: string | GeocodingData) {
 
 async function requestLocation() {
 	try {
+		dataError.value = null
 		await getCurrentLocation();
 	} catch (error: any) {
-		console.error(error.message)
 		dataError.value = error.message
 	}
 }
@@ -172,8 +172,22 @@ function getCurrentLocation(): Promise<null> {
 					} catch (error: any) {
 						reject(error)
 					}
-				}, (error) =>
-				reject(new Error('Geolocation request error.'))
+				}, (error) => {
+					switch (error.code) {
+						case 1:
+							reject(new Error('Geolocation request denied. Change browser setting to allow geolocation to use this function.'))
+							break;
+						case 2:
+							reject(new Error('Geolocation unavailable.'))
+							break;
+						case 3:
+							reject(new Error('Geolocation request timeout.'))
+							break;
+						default:
+							reject(new Error('Geolocation request error.'))
+							break;
+					}
+				}, { timeout: 5000, }
 			)
 		} else {
 			reject(new Error('Geolocation is not supported by this browser.'))
