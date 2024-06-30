@@ -44,7 +44,6 @@ onMounted(async () => {
 			await getCurrentLocation();
 		}
 	} catch (error: any) {
-		console.error(error.message);
 		geolocation.value = defaultLocation;
 	}
 });
@@ -54,7 +53,6 @@ watch(geolocation, async (newLocation) => {
 		if (!newLocation) return;
 		await updateAppData(newLocation)
 	} catch (error: any) {
-		console.error(error.message)
 		if (error instanceof AxiosError) {
 			if (error.response?.status === 400) {
 				dataError.value = 'City not found. Did you enter correct name?'
@@ -103,7 +101,6 @@ function watchResultsClick(e: MouseEvent) {
 }
 
 function toggleTheme() {
-	console.log(themeLight.value)
 	themeLight.value = !themeLight.value
 }
 
@@ -115,7 +112,6 @@ async function updateAppData(location: GeocodingData) {
 		airPollutionData.value = pollution;
 		geolocation.value = location;
 	} catch (error: any) {
-		console.error(error.message)
 		throw new Error('Error getting weather data, try again.')
 	}
 }
@@ -137,7 +133,6 @@ async function searchLocation(query: string | GeocodingData) {
 		}
 		dataError.value = null;
 	} catch (error: any) {
-		console.error(error.message)
 		if (error instanceof AxiosError) {
 			if (error.response?.status === 400) {
 				dataError.value = 'City not found.'
