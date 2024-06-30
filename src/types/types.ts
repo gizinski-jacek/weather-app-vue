@@ -40,7 +40,7 @@ export interface OneCallWeatherData {
 		end: number;
 		description: string;
 		tags: string[];
-	};
+	}[];
 }
 
 export interface HourlyForecast {
