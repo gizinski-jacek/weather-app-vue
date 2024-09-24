@@ -5,6 +5,7 @@ import Extra from "./components/Extra.vue";
 import Forecast from "./components/Forecast.vue";
 import Controls from "./components/Controls.vue";
 import Spinner from "./components/Spinner.vue";
+import Footer from "./components/Footer.vue";
 import type { GeocodingData, OneCallWeatherData, AirPollution } from "./types/types";
 import { fetchByQuery, fetchByCoords, fetchWeatherOneCall, fetchAirPollution } from "./utilities/fetchers";
 import { AxiosError } from 'axios';
@@ -207,6 +208,7 @@ function getCurrentLocation(): Promise<null> {
 			<div v-if="dataError" class="error" @click="dismissError">
 				<h4>{{ dataError }}</h4>
 			</div>
+			<Footer></Footer>
 		</main>
 		<Spinner v-else />
 	</div>
