@@ -144,7 +144,8 @@ function toggleAlert() {
 	&.show .alert-content {
 		height: fit-content;
 		width: 85vw;
-
+		max-width: 1100px;
+	
 		>div {
 			padding: 0.25rem 0.5rem;
 			border-width: 3px;
