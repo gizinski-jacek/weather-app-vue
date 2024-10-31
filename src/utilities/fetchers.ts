@@ -41,7 +41,7 @@ export async function fetchWeatherOneCall(
 ): Promise<OneCallWeatherData> {
 	try {
 		const res: AxiosResponse<OneCallWeatherData> = await axios.get(
-			`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&appid=${
+			`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&units=metric&appid=${
 				import.meta.env.VITE_API_KEY
 			}`
 		);
