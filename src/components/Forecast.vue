@@ -123,16 +123,16 @@ watch(pageView, () => {
 				</button>
 			</div>
 		</div>
-		<div id="forecast-display" :class="{ scroll: !pageView }">
+		<div id="forecast-display" :class="{ scroll: !pageView && displayedForecast === 'hourly' }">
 			<div v-if="displayedForecast === 'daily'" v-for="(chunk, indexH) in splitIntoGroups(
 				weather[displayedForecast],
 				groupSize
 			)" :key="indexH" class="forecast-daily" :class="{
-	active:
-		weather[displayedForecast].length > groupSize
-			? currentPage - 1 === indexH
-			: 'active',
-}">
+				active:
+					weather[displayedForecast].length > groupSize
+						? currentPage - 1 === indexH
+						: 'active',
+			}">
 				<div v-for="(day, i) in chunk" :key="i" class="day">
 					<div>
 						{{
@@ -297,8 +297,8 @@ watch(pageView, () => {
 										<rect x="6.8536" y="5.3745" width="1.9998" height="4.958"
 											transform="translate(-3.253 7.8535) rotate(-45)" />
 										<path d="M22,17H20V16a4,4,0,0,0-8,0v1H10V16a6,6,0,0,1,12,0Z" transform="translate(0 0)" />
-										<rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" fill="none"
-											width="32" height="32" />
+										<rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1"
+											fill="none" width="32" height="32" />
 									</svg>
 									<span>{{ day.uvi }}</span>
 								</div>
@@ -366,7 +366,7 @@ watch(pageView, () => {
 										</g>
 									</svg>
 									<span>{{ convertPrecipitationVolume(metric, hour.rain["1h"]) }} ({{ convertToPercentage(hour.pop)
-									}})</span>
+										}})</span>
 								</div>
 								<div v-else-if="hour.snow" class="precipitation">
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -376,7 +376,7 @@ watch(pageView, () => {
 										</g>
 									</svg>
 									<span>{{ convertPrecipitationVolume(metric, hour.snow["1h"]) }} ({{ convertToPercentage(hour.pop)
-									}})</span>
+										}})</span>
 								</div>
 								<div>
 									<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
@@ -462,8 +462,8 @@ watch(pageView, () => {
 										<rect x="6.8536" y="5.3745" width="1.9998" height="4.958"
 											transform="translate(-3.253 7.8535) rotate(-45)" />
 										<path d="M22,17H20V16a4,4,0,0,0-8,0v1H10V16a6,6,0,0,1,12,0Z" transform="translate(0 0)" />
-										<rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" fill="none"
-											width="32" height="32" />
+										<rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1"
+											fill="none" width="32" height="32" />
 									</svg>
 									<span>{{ hour.uvi }}</span>
 								</div>
