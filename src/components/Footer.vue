@@ -20,7 +20,7 @@
 	right: 0;
 	border-top-right-radius: 8px;
 	color: var(--color-text);
-	transition: 0.35s ease-in-out;
+	transition: 0.30s ease-in-out;
 
 	a {
 		display: block;
