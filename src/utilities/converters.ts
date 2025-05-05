@@ -2,25 +2,31 @@
 // Converters default to metric system.
 
 // Convert temperature to Fahrenheit or return default value in Celsius.
-export function convertTemp(metric: boolean = true, temp: number): string {
-	return metric
+export function convertTemp(
+	unitsSystem: 'metric' | 'imperial' = 'metric',
+	temp: number
+): string {
+	return unitsSystem === 'metric'
 		? roundToDecimal(temp) + '°C'
 		: roundToDecimal(temp * 1.8 + 32) + '°F';
 }
 
 // Convert speed to imperial units or return default value in metric.
-export function convertSpeed(metric: boolean = true, speed: number): string {
-	return metric
+export function convertSpeed(
+	unitsSystem: 'metric' | 'imperial' = 'metric',
+	speed: number
+): string {
+	return unitsSystem === 'metric'
 		? roundToDecimal(speed) + 'm/s'
 		: roundToDecimal(speed * 2.236936) + 'mi/h';
 }
 
 // Convert precipitation to imperial units or return default value in metric.
 export function convertPrecipitationVolume(
-	metric: boolean = true,
+	unitsSystem: 'metric' | 'imperial' = 'metric',
 	volume: number
 ): string {
-	return metric
+	return unitsSystem === 'metric'
 		? roundToDecimal(volume) + 'mm'
 		: roundToDecimal(volume / 25.4) + 'in';
 }
