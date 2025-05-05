@@ -5,7 +5,7 @@
 }
 
 #app {
-	min-width: 360px;
+	min-width: var(--min-app-width);
 	height: 100vh;
 }
 
@@ -19,7 +19,7 @@ button {
 	font-weight: 900;
 	padding: 0.25rem 0.5rem;
 	cursor: pointer;
-	transition: 0.35s ease-in-out;
+	transition: 0.3s ease-in-out;
 
 	&:hover {
 		border: 2px solid var(--color-border-hover);
@@ -55,7 +55,7 @@ img,
 svg {
 	display: block;
 	user-select: none;
-	transition: 0.35s ease-in-out;
+	transition: 0.3s ease-in-out;
 }
 
 h1 {
