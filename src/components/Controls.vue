@@ -2,13 +2,21 @@
 import type { GeocodingData } from '@/types/types';
 import { roundToDecimal } from '@/utilities/converters';
 import { onMounted, onUnmounted, ref } from "vue";
+import Tooltip from './Tooltip.vue';
+import Settings from './Settings.vue';
 
-const props = defineProps<{ metric: boolean, searchResults: GeocodingData[] | null, themeLight: boolean }>();
+const props = defineProps<{
+	unitsSystem: 'metric' | 'imperial',
+	dateFormat: 'en-gb' | 'en-us',
+	searchResults: GeocodingData[] | null,
+	themeLight: boolean
+}>();
 
-const emit = defineEmits(["changeUnits", "searchLocation", "requestLocation", "clearResults", "toggleTheme"]);
+const emit = defineEmits(["changeUnitsSystem", "changeDateFormat", "searchLocation", "requestLocation", "clearResults", "toggleTheme"]);
 const searchValue = ref<string>("");
 const input = ref<HTMLInputElement | null>(null);
 const svgBtn = ref<SVGElement | null>(null);
+const settings = ref<boolean>(false);
 
 onMounted(() => {
 	const tt = document.getElementById('search');
@@ -47,6 +55,23 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 		searchValue.value = "";
 	}
 }
+
+function openSettings() {
+	settings.value = true
+}
+
+function closeSettings() {
+	settings.value = false
+}
+
+function changeUnitsSystem(unitsSystem: 'metric' | 'imperial') {
+	emit('changeUnitsSystem', unitsSystem)
+}
+
+function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
+	emit('changeDateFormat', dateFormat)
+}
+
 </script>
 
 <template>
@@ -64,7 +89,7 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 			</div>
 			<div v-if="searchResults" class="search-results">
 				<div v-for="(result, index) in searchResults" :key="index" class="result" @click="emit('searchLocation',
-				result)">
+					result)">
 					<h4>{{ result.country }}</h4>
 					<div>
 						<h4>{{ result.name }}</h4>
@@ -78,12 +103,28 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 			</div>
 		</div>
 		<button type="button" class="geolocation" @click="emit('requestLocation')">
+			<Tooltip :content="'Update geolocation'" />
 			<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
 				<path d="M25.497 6.503l.001-.003-.004.005L3.5 15.901l11.112 1.489 1.487 11.11 9.396-21.992.005-.006z" />
 			</svg>
 		</button>
-		<button type="button" class="units" @click="emit('changeUnits')">
-			{{ metric ? "metric" : "imperial" }}
+		<button type="button" class="settings" @click="openSettings">
+			<Tooltip :content="'Settings'" />
+			<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<g stroke-width="0"></g>
+				<g stroke-linecap="round" stroke-linejoin="round"></g>
+				<g>
+					<path fill-rule="evenodd" clip-rule="evenodd"
+						d="M11.567 9.8895C12.2495 8.90124 12.114 7.5637 11.247 6.7325C10.3679 5.88806 9.02339 5.75928 7.99998 6.4215C7.57983 6.69308 7.25013 7.0837 7.05298 7.5435C6.85867 7.99881 6.80774 8.50252 6.90698 8.9875C7.00665 9.47472 7.25054 9.92071 7.60698 10.2675C7.97021 10.6186 8.42786 10.8563 8.92398 10.9515C9.42353 11.049 9.94062 11.0001 10.413 10.8105C10.8798 10.6237 11.2812 10.3033 11.567 9.8895Z"
+						stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+					<path fill-rule="evenodd" clip-rule="evenodd"
+						d="M12.433 17.8895C11.7504 16.9012 11.886 15.5637 12.753 14.7325C13.6321 13.8881 14.9766 13.7593 16 14.4215C16.4202 14.6931 16.7498 15.0837 16.947 15.5435C17.1413 15.9988 17.1922 16.5025 17.093 16.9875C16.9933 17.4747 16.7494 17.9207 16.393 18.2675C16.0298 18.6186 15.5721 18.8563 15.076 18.9515C14.5773 19.0481 14.0614 18.9988 13.59 18.8095C13.1222 18.6234 12.7197 18.3034 12.433 17.8895V17.8895Z"
+						stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+					<path
+						d="M12 7.75049C11.5858 7.75049 11.25 8.08627 11.25 8.50049C11.25 8.9147 11.5858 9.25049 12 9.25049V7.75049ZM19 9.25049C19.4142 9.25049 19.75 8.9147 19.75 8.50049C19.75 8.08627 19.4142 7.75049 19 7.75049V9.25049ZM6.857 9.25049C7.27121 9.25049 7.607 8.9147 7.607 8.50049C7.607 8.08627 7.27121 7.75049 6.857 7.75049V9.25049ZM5 7.75049C4.58579 7.75049 4.25 8.08627 4.25 8.50049C4.25 8.9147 4.58579 9.25049 5 9.25049V7.75049ZM12 17.2505C12.4142 17.2505 12.75 16.9147 12.75 16.5005C12.75 16.0863 12.4142 15.7505 12 15.7505V17.2505ZM5 15.7505C4.58579 15.7505 4.25 16.0863 4.25 16.5005C4.25 16.9147 4.58579 17.2505 5 17.2505V15.7505ZM17.143 15.7505C16.7288 15.7505 16.393 16.0863 16.393 16.5005C16.393 16.9147 16.7288 17.2505 17.143 17.2505V15.7505ZM19 17.2505C19.4142 17.2505 19.75 16.9147 19.75 16.5005C19.75 16.0863 19.4142 15.7505 19 15.7505V17.2505ZM12 9.25049H19V7.75049H12V9.25049ZM6.857 7.75049H5V9.25049H6.857V7.75049ZM12 15.7505H5V17.2505H12V15.7505ZM17.143 17.2505H19V15.7505H17.143V17.2505Z">
+					</path>
+				</g>
+			</svg>
 		</button>
 		<button type="button" class="theme" :class="{ light: themeLight }" @click="emit('toggleTheme')">
 			<svg class="sun" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -122,6 +163,9 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 					d="M8.23129 2.24048C9.24338 1.78695 10.1202 2.81145 9.80357 3.70098C8.72924 6.71928 9.38932 10.1474 11.6193 12.3765C13.8606 14.617 17.3114 15.2755 20.3395 14.1819C21.2206 13.8637 22.2173 14.7319 21.7817 15.7199C21.7688 15.7491 21.7558 15.7782 21.7427 15.8074C20.9674 17.5266 19.7272 19.1434 18.1227 20.2274C16.4125 21.3828 14.3957 22.0001 12.3316 22.0001H12.3306C9.93035 21.9975 7.6057 21.1603 5.75517 19.6321C3.90463 18.1039 2.64345 15.9797 2.18793 13.6237C1.73241 11.2677 2.11094 8.82672 3.2586 6.71917C4.34658 4.72121 6.17608 3.16858 8.20153 2.25386L8.23129 2.24048Z" />
 			</svg>
 		</button>
+		<Settings v-if="settings" @closeSettings="closeSettings" @changeUnitsSystem="changeUnitsSystem"
+			@changeDateFormat="changeDateFormat" :unitsSystem="unitsSystem" :dateFormat="dateFormat">
+		</Settings>
 	</div>
 </template>
 
@@ -145,13 +189,13 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 	gap: 0.25rem;
 	position: relative;
 	margin-right: auto;
-	transition: 0.35s ease-in-out;
+	transition: 0.30s ease-in-out;
 
 	input {
 		width: 100%;
 		background-color: transparent;
 		border: none;
-		transition: 0.35s ease-in-out;
+		transition: 0.30s ease-in-out;
 		font-weight: 700;
 
 		&:hover {
@@ -165,7 +209,7 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 
 	.mag-icon {
 		margin: auto 0;
-		transition: 0.35s ease-in-out;
+		transition: 0.30s ease-in-out;
 
 		svg {
 			width: 24px;
@@ -176,7 +220,7 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 			circle,
 			path {
 				stroke: var(--color-heading);
-				transition: 0.35s ease-in-out;
+				transition: 0.30s ease-in-out;
 			}
 
 			&:hover {
@@ -212,7 +256,7 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 			height: 2px;
 			background-color: var(--color-heading);
 			transform: translateY(9px) rotate(-45deg);
-			transition: 0.35s ease-in-out;
+			transition: 0.30s ease-in-out;
 		}
 
 		&:after {
@@ -299,6 +343,19 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 }
 
 .geolocation {
+	padding: 0;
+	width: 32px;
+	height: 32px;
+
+	svg {
+		width: 24px;
+		height: 24px;
+		margin: auto;
+		fill: var(--color-text-alt);
+	}
+}
+
+.settings {
 	padding: 0;
 	width: 32px;
 	height: 32px;
