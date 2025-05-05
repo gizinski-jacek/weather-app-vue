@@ -70,7 +70,7 @@ function renderFrom(e: MouseEvent) {
 		border-radius: 4px;
 		opacity: 1;
 		transition: 0.15s ease-in-out;
-		transition-delay: 0.25s;
+		transition-delay: 0.4s;
 
 		&.left {
 			left: 0;
