@@ -1,10 +1,14 @@
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
+	--min-app-width: 360px;
+
 	--vt-c-white: rgb(255, 255, 255);
 	--vt-c-white-soft: rgb(200, 200, 200);
+	--vt-c-white-trans: rgba(255, 255, 255, 0.75);
 
 	--vt-c-black: rgb(0, 0, 0);
 	--vt-c-black-soft: rgb(35, 35, 35);
+	--vt-c-black-trans: rgba(0, 0, 0, 0.75);
 
 	--vt-c-gold-dark: rgb(225, 175, 0);
 	--vt-c-gold-light: rgb(150, 100, 0);
@@ -36,6 +40,7 @@
 :root {
 	--color-background: var(--vt-c-black);
 	--color-background-soft: var(--vt-c-black-soft);
+	--color-background-trans: var(--vt-c-black-trans);
 
 	--color-border: var(--vt-c-text-dark-2);
 	--color-border-hover: var(--vt-c-text-dark-1);
@@ -55,6 +60,7 @@
 .light {
 	--color-background: var(--vt-c-white);
 	--color-background-soft: var(--vt-c-white-soft);
+	--color-background-trans: var(--vt-c-white-trans);
 
 	--color-border: var(--vt-c-border-dark);
 	--color-border-hover: var(--vt-c-text-light-1);
