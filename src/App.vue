@@ -5,7 +5,6 @@ import Extra from "./components/Extra.vue";
 import Forecast from "./components/Forecast.vue";
 import Controls from "./components/Controls.vue";
 import Spinner from "./components/Spinner.vue";
-import Footer from "./components/Footer.vue";
 import type { GeocodingData, OneCallWeatherData, AirPollution } from "./types/types";
 import { fetchByQuery, fetchByCoords, fetchWeatherOneCall, fetchAirPollution } from "./utilities/fetchers";
 import { AxiosError } from 'axios';
@@ -18,7 +17,8 @@ const defaultLocation: GeocodingData = {
 	state: "North Holland",
 }
 
-const metric = ref<boolean>(true);
+const unitsSystem = ref<'metric' | 'imperial'>('metric');
+const dateFormat = ref<'en-gb' | 'en-us'>('en-gb');
 const geolocation = ref<GeocodingData | null>(null);
 const searchResults = ref<GeocodingData[] | null>(null);
 const apiData = ref<OneCallWeatherData | null>(null);
@@ -36,8 +36,11 @@ onMounted(async () => {
 		} else {
 			themeLight.value = preferLight;
 		}
-		if (localStorage.userMetric) {
-			metric.value = JSON.parse(localStorage.userMetric);
+		if (localStorage.userUnitsSystem) {
+			unitsSystem.value = JSON.parse(localStorage.userUnitsSystem);
+		}
+		if (localStorage.userDateFormat) {
+			dateFormat.value = JSON.parse(localStorage.userDateFormat);
 		}
 		if (localStorage.userLocation) {
 			await updateAppData(JSON.parse(localStorage.userLocation));
@@ -67,8 +70,16 @@ watch(geolocation, async (newLocation) => {
 	}
 });
 
-watch(metric, (newMetric) => {
-	localStorage.setItem('userMetric', JSON.stringify(newMetric));
+watch(unitsSystem, (newUnitsSystem) => {
+	localStorage.setItem('userUnitsSystem', JSON.stringify(newUnitsSystem));
+})
+
+watch(dateFormat, (newDateFormat) => {
+	localStorage.setItem('userDateFormat', JSON.stringify(newDateFormat));
+})
+
+watch(themeLight, (newThemeLight) => {
+	localStorage.setItem('themeLight', JSON.stringify(newThemeLight));
 })
 
 watch(searchResults, (newSearchResults) => {
@@ -77,12 +88,13 @@ watch(searchResults, (newSearchResults) => {
 	}
 })
 
-watch(themeLight, (newThemeLight) => {
-	localStorage.setItem('themeLight', JSON.stringify(newThemeLight));
-})
+function changeUnitsSystem(value: 'metric' | 'imperial') {
+	console.log(value)
+	unitsSystem.value = value;
+}
 
-function changeUnits() {
-	metric.value = !metric.value;
+function changeDateFormat(value: 'en-gb' | 'en-us') {
+	dateFormat.value = value;
 }
 
 function dismissError() {
@@ -197,18 +209,18 @@ function getCurrentLocation(): Promise<null> {
 		<main v-if="apiData">
 			<div class="top">
 				<section class="basic">
-					<Controls @changeUnits="changeUnits" @searchLocation="searchLocation" @requestLocation="requestLocation"
-						@clearResults="clearSearchResults" @toggleTheme="toggleTheme" :metric="metric"
-						:searchResults="searchResults" :themeLight="themeLight" />
-					<Current :weather="apiData" :location="geolocation" :metric="metric" />
+					<Controls @changeUnitsSystem="changeUnitsSystem" @changeDateFormat="changeDateFormat"
+						@searchLocation="searchLocation" @requestLocation="requestLocation" @clearResults="clearSearchResults"
+						@toggleTheme="toggleTheme" :unitsSystem="unitsSystem" :searchResults="searchResults"
+						:themeLight="themeLight" :dateFormat="dateFormat" />
+					<Current :weather="apiData" :location="geolocation" :unitsSystem="unitsSystem" :dateFormat="dateFormat" />
 				</section>
-				<Extra :weather="apiData" :pollution="airPollutionData" :metric="metric" />
+				<Extra :weather="apiData" :pollution="airPollutionData" :unitsSystem="unitsSystem" />
 			</div>
-			<Forecast :weather="apiData" :metric="metric" />
+			<Forecast :weather="apiData" :unitsSystem="unitsSystem" :dateFormat="dateFormat" />
 			<div v-if="dataError" class="error" @click="dismissError">
 				<h4>{{ dataError }}</h4>
 			</div>
-			<Footer></Footer>
 		</main>
 		<Spinner v-else />
 	</div>
@@ -219,7 +231,7 @@ function getCurrentLocation(): Promise<null> {
 	min-height: 100vh;
 	color: var(--color-text);
 	background-color: var(--color-background-soft);
-	transition: 0.35s ease-in-out;
+	transition: 0.30s ease-in-out;
 }
 
 main {
@@ -258,7 +270,7 @@ main {
 	z-index: 100;
 	cursor: pointer;
 	transition: 0.925 ease-in-out;
-	-webkit-transition: all 0.35s ease-in-out, color 0s;
+	-webkit-transition: all 0.30s ease-in-out, color 0s;
 }
 
 @media (min-width: 640px) {
