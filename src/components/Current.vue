@@ -6,7 +6,8 @@ import { ref } from 'vue';
 const props = defineProps<{
 	weather: OneCallWeatherData | null;
 	location: GeocodingData | null;
-	metric: boolean;
+	unitsSystem: 'metric' | 'imperial';
+	dateFormat: 'en-gb' | 'en-us',
 }>();
 const showAlert = ref<boolean>(false);
 
@@ -30,23 +31,23 @@ function toggleAlert() {
 					<div>{{ alert.event }}.</div>
 					<div>{{ alert.description }}</div>
 					<div>Start: {{
-		new Date(alert.start * 1000).toLocaleString(undefined, {
-			weekday: "long",
-			month: "numeric",
-			day: "numeric",
-			hour: "numeric",
-			minute: "numeric",
-		})
-	}}</div>
+						new Date(alert.start * 1000).toLocaleDateString(dateFormat, {
+							weekday: "long",
+							month: "numeric",
+							day: "numeric",
+							hour: "numeric",
+							minute: "numeric",
+						})
+					}}</div>
 					<div>End: {{
-			new Date(alert.end * 1000).toLocaleString(undefined, {
-				weekday: "long",
-				month: "numeric",
-				day: "numeric",
-				hour: "numeric",
-				minute: "numeric",
-			})
-		}}</div>
+						new Date(alert.end * 1000).toLocaleDateString(dateFormat, {
+							weekday: "long",
+							month: "numeric",
+							day: "numeric",
+							hour: "numeric",
+							minute: "numeric",
+						})
+					}}</div>
 				</div>
 			</div>
 		</div>
@@ -55,14 +56,14 @@ function toggleAlert() {
 				<div>
 					<h4 class="date">
 						{{
-		new Date(weather.current.dt * 1000).toLocaleString(undefined, {
-			weekday: "long",
-			month: "numeric",
-			day: "numeric",
-			hour: "numeric",
-			minute: "numeric",
-		})
-	}}
+							new Date(weather.current.dt * 1000).toLocaleDateString(dateFormat, {
+								weekday: "long",
+								month: "numeric",
+								day: "numeric",
+								hour: "numeric",
+								minute: "numeric",
+							})
+						}}
 					</h4>
 					<h2>{{ location.name }}</h2>
 					<span>{{ location.country }}</span><span v-if="location.state">, {{ location.state }}</span>
@@ -70,20 +71,20 @@ function toggleAlert() {
 				<div>
 					<img :src="`https://openweathermap.org/img/wn/${weather.current.weather[0].icon}@4x.png`"
 						:alt="weather.current.weather[0].description" />
-					<h1>{{ convertTemp(metric, weather.current.temp) }}</h1>
+					<h1>{{ convertTemp(unitsSystem, weather.current.temp) }}</h1>
 				</div>
 			</div>
 			<div>
 				<span>
-					Feels like: <span class="temperature">{{ convertTemp(metric, weather.current.feels_like) }}</span>
+					Feels like: <span class="temperature">{{ convertTemp(unitsSystem, weather.current.feels_like) }}</span>
 				</span>
 				<span>{{ weather.current.weather[0].description }}</span>
 				<span>{{ windSpeedToDescription(weather.current.wind_speed) }}</span>
 			</div>
 			<div>
-				<span>Sunrise: {{ new Date(weather.current.sunrise * 1000).toLocaleString(undefined,
-		{ hour: 'numeric', minute: 'numeric' }) }}</span>
-				<span>Sunset: {{ new Date(weather.current.sunset * 1000).toLocaleString(undefined,
+				<span>Sunrise: {{ new Date(weather.current.sunrise * 1000).toLocaleTimeString(dateFormat,
+					{ hour: 'numeric', minute: 'numeric' }) }}</span>
+				<span>Sunset: {{ new Date(weather.current.sunset * 1000).toLocaleTimeString(dateFormat,
 					{ hour: 'numeric', minute: 'numeric' }) }}</span>
 			</div>
 		</div>
@@ -107,7 +108,7 @@ function toggleAlert() {
 
 		path {
 			fill: var(--color-text-alt);
-			transition: 0.35s ease-in-out;
+			transition: 0.30s ease-in-out;
 		}
 
 		&:hover path {
@@ -145,7 +146,7 @@ function toggleAlert() {
 		height: fit-content;
 		width: 85vw;
 		max-width: 1100px;
-	
+
 		>div {
 			padding: 0.25rem 0.5rem;
 			border-width: 3px;
@@ -173,7 +174,7 @@ function toggleAlert() {
 
 	.date {
 		color: var(--color-text-alt);
-		transition: 0.35s ease-in-out;
+		transition: 0.30s ease-in-out;
 	}
 
 	img {
