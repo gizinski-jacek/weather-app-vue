@@ -15,7 +15,7 @@ import Tooltip from "./Tooltip.vue";
 const props = defineProps<{
 	weather: OneCallWeatherData | null;
 	pollution: AirPollution | null;
-	metric: boolean;
+	unitsSystem: 'metric' | 'imperial';
 }>();
 </script>
 
@@ -30,7 +30,7 @@ const props = defineProps<{
 					<path fill="none" stroke-width="0" d="M0 0h24v24H0z" />
 				</svg>
 			</div>
-			<span>{{ convertPrecipitationVolume(metric, weather.current.rain["1h"]) }}</span>
+			<span>{{ convertPrecipitationVolume(unitsSystem, weather.current.rain["1h"]) }}</span>
 		</div>
 		<div v-else-if="weather.current.snow">
 			<div>
@@ -41,7 +41,7 @@ const props = defineProps<{
 					<path fill="none" stroke-width="0" d="M0 0h24v24H0z" />
 				</svg>
 			</div>
-			<span>{{ convertPrecipitationVolume(metric, weather.current.snow["1h"]) }}</span>
+			<span>{{ convertPrecipitationVolume(unitsSystem, weather.current.snow["1h"]) }}</span>
 		</div>
 		<div>
 			<div>
@@ -51,7 +51,7 @@ const props = defineProps<{
 						d="M13 11.261c0.038 0 0.070-0.018 0.107-0.021 2.849-0.061 5.136-2.386 5.136-5.244 0-2.897-2.348-5.245-5.245-5.245-2.404 0-4.43 1.617-5.050 3.823l-0.009 0.037-0.012 0.025c-0.115 0.411-0.181 0.883-0.182 1.371v0c0 0.69 0.56 1.25 1.25 1.25s1.25-0.56 1.25-1.25v0c0-0.254 0.035-0.499 0.099-0.732l-0.005 0.019 0.006-0.012c0.327-1.18 1.391-2.032 2.655-2.032 1.519 0 2.75 1.231 2.75 2.75s-1.231 2.75-2.75 2.75h-0c-0.019 0-0.034 0.010-0.053 0.011l-10.932-0.011c-0 0-0 0-0 0-0.69 0-1.25 0.56-1.25 1.25s0.559 1.25 1.249 1.25l10.985 0.011zM24.469 4.869c-3.106 0.004-5.723 2.093-6.527 4.942l-0.012 0.048-0.013 0.026c-0.149 0.53-0.235 1.139-0.235 1.768 0 0.002 0 0.003 0 0.005v-0c0 0.69 0.56 1.25 1.25 1.25s1.25-0.56 1.25-1.25v0c0-0.002 0-0.005 0-0.007 0-0.393 0.054-0.774 0.155-1.135l-0.007 0.030 0.007-0.013c0.509-1.837 2.166-3.163 4.133-3.163 2.364 0 4.281 1.917 4.281 4.281s-1.917 4.281-4.281 4.281v0c-0.026 0-0.047 0.013-0.072 0.015l-20.34-0.020c-0.689 0.003-1.246 0.561-1.246 1.25s0.557 1.247 1.245 1.25l20.413 0.020c0.053-0.008 0.099-0.017 0.144-0.029l-0.008 0.002c3.685-0.073 6.644-3.078 6.644-6.774 0-3.742-3.033-6.775-6.775-6.775-0.002 0-0.004 0-0.006 0h0zM22.718 19.309c-0.031-0.008-0.070-0.017-0.11-0.023l-0.006-0.001-18.546 0.018c-0.69 0-1.25 0.56-1.25 1.25s0.56 1.25 1.25 1.25c0 0 0 0 0.001 0l18.487-0.018c0.020 0.001 0.037 0.012 0.058 0.012 1.902 0 3.443 1.542 3.443 3.443s-1.542 3.443-3.443 3.443c-1.582 0-2.915-1.067-3.318-2.521l-0.006-0.024-0.007-0.015c-0.074-0.267-0.117-0.573-0.118-0.89v-0c0-0.002 0-0.003 0-0.005 0-0.69-0.559-1.25-1.25-1.25s-1.25 0.559-1.25 1.25c0 0.002 0 0.003 0 0.005v-0c0 0.002 0 0.005 0 0.007 0 0.55 0.075 1.082 0.214 1.587l-0.010-0.042c0.005 0.017 0.016 0.029 0.021 0.045 0.717 2.533 3.009 4.357 5.726 4.357 3.281 0 5.941-2.66 5.941-5.941 0-3.241-2.595-5.876-5.821-5.94l-0.006-0z" />
 				</svg>
 			</div>
-			<span>{{ convertSpeed(metric, weather.current.wind_speed) }}</span>
+			<span>{{ convertSpeed(unitsSystem, weather.current.wind_speed) }}</span>
 		</div>
 		<div>
 			<div>
@@ -103,7 +103,7 @@ const props = defineProps<{
 						d="M22,7a4,4,0,0,1-4,4H5A1,1,0,0,1,5,9H18a2,2,0,1,0-2-2,1,1,0,0,1-2,0,4,4,0,0,1,8,0Zm-4,6H7a1,1,0,0,0,0,2H18a2,2,0,1,1-2,2,1,1,0,0,0-2,0,4,4,0,1,0,4-4ZM8,19a1,1,0,0,0,0-2H3a1,1,0,0,0,0,2ZM2,6A1,1,0,0,0,3,7h8a1,1,0,0,0,0-2H3A1,1,0,0,0,2,6Z" />
 				</svg>
 			</div>
-			<span>{{ convertSpeed(metric, weather.current.wind_gust) }}</span>
+			<span>{{ convertSpeed(unitsSystem, weather.current.wind_gust) }}</span>
 		</div>
 		<div>
 			<div>
@@ -131,7 +131,7 @@ const props = defineProps<{
 						d="M13.5 0a.5.5 0 0 0 0 1H15v2.75h-.5a.5.5 0 0 0 0 1h.5V7.5h-1.5a.5.5 0 0 0 0 1H15v2.75h-.5a.5.5 0 0 0 0 1h.5V15h-1.5a.5.5 0 0 0 0 1h2a.5.5 0 0 0 .5-.5V.5a.5.5 0 0 0-.5-.5h-2zM7 1.5l.364-.343a.5.5 0 0 0-.728 0l-.002.002-.006.007-.022.023-.08.088a28.458 28.458 0 0 0-1.274 1.517c-.769.983-1.714 2.325-2.385 3.727C2.368 7.564 2 8.682 2 9.733 2 12.614 4.212 15 7 15s5-2.386 5-5.267c0-1.05-.368-2.169-.867-3.212-.671-1.402-1.616-2.744-2.385-3.727a28.458 28.458 0 0 0-1.354-1.605l-.022-.023-.006-.007-.002-.001L7 1.5zm0 0-.364-.343L7 1.5zm-.016.766L7 2.247l.016.019c.24.274.572.667.944 1.144.611.781 1.32 1.776 1.901 2.827H4.14c.58-1.051 1.29-2.046 1.9-2.827.373-.477.706-.87.945-1.144zM3 9.733c0-.755.244-1.612.638-2.496h6.724c.395.884.638 1.741.638 2.496C11 12.117 9.182 14 7 14s-4-1.883-4-4.267z" />
 				</svg>
 			</div>
-			<span>{{ convertTemp(metric, weather.current.dew_point) }}</span>
+			<span>{{ convertTemp(unitsSystem, weather.current.dew_point) }}</span>
 		</div>
 		<div>
 			<div>
@@ -160,32 +160,32 @@ const props = defineProps<{
 					<div class="uv-details">
 						<div>
 							<span class="low" :class="{
-		active: weather.current.uvi <= 2
-	}"></span>
+								active: weather.current.uvi <= 2
+							}"></span>
 							<h5>0-2</h5>
 						</div>
 						<div>
 							<span class="moderate" :class="{
-		active: weather.current.uvi >= 3 && weather.current.uvi <= 5
-	}"></span>
+								active: weather.current.uvi >= 3 && weather.current.uvi <= 5
+							}"></span>
 							<h5>3-5</h5>
 						</div>
 						<div>
 							<span class="high" :class="{
-		active: weather.current.uvi >= 6 && weather.current.uvi <= 7
-	}"></span>
+								active: weather.current.uvi >= 6 && weather.current.uvi <= 7
+							}"></span>
 							<h5>6-7</h5>
 						</div>
 						<div>
 							<span class="very-high" :class="{
-		active: weather.current.uvi >= 8 && weather.current.uvi <= 10
-	}"></span>
+								active: weather.current.uvi >= 8 && weather.current.uvi <= 10
+							}"></span>
 							<h5>8-10</h5>
 						</div>
 						<div>
 							<span class="extreme" :class="{
-		active: weather.current.uvi >= 11
-	}"></span>
+								active: weather.current.uvi >= 11
+							}"></span>
 							<h5>11+</h5>
 						</div>
 					</div>
