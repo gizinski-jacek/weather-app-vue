@@ -89,7 +89,6 @@ watch(searchResults, (newSearchResults) => {
 })
 
 function changeUnitsSystem(value: 'metric' | 'imperial') {
-	console.log(value)
 	unitsSystem.value = value;
 }
 
