@@ -2,27 +2,27 @@
 import type { GeocodingData } from '@/types/types';
 import { roundToDecimal } from '@/utilities/converters';
 import { onMounted, onUnmounted, ref } from "vue";
-import Tooltip from './Tooltip.vue';
 import Settings from './Settings.vue';
 
 const props = defineProps<{
 	unitsSystem: 'metric' | 'imperial',
 	dateFormat: 'en-gb' | 'en-us',
 	searchResults: GeocodingData[] | null,
-	themeLight: boolean
+	themeLight: boolean,
+	fetching: boolean
 }>();
 
-const emit = defineEmits(["changeUnitsSystem", "changeDateFormat", "searchLocation", "requestLocation", "clearResults", "toggleTheme"]);
+const emit = defineEmits(["changeUnitsSystem", "changeDateFormat", "searchLocation", "requestLocation", "clearResults", "toggleTheme", "updateData"]);
 const searchValue = ref<string>("");
 const input = ref<HTMLInputElement | null>(null);
 const svgBtn = ref<SVGElement | null>(null);
 const settings = ref<boolean>(false);
 
 onMounted(() => {
-	const tt = document.getElementById('search');
-	if (!tt) return;
-	tt.addEventListener('focus', watchFocus);
-	tt.addEventListener('blur', watchFocus);
+	const input = document.getElementById('search');
+	if (!input) return;
+	input.addEventListener('focus', watchFocus);
+	input.addEventListener('blur', watchFocus);
 })
 
 onUnmounted(() => {
@@ -49,7 +49,6 @@ function clearInputAndResults() {
 function triggerSearch(e: KeyboardEvent | MouseEvent) {
 	if (!searchValue.value) {
 		if (e.target === svgBtn.value) input.value?.focus();
-		return;
 	} else {
 		emit("searchLocation", searchValue.value.trim());
 		searchValue.value = "";
@@ -71,7 +70,6 @@ function changeUnitsSystem(unitsSystem: 'metric' | 'imperial') {
 function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 	emit('changeDateFormat', dateFormat)
 }
-
 </script>
 
 <template>
@@ -81,8 +79,8 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 				@keypress.enter="triggerSearch" />
 			<div v-if="searchValue || searchResults" class="clear" @click="clearInputAndResults"></div>
 			<div class="mag-icon">
-				<svg viewBox="0 0 24 24" stroke-width="2px" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg"
-					@click="triggerSearch">
+				<svg ref="svgBtn" viewBox="0 0 24 24" stroke-width="2px" stroke-linecap="round"
+					xmlns="http://www.w3.org/2000/svg" @click="triggerSearch">
 					<circle cx="10" cy="10" r="6" />
 					<path d="M14.5 14.5L19 19" />
 				</svg>
@@ -102,27 +100,33 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 				</div>
 			</div>
 		</div>
+		<button type="button" class="update-data" :class="{ fetching: fetching }" @click="emit('updateData')">
+			<svg fill="#000000" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+				<g stroke-width="0"></g>
+				<g stroke-linecap="round" stroke-linejoin="round"></g>
+				<g>
+					<path
+						d="M27.1 14.313V5.396L24.158 8.34c-2.33-2.325-5.033-3.503-8.11-3.503C9.902 4.837 4.901 9.847 4.899 16c.001 6.152 5.003 11.158 11.15 11.16 4.276 0 9.369-2.227 10.836-8.478l.028-.122h-3.23l-.022.068c-1.078 3.242-4.138 5.421-7.613 5.421a8 8 0 0 1-5.691-2.359A7.993 7.993 0 0 1 8 16.001c0-4.438 3.611-8.049 8.05-8.049 2.069 0 3.638.58 5.924 2.573l-3.792 3.789H27.1z">
+					</path>
+				</g>
+			</svg>
+		</button>
 		<button type="button" class="geolocation" @click="emit('requestLocation')">
-			<Tooltip :content="'Update geolocation'" />
 			<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
 				<path d="M25.497 6.503l.001-.003-.004.005L3.5 15.901l11.112 1.489 1.487 11.11 9.396-21.992.005-.006z" />
 			</svg>
 		</button>
-		<button type="button" class="settings" @click="openSettings">
-			<Tooltip :content="'Settings'" />
+		<button type="button" class="settings" :class="{ open: settings }" @click="openSettings">
 			<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<g stroke-width="0"></g>
 				<g stroke-linecap="round" stroke-linejoin="round"></g>
 				<g>
 					<path fill-rule="evenodd" clip-rule="evenodd"
-						d="M11.567 9.8895C12.2495 8.90124 12.114 7.5637 11.247 6.7325C10.3679 5.88806 9.02339 5.75928 7.99998 6.4215C7.57983 6.69308 7.25013 7.0837 7.05298 7.5435C6.85867 7.99881 6.80774 8.50252 6.90698 8.9875C7.00665 9.47472 7.25054 9.92071 7.60698 10.2675C7.97021 10.6186 8.42786 10.8563 8.92398 10.9515C9.42353 11.049 9.94062 11.0001 10.413 10.8105C10.8798 10.6237 11.2812 10.3033 11.567 9.8895Z"
-						stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-					<path fill-rule="evenodd" clip-rule="evenodd"
-						d="M12.433 17.8895C11.7504 16.9012 11.886 15.5637 12.753 14.7325C13.6321 13.8881 14.9766 13.7593 16 14.4215C16.4202 14.6931 16.7498 15.0837 16.947 15.5435C17.1413 15.9988 17.1922 16.5025 17.093 16.9875C16.9933 17.4747 16.7494 17.9207 16.393 18.2675C16.0298 18.6186 15.5721 18.8563 15.076 18.9515C14.5773 19.0481 14.0614 18.9988 13.59 18.8095C13.1222 18.6234 12.7197 18.3034 12.433 17.8895V17.8895Z"
-						stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+						d="M3.59938 6.22413C3.362 4.82033 4.68002 3.64638 6.07306 4.02084L7.12777 4.30435C7.96485 4.52937 8.85305 4.19092 9.31887 3.46943L10.3298 1.90368C11.1077 0.698775 12.8923 0.698773 13.6702 1.90368L14.6811 3.46943C15.1469 4.19092 16.0351 4.52937 16.8722 4.30435L17.9269 4.02084C19.32 3.64638 20.638 4.82033 20.4006 6.22413L20.1405 7.76265C20.0068 8.55335 20.3773 9.3442 21.0747 9.75663L22.0388 10.3268C23.3204 11.0847 23.3204 12.9153 22.0388 13.6732L21.0747 14.2434C20.3773 14.6558 20.0068 15.4467 20.1405 16.2374L20.4006 17.7759C20.638 19.1797 19.32 20.3536 17.9269 19.9792L16.8722 19.6957C16.0351 19.4706 15.1469 19.8091 14.6811 20.5306L13.6702 22.0963C12.8923 23.3012 11.1077 23.3012 10.3298 22.0963L9.31887 20.5306C8.85305 19.8091 7.96485 19.4706 7.12777 19.6957L6.07306 19.9792C4.68002 20.3536 3.362 19.1797 3.59938 17.7759L3.85954 16.2374C3.99324 15.4467 3.62271 14.6558 2.92531 14.2434L1.96116 13.6732C0.679612 12.9153 0.679614 11.0847 1.96116 10.3268L2.92531 9.75663C3.62271 9.3442 3.99324 8.55335 3.85954 7.76265L3.59938 6.22413ZM9.03042 6.14621H6.06085V9.0731L3.09127 12L6.06085 14.9269V17.8538H9.03042L12 20.7807L14.9696 17.8538H17.9392V14.9269L20.9087 12L17.9392 9.0731V6.14621H14.9696L12 3.21931L9.03042 6.14621Z"
+						fill="#0F0F0F"></path>
 					<path
-						d="M12 7.75049C11.5858 7.75049 11.25 8.08627 11.25 8.50049C11.25 8.9147 11.5858 9.25049 12 9.25049V7.75049ZM19 9.25049C19.4142 9.25049 19.75 8.9147 19.75 8.50049C19.75 8.08627 19.4142 7.75049 19 7.75049V9.25049ZM6.857 9.25049C7.27121 9.25049 7.607 8.9147 7.607 8.50049C7.607 8.08627 7.27121 7.75049 6.857 7.75049V9.25049ZM5 7.75049C4.58579 7.75049 4.25 8.08627 4.25 8.50049C4.25 8.9147 4.58579 9.25049 5 9.25049V7.75049ZM12 17.2505C12.4142 17.2505 12.75 16.9147 12.75 16.5005C12.75 16.0863 12.4142 15.7505 12 15.7505V17.2505ZM5 15.7505C4.58579 15.7505 4.25 16.0863 4.25 16.5005C4.25 16.9147 4.58579 17.2505 5 17.2505V15.7505ZM17.143 15.7505C16.7288 15.7505 16.393 16.0863 16.393 16.5005C16.393 16.9147 16.7288 17.2505 17.143 17.2505V15.7505ZM19 17.2505C19.4142 17.2505 19.75 16.9147 19.75 16.5005C19.75 16.0863 19.4142 15.7505 19 15.7505V17.2505ZM12 9.25049H19V7.75049H12V9.25049ZM6.857 7.75049H5V9.25049H6.857V7.75049ZM12 15.7505H5V17.2505H12V15.7505ZM17.143 17.2505H19V15.7505H17.143V17.2505Z">
-					</path>
+						d="M16.4515 12C16.4515 14.4247 14.4572 16.3903 11.9971 16.3903C9.53706 16.3903 7.54277 14.4247 7.54277 12C7.54277 9.57528 9.53706 7.60965 11.9971 7.60965C14.4572 7.60965 16.4515 9.57528 16.4515 12ZM9.51963 12C9.51963 13.3486 10.6288 14.4419 11.9971 14.4419C13.3654 14.4419 14.4746 13.3486 14.4746 12C14.4746 10.6514 13.3654 9.5581 11.9971 9.5581C10.6288 9.5581 9.51963 10.6514 9.51963 12Z"
+						fill="#0F0F0F"></path>
 				</g>
 			</svg>
 		</button>
@@ -184,7 +188,7 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 	width: fit-content;
 	max-width: 320px;
 	background-color: var(--color-background);
-	border: 2px solid var(--color-text);
+	border: 2px solid var(--color-border);
 	border-radius: 4px;
 	gap: 0.25rem;
 	position: relative;
@@ -252,9 +256,9 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 		&:after {
 			display: block;
 			content: "";
-			width: 20px;
+			width: 16px;
 			height: 2px;
-			background-color: var(--color-heading);
+			background-color: var(--color-border);
 			transform: translateY(9px) rotate(-45deg);
 			transition: 0.30s ease-in-out;
 		}
@@ -265,12 +269,12 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 
 		&:hover:before,
 		&:hover:after {
-			background-color: var(--color-text);
+			background-color: var(--color-border-hover);
 		}
 
 		&:active:before,
 		&:active:after {
-			background-color: var(--color-text-alt);
+			background-color: var(--color-border-active);
 		}
 	}
 
@@ -342,21 +346,50 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 	}
 }
 
+.update-data {
+	padding: 0;
+	width: 32px;
+	height: 32px;
+
+	svg {
+		width: 28px;
+		height: 28px;
+		margin: auto;
+		fill: var(--color-text-alt);
+	}
+
+	&.fetching {
+		svg {
+			animation: spin 500ms infinite linear;
+		}
+	}
+
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
+		}
+
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+}
+
 .geolocation {
 	padding: 0;
 	width: 32px;
 	height: 32px;
 
 	svg {
-		width: 24px;
-		height: 24px;
+		width: 28px;
+		height: 28px;
 		margin: auto;
 		fill: var(--color-text-alt);
 	}
 }
 
 .settings {
-	padding: 0;
+	padding: 0px;
 	width: 32px;
 	height: 32px;
 
@@ -364,12 +397,12 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 		width: 24px;
 		height: 24px;
 		margin: auto;
-		fill: var(--color-text-alt);
-	}
-}
 
-.units {
-	min-width: 84px;
+		path {
+			fill: var(--color-text-alt);
+			transition: 0.30s ease-in-out;
+		}
+	}
 }
 
 .theme {
@@ -379,15 +412,15 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 	display: grid;
 
 	svg {
-		width: 20px;
-		height: 20px;
+		width: 24px;
+		height: 24px;
 		margin: auto;
-		cursor: pointer;
 		grid-column: 1;
 		grid-row: 1;
 
 		path {
 			fill: var(--color-text-alt);
+			transition: 0.30s ease-in-out,
 		}
 	}
 
