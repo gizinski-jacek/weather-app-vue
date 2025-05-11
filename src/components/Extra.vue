@@ -201,8 +201,7 @@ const props = defineProps<{
 					<rect x="2" y="15" width="5" height="2" />
 					<rect x="6.8536" y="5.3745" width="1.9998" height="4.958" transform="translate(-3.253 7.8535) rotate(-45)" />
 					<path d="M22,17H20V16a4,4,0,0,0-8,0v1H10V16a6,6,0,0,1,12,0Z" transform="translate(0 0)" />
-					<rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" fill="none"
-						width="32" height="32" />
+					<rect fill="none" width="32" height="32" />
 				</svg>
 			</div>
 			<span>{{ ultravioletIndexToDescription(weather.current.uvi) }}</span>
@@ -352,12 +351,12 @@ const props = defineProps<{
 	margin-bottom: 0.25rem;
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
-	border: 1px solid var(--color-text);
-	gap: 1px;
-	background-color: var(--color-text);
+	border: 2px solid var(--color-border);
+	gap: 2px;
+	background-color: var(--color-border);
 
 	>div {
-		padding: 0.25rem 0.5rem;
+		padding: 0.125rem 0.25rem;
 		text-transform: none;
 		background-color: var(--color-background-soft);
 	}
@@ -390,7 +389,7 @@ const props = defineProps<{
 
 @media (min-width: 940px) {
 	.extra-widgets {
-		grid-template-columns: repeat(5, minmax(68px, 1fr));
+		grid-template-columns: repeat(4, minmax(68px, 1fr));
 	}
 }
 </style>
