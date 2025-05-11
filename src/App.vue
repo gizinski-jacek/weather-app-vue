@@ -25,6 +25,7 @@ const apiData = ref<OneCallWeatherData | null>(null);
 const airPollutionData = ref<AirPollution | null>(null);
 const dataError = ref<string | null>(null);
 const themeLight = ref<boolean>(false);
+const fetching = ref<boolean>(false);
 
 onMounted(async () => {
 	try {
@@ -104,6 +105,14 @@ function clearSearchResults() {
 	searchResults.value = null
 }
 
+async function updateData() {
+	fetching.value = true
+	if (geolocation.value) {
+		await updateAppData(geolocation.value)
+	}
+	fetching.value = false
+}
+
 function watchResultsClick(e: MouseEvent) {
 	const el = e.target as HTMLDivElement
 	if (el.className !== 'result') {
@@ -131,6 +140,7 @@ async function updateAppData(location: GeocodingData) {
 async function searchLocation(query: string | GeocodingData) {
 	try {
 		if (!query) return;
+		fetching.value = true
 		if (typeof query === 'string') {
 			const results = await fetchByQuery(query);
 			if (!results.length) {
@@ -144,6 +154,7 @@ async function searchLocation(query: string | GeocodingData) {
 			searchResults.value = null;
 		}
 		dataError.value = null;
+		fetching.value = false
 	} catch (error: any) {
 		if (error instanceof AxiosError) {
 			if (error.response?.status === 400) {
@@ -153,15 +164,19 @@ async function searchLocation(query: string | GeocodingData) {
 			dataError.value = error.message || 'Error searching for city, try again.'
 		}
 		searchResults.value = null;
+		fetching.value = false
 	}
 }
 
 async function requestLocation() {
 	try {
 		dataError.value = null
+		fetching.value = true
 		await getCurrentLocation();
+		fetching.value = false
 	} catch (error: any) {
 		dataError.value = error.message
+		fetching.value = false
 	}
 }
 
@@ -210,8 +225,8 @@ function getCurrentLocation(): Promise<null> {
 				<section class="basic">
 					<Controls @changeUnitsSystem="changeUnitsSystem" @changeDateFormat="changeDateFormat"
 						@searchLocation="searchLocation" @requestLocation="requestLocation" @clearResults="clearSearchResults"
-						@toggleTheme="toggleTheme" :unitsSystem="unitsSystem" :searchResults="searchResults"
-						:themeLight="themeLight" :dateFormat="dateFormat" />
+						@toggleTheme="toggleTheme" @updateData="updateData" :unitsSystem="unitsSystem"
+						:searchResults="searchResults" :themeLight="themeLight" :dateFormat="dateFormat" :fetching="fetching" />
 					<Current :weather="apiData" :location="geolocation" :unitsSystem="unitsSystem" :dateFormat="dateFormat" />
 				</section>
 				<Extra :weather="apiData" :pollution="airPollutionData" :unitsSystem="unitsSystem" />
@@ -239,7 +254,7 @@ main {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	gap: 2rem;
+	gap: 1rem;
 	margin: 0 auto;
 	padding: 1rem;
 	position: relative;
@@ -249,12 +264,12 @@ main {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	gap: 2rem;
+	gap: 1rem;
 }
 
 .error {
 	position: absolute;
-	top: 0;
+	top: 5%;
 	left: 50%;
 	transform: translateX(-50%);
 	min-width: 280px;
