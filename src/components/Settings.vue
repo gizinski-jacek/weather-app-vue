@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { onMounted, onUnmounted } from 'vue';
+
 
 const props = defineProps<{
 	unitsSystem: 'metric' | 'imperial',
@@ -7,6 +9,14 @@ const props = defineProps<{
 
 const emit = defineEmits(["closeSettings", "changeUnitsSystem", "changeDateFormat"]);
 
+onMounted(() => {
+	document.body.style.overflow = 'hidden'
+});
+
+onUnmounted(() => {
+	document.body.style.overflow = ''
+})
+
 function changeUnitsSystem(unitsSystem: 'metric' | 'imperial') {
 	emit('changeUnitsSystem', unitsSystem)
 }
@@ -14,7 +24,6 @@ function changeUnitsSystem(unitsSystem: 'metric' | 'imperial') {
 function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 	emit('changeDateFormat', dateFormat)
 }
-
 </script>
 
 <template>
@@ -57,7 +66,7 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 	bottom: 0;
 	left: 0;
 	right: 0;
-	z-index: 50;
+	z-index: 500;
 
 	.modal-background {
 		position: absolute;
@@ -76,7 +85,7 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 	display: flex;
 	flex-direction: column;
 	background-color: var(--color-background-soft);
-	border: 2px solid var(--color-border);
+	border: 2px solid var(--color-border-hover);
 
 	span {
 		text-align: center;
@@ -95,8 +104,8 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 		}
 
 		button.active {
-			color: var(--color-border-active);
-			border-color: var(--color-text-alt);
+			color: var(--color-text-alt);
+			border-color: var(--color-border-active);
 		}
 	}
 
