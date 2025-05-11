@@ -65,10 +65,11 @@ function renderFrom(e: MouseEvent) {
 		width: max-content;
 		max-width: 280px;
 		text-align: center;
-		padding: 0.5rem;
+		padding: 0.25rem;
 		border: 2px solid var(--color-border-active);
 		border-radius: 4px;
 		opacity: 1;
+		user-select: none;
 		transition: 0.15s ease-in-out;
 		transition-delay: 0.4s;
 
