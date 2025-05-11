@@ -111,7 +111,7 @@ watch(pageView, () => {
 				<div v-if="pageView" class="page-controls">
 					<div class="arrow-prev" @click="changePage(currentPage - 1)"></div>
 					<div v-for="num in Math.ceil(weather[displayedForecast].length / groupSize)" :key="num">
-						<span class="dot" :class="{ active: currentPage === num }" @click="currentPage = num"></span>
+						<span class="orb" :class="{ active: currentPage === num }" @click="currentPage = num"></span>
 					</div>
 					<div class="arrow-next" @click="changePage(currentPage + 1)"></div>
 				</div>
@@ -139,8 +139,8 @@ watch(pageView, () => {
 						{{
 							new Date(day.dt * 1000).toLocaleDateString(dateFormat, {
 								weekday: smallScreen ? "short" : "long",
-								month: "numeric",
-								day: "numeric",
+								month: "2-digit",
+								day: "2-digit",
 							})
 						}}
 					</div>
@@ -300,8 +300,7 @@ watch(pageView, () => {
 										<rect x="6.8536" y="5.3745" width="1.9998" height="4.958"
 											transform="translate(-3.253 7.8535) rotate(-45)" />
 										<path d="M22,17H20V16a4,4,0,0,0-8,0v1H10V16a6,6,0,0,1,12,0Z" transform="translate(0 0)" />
-										<rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1"
-											fill="none" width="32" height="32" />
+										<rect fill="none" width="32" height="32" />
 									</svg>
 									<span>{{ day.uvi }}</span>
 								</div>
@@ -311,7 +310,7 @@ watch(pageView, () => {
 											d="M7,15a5,5,0,0,1,10,0,1,1,0,0,1-2,0,3,3,0,0,0-6,0,1,1,0,0,1-2,0Zm11-4.586.707-.707a1,1,0,0,0-1.414-1.414L16.586,9A1,1,0,1,0,18,10.414ZM20,16h1a1,1,0,0,0,0-2H20a1,1,0,0,0,0,2ZM4,14H3a1,1,0,0,0,0,2H4a1,1,0,0,0,0-2ZM5.293,9.707,6,10.414A1,1,0,1,0,7.414,9l-.707-.707A1,1,0,0,0,5.293,9.707ZM4,18a1,1,0,0,0,1,1H19a1,1,0,0,0,0-2H5A1,1,0,0,0,4,18Zm4,3a1,1,0,0,0,0,2h8a1,1,0,0,0,0-2ZM12,9a1,1,0,0,0,1-1V4.414l1.293,1.293a1,1,0,0,0,1.414-1.414l-3-3a1,1,0,0,0-1.416,0l-3,3A1,1,0,0,0,9.707,5.707L11,4.414V8A1,1,0,0,0,12,9Z" />
 									</svg>
 									<span>{{ new Date(day.sunrise * 1000).toLocaleTimeString(dateFormat,
-										{ hour: 'numeric', minute: 'numeric' }) }}</span>
+										{ hour: '2-digit', minute: '2-digit' }) }}</span>
 								</div>
 								<div>
 									<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -319,7 +318,7 @@ watch(pageView, () => {
 											d="M7,15a5,5,0,0,1,10,0,1,1,0,0,1-2,0,3,3,0,0,0-6,0,1,1,0,0,1-2,0ZM17.293,8.293,16.586,9A1,1,0,1,0,18,10.414l.707-.707a1,1,0,0,0-1.414-1.414ZM22,15a1,1,0,0,0-1-1H20a1,1,0,0,0,0,2h1A1,1,0,0,0,22,15ZM4,14H3a1,1,0,0,0,0,2H4a1,1,0,0,0,0-2ZM6.707,8.293A1,1,0,0,0,5.293,9.707L6,10.414A1,1,0,1,0,7.414,9ZM4,18a1,1,0,0,0,1,1H19a1,1,0,0,0,0-2H5A1,1,0,0,0,4,18Zm13,4a1,1,0,0,0-1-1H8a1,1,0,0,0,0,2h8A1,1,0,0,0,17,22ZM12,1a1,1,0,0,0-1,1V5.586L9.707,4.293A1,1,0,0,0,8.293,5.707l3,3a1,1,0,0,0,1.414,0l3-3a1,1,0,1,0-1.414-1.414L13,5.586V2A1,1,0,0,0,12,1Z" />
 									</svg>
 									<span>{{ new Date(day.sunset * 1000).toLocaleTimeString(dateFormat,
-										{ hour: 'numeric', minute: 'numeric' }) }}</span>
+										{ hour: '2-digit', minute: '2-digit' }) }}</span>
 								</div>
 							</div>
 						</Tooltip>
@@ -342,10 +341,10 @@ watch(pageView, () => {
 						{{
 							new Date(hour.dt * 1000).toLocaleDateString(dateFormat, {
 								weekday: smallScreen ? "short" : "long",
-								month: "numeric",
-								day: "numeric",
-								hour: "numeric",
-								minute: "numeric",
+								month: "2-digit",
+								day: "2-digit",
+								hour: "2-digit",
+								minute: "2-digit",
 							})
 						}}
 					</div>
@@ -465,8 +464,7 @@ watch(pageView, () => {
 										<rect x="6.8536" y="5.3745" width="1.9998" height="4.958"
 											transform="translate(-3.253 7.8535) rotate(-45)" />
 										<path d="M22,17H20V16a4,4,0,0,0-8,0v1H10V16a6,6,0,0,1,12,0Z" transform="translate(0 0)" />
-										<rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1"
-											fill="none" width="32" height="32" />
+										<rect fill="none" width="32" height="32" />
 									</svg>
 									<span>{{ hour.uvi }}</span>
 								</div>
@@ -497,8 +495,8 @@ watch(pageView, () => {
 	text-transform: capitalize;
 
 	button.active {
-		color: var(--color-border-active);
-		border-color: var(--color-text-alt);
+		color: var(--color-text-alt);
+		border-color: var(--color-border-active);
 	}
 }
 
@@ -522,7 +520,7 @@ watch(pageView, () => {
 
 		&:hover {
 			background-color: var(--color-background);
-			border-color: var(--color-text);
+			border-color: var(--color-border-hover);
 			border-radius: 4px;
 		}
 
@@ -535,7 +533,7 @@ watch(pageView, () => {
 .display-controls {
 	display: flex;
 	align-items: center;
-	gap: 2rem;
+	gap: 1rem;
 }
 
 .time-controls {
@@ -549,7 +547,7 @@ watch(pageView, () => {
 	align-items: center;
 	gap: 0.25rem;
 
-	.dot {
+	.orb {
 		display: block;
 		width: 14px;
 		height: 14px;
@@ -562,7 +560,7 @@ watch(pageView, () => {
 
 		&:hover {
 			background-color: var(--color-border-hover);
-			border-color: var(--color-text);
+			border-color: var(--color-border-hover);
 		}
 
 		&:active {
@@ -570,8 +568,8 @@ watch(pageView, () => {
 		}
 
 		&.active {
-			background-color: var(--color-text-alt);
-			border-color: var(--color-text-alt);
+			background-color: var(--color-border-active);
+			border-color: var(--color-border-active);
 		}
 	}
 
@@ -588,7 +586,7 @@ watch(pageView, () => {
 			content: "";
 			width: 12px;
 			height: 4px;
-			background-color: var(--color-heading);
+			background-color: var(--color-border);
 			transform: translateY(5px) rotate(-45deg);
 			margin: 0 0.25rem;
 			transition: 0.30s ease-in-out;
@@ -600,12 +598,12 @@ watch(pageView, () => {
 
 		&:hover:before,
 		&:hover:after {
-			background-color: var(--color-text);
+			background-color: var(--color-border-hover);
 		}
 
 		&:active:before,
 		&:active:after {
-			background-color: var(--color-text-alt);
+			background-color: var(--color-border-active);
 		}
 	}
 
@@ -652,7 +650,6 @@ watch(pageView, () => {
 .day,
 .hour {
 	display: grid;
-	grid-template-columns: 1fr 50px 80px 1fr 20px;
 	grid-auto-flow: column;
 	align-items: center;
 	padding: 0 0.5rem;
@@ -663,6 +660,16 @@ watch(pageView, () => {
 
 	&:nth-child(2n) {
 		background-color: var(--color-background);
+
+		>div:nth-child(2) {
+			transition: 0.30s ease-in-out;
+			background-color: var(--color-background-soft);
+			border-radius: 50%;
+		}
+
+		>div:nth-child(4) {
+			word-break: break-word;
+		}
 	}
 
 	.tooltip-icon {
@@ -700,8 +707,13 @@ watch(pageView, () => {
 	}
 }
 
+
+.day {
+	grid-template-columns: 60px 50px 80px 70px 20px;
+}
+
 .hour {
-	grid-template-columns: 1fr 50px 50px 1fr 20px;
+	grid-template-columns: 100px 50px 50px 70px 20px;
 }
 
 .tooltip {
@@ -731,14 +743,47 @@ watch(pageView, () => {
 	}
 }
 
+@media (min-width: 420px) {
+	.day {
+		grid-template-columns: minmax(100px, 1fr) 50px 80px 70px 20px;
+	}
+}
+
+@media (min-width: 480px) {
+	.day {
+		grid-template-columns: minmax(100px, 1fr) 50px 80px minmax(120px, 1fr) 20px;
+	}
+
+	.hour {
+		grid-template-columns: 100px 50px 50px minmax(120px, 1fr) 20px;
+	}
+}
+
+@media (min-width: 540px) {
+	.hour {
+		grid-template-columns: minmax(180px, 1fr) 50px 50px minmax(120px, 1fr) 20px;
+	}
+}
+
 @media (min-width: 640px) {
 	.forecast-controls {
 		flex-direction: row;
 		flex-wrap: nowrap;
 	}
 
-	.day .temperature>div {
-		justify-content: space-between;
+	.day {
+		grid-template-columns: minmax(100px, 1fr) 50px 180px minmax(120px, 1fr) 20px;
+		gap: 1rem;
+	}
+
+	.day .temperature {
+		display: flex;
+		flex-direction: row;
+		gap: 1rem;
+
+		>div {
+			justify-content: center;
+		}
 	}
 }
 
@@ -785,12 +830,23 @@ watch(pageView, () => {
 	.hour {
 		display: grid;
 		grid-template-columns: unset;
-		grid-template-rows: 1fr 50px 50px 1fr 20px;
 		grid-auto-flow: column;
 		justify-items: center;
 		align-items: start;
 		padding: 1rem;
-		min-width: fit-content; // Required to prevent only first item on only first page from being overlapped by second item (why???)
+
+		.temperature {
+			flex-direction: column;
+			gap: 0;
+		}
+	}
+
+	.day {
+		grid-template-rows: 1fr 50px 50px 1fr 20px;
+	}
+
+	.hour {
+		grid-template-rows: 1fr 50px 30px 1fr 20px;
 	}
 }
 </style>
