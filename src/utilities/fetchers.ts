@@ -11,7 +11,8 @@ export async function fetchByQuery(query: string): Promise<GeocodingData[]> {
 		const res: AxiosResponse<GeocodingData[]> = await axios.get(
 			`https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=${
 				import.meta.env.VITE_API_KEY
-			}`
+			}`,
+			{ timeout: 10000 }
 		);
 		return res.data;
 	} catch (error: any) {
@@ -27,7 +28,8 @@ export async function fetchByCoords(
 		const res: AxiosResponse<GeocodingData[]> = await axios.get(
 			`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${
 				import.meta.env.VITE_API_KEY
-			}`
+			}`,
+			{ timeout: 10000 }
 		);
 		return res.data[0];
 	} catch (error: any) {
@@ -43,7 +45,8 @@ export async function fetchWeatherOneCall(
 		const res: AxiosResponse<OneCallWeatherData> = await axios.get(
 			`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&units=metric&appid=${
 				import.meta.env.VITE_API_KEY
-			}`
+			}`,
+			{ timeout: 10000 }
 		);
 		return res.data;
 	} catch (error: any) {
@@ -59,7 +62,8 @@ export async function fetchAirPollution(
 		const res: AxiosResponse<AirPollution> = await axios.get(
 			`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${
 				import.meta.env.VITE_API_KEY
-			}`
+			}`,
+			{ timeout: 10000 }
 		);
 		return res.data;
 	} catch (error: any) {
