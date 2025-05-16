@@ -3,8 +3,8 @@ import { onMounted, onUnmounted } from 'vue';
 
 
 const props = defineProps<{
-	unitsSystem: 'metric' | 'imperial',
-	dateFormat: 'en-gb' | 'en-us',
+	unitsSystem: 'metric' | 'imperial' | undefined,
+	dateFormat: 'en-gb' | 'en-us' | undefined,
 }>();
 
 const emit = defineEmits(["closeSettings", "changeUnitsSystem", "changeDateFormat"]);
