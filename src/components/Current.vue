@@ -6,8 +6,8 @@ import { ref } from 'vue';
 const props = defineProps<{
 	weather: OneCallWeatherData | null;
 	location: GeocodingData | null;
-	unitsSystem: 'metric' | 'imperial';
-	dateFormat: 'en-gb' | 'en-us',
+	unitsSystem: 'metric' | 'imperial' | undefined;
+	dateFormat: 'en-gb' | 'en-us' | undefined,
 }>();
 const showAlert = ref<boolean>(false);
 
@@ -108,14 +108,16 @@ function toggleAlert() {
 
 		path {
 			fill: var(--color-text-alt);
-			transition: 0.30s ease-in-out;
+			transition: 0.3s ease-in-out;
 		}
 
 		&:hover path {
+			-webkit-filter: brightness(110%);
 			filter: brightness(110%);
 		}
 
 		&:active path {
+			-webkit-filter: brightness(120%);
 			filter: brightness(120%);
 		}
 	}
@@ -139,11 +141,13 @@ function toggleAlert() {
 			padding: 0 0.5rem;
 			transform: scale(0);
 			transform-origin: 0 0;
-			transition: 0.30s ease-in-out;
+			transition: 0.3s ease-in-out;
 		}
 	}
 
 	&.show .alert-content {
+		height: -webkit-fit-content;
+		height: -moz-fit-content;
 		height: fit-content;
 		width: 85vw;
 		max-width: 1100px;
@@ -174,7 +178,7 @@ function toggleAlert() {
 
 	.date {
 		color: var(--color-text-alt);
-		transition: 0.30s ease-in-out;
+		transition: 0.3s ease-in-out;
 	}
 
 	img {
