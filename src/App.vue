@@ -6,8 +6,11 @@ import Forecast from "./components/Forecast.vue";
 import Controls from "./components/Controls.vue";
 import Spinner from "./components/Spinner.vue";
 import type { GeocodingData, OneCallWeatherData, AirPollution } from "./types/types";
-import { fetchByQuery, fetchByCoords, fetchWeatherOneCall, fetchAirPollution } from "./utilities/fetchers";
+import { getLocationByQuery, getLocationByCoords, getLocation, getWeatherData } from "./utilities/fetchers";
 import { AxiosError } from 'axios';
+import { Capacitor } from '@capacitor/core';
+import { BackgroundRunner, } from '@capacitor/background-runner';
+import { Preferences } from '@capacitor/preferences';
 
 const defaultLocation: GeocodingData = {
 	lat: 52.3727598,
@@ -17,70 +20,136 @@ const defaultLocation: GeocodingData = {
 	state: "North Holland",
 }
 
-const unitsSystem = ref<'metric' | 'imperial'>('metric');
-const dateFormat = ref<'en-gb' | 'en-us'>('en-gb');
+const unitsSystem = ref<'metric' | 'imperial' | undefined>();
+const dateFormat = ref<'en-gb' | 'en-us' | undefined>();
 const geolocation = ref<GeocodingData | null>(null);
 const searchResults = ref<GeocodingData[] | null>(null);
-const apiData = ref<OneCallWeatherData | null>(null);
-const airPollutionData = ref<AirPollution | null>(null);
+const weatherData = ref<OneCallWeatherData | null>(null);
+const pollutionData = ref<AirPollution | null>(null);
 const dataError = ref<string | null>(null);
 const themeLight = ref<boolean>(false);
 const fetching = ref<boolean>(false);
 
+const execBackgroundRunner = () => {
+	// Currently not working
+	BackgroundRunner.dispatchEvent({
+		label: 'com.weatherio.app.background.updateWeatherData',
+		event: 'updateWeatherData',
+		details: {},
+	});
+
+}
+
 onMounted(async () => {
+	await Preferences.configure({
+		group: 'com.weatherio.app.background.updateWeatherData'
+	})
+	importPreferences()
+});
+
+async function importPreferences() {
 	try {
-		const preferLight = window.matchMedia(
-			'(prefers-color-scheme: light)'
-		).matches;
-		if (localStorage.themeLight) {
-			themeLight.value = JSON.parse(localStorage.themeLight);
+		if (Capacitor.isNativePlatform()) {
+			// // runner.js background service on app start and send the data you need
+			// execBackgroundRunner();
+			// // BONUS: when you resume your app, force runner.js event again if needed
+			// App.addListener('resume', () => {
+			// 	execBackgroundRunner();
+			// });
+			const preferLight = window.matchMedia(
+				'(prefers-color-scheme: light)'
+			).matches;
+			const userThemeLight = (await Preferences.get({ key: 'userThemeLight' })).value
+			const userUnitsSystem = (await Preferences.get({ key: 'userUnitsSystem' })).value
+			const userDateFormat = (await Preferences.get({ key: 'userDateFormat' })).value
+			const userLocation = (await Preferences.get({ key: 'userLocation' })).value
+			if (userThemeLight) {
+				themeLight.value = JSON.parse(userThemeLight);
+			} else {
+				themeLight.value = preferLight;
+			}
+			if (userUnitsSystem) {
+				unitsSystem.value = JSON.parse(userUnitsSystem);
+			}
+			if (userDateFormat) {
+				dateFormat.value = JSON.parse(userDateFormat);
+			}
+			if (userLocation) {
+				geolocation.value = JSON.parse(userLocation);
+			} else {
+				await getCurrentLocation();
+			}
 		} else {
-			themeLight.value = preferLight;
-		}
-		if (localStorage.userUnitsSystem) {
-			unitsSystem.value = JSON.parse(localStorage.userUnitsSystem);
-		}
-		if (localStorage.userDateFormat) {
-			dateFormat.value = JSON.parse(localStorage.userDateFormat);
-		}
-		if (localStorage.userLocation) {
-			await updateAppData(JSON.parse(localStorage.userLocation));
-		} else {
-			await getCurrentLocation();
+			const preferLight = window.matchMedia(
+				'(prefers-color-scheme: light)'
+			).matches;
+			if (localStorage.userThemeLight) {
+				themeLight.value = JSON.parse(localStorage.userThemeLight);
+			} else {
+				themeLight.value = preferLight;
+			}
+			if (localStorage.userUnitsSystem) {
+				unitsSystem.value = JSON.parse(localStorage.userUnitsSystem);
+			}
+			if (localStorage.userDateFormat) {
+				dateFormat.value = JSON.parse(localStorage.userDateFormat);
+			}
+			if (localStorage.userLocation) {
+				geolocation.value = JSON.parse(localStorage.userLocation)
+			} else {
+				await getCurrentLocation();
+			}
 		}
 	} catch (error: any) {
 		geolocation.value = defaultLocation;
 	}
-});
+}
 
 watch(geolocation, async (newLocation) => {
 	try {
 		if (!newLocation) return;
-		await updateAppData(newLocation)
+		if (Capacitor.isNativePlatform()) {
+			await Preferences.set({ key: 'userLocation', value: JSON.stringify(newLocation) })
+		} else {
+			localStorage.setItem('userLocation', JSON.stringify(newLocation));
+		}
+		await updateAppData()
 	} catch (error: any) {
 		if (error instanceof AxiosError) {
 			if (error.response?.status === 400) {
 				dataError.value = 'City not found. Did you enter correct name?'
 			}
 		} else {
-			dataError.value = 'Request error, try again.'
+			dataError.value = 'Request error.'
 		}
-		if (!apiData) {
+		if (!weatherData) {
 			geolocation.value = defaultLocation;
 		}
 	}
 });
 
-watch(unitsSystem, (newUnitsSystem) => {
-	localStorage.setItem('userUnitsSystem', JSON.stringify(newUnitsSystem));
+watch(unitsSystem, async (newUnitsSystem) => {
+	if (Capacitor.isNativePlatform()) {
+		await Preferences.set({ key: 'userUnitsSystem', value: JSON.stringify(newUnitsSystem) })
+	} else {
+		localStorage.setItem('userUnitsSystem', JSON.stringify(newUnitsSystem));
+	}
 })
 
-watch(dateFormat, (newDateFormat) => {
-	localStorage.setItem('userDateFormat', JSON.stringify(newDateFormat));
+watch(dateFormat, async (newDateFormat) => {
+	if (Capacitor.isNativePlatform()) {
+		await Preferences.set({ key: 'userDateFormat', value: JSON.stringify(newDateFormat) })
+	} else {
+		localStorage.setItem('userDateFormat', JSON.stringify(newDateFormat));
+	}
 })
 
-watch(themeLight, (newThemeLight) => {
-	localStorage.setItem('themeLight', JSON.stringify(newThemeLight));
+watch(themeLight, async (newThemeLight) => {
+	if (Capacitor.isNativePlatform()) {
+		await Preferences.set({ key: 'userThemeLight', value: JSON.stringify(newThemeLight) })
+	} else {
+		localStorage.setItem('userThemeLight', JSON.stringify(newThemeLight));
+	}
 })
 
 watch(searchResults, (newSearchResults) => {
@@ -105,13 +174,6 @@ function clearSearchResults() {
 	searchResults.value = null
 }
 
-async function updateData() {
-	fetching.value = true
-	if (geolocation.value) {
-		await updateAppData(geolocation.value)
-	}
-	fetching.value = false
-}
 
 function watchResultsClick(e: MouseEvent) {
 	const el = e.target as HTMLDivElement
@@ -122,18 +184,29 @@ function watchResultsClick(e: MouseEvent) {
 }
 
 function toggleTheme() {
+	execBackgroundRunner();
 	themeLight.value = !themeLight.value
 }
 
-async function updateAppData(location: GeocodingData) {
+async function updateAppData() {
 	try {
-		const weather = await fetchWeatherOneCall(location.lat, location.lon);
-		const pollution = await fetchAirPollution(location.lat, location.lon)
-		apiData.value = weather;
-		airPollutionData.value = pollution;
-		geolocation.value = location;
+		fetching.value = true;
+		let location = geolocation.value;
+		if (!location) {
+			location = await getLocation()
+		}
+		if (location) {
+			const { weather, airPollution } = await getWeatherData(location.lat, location.lon);
+			weatherData.value = weather;
+			pollutionData.value = airPollution;
+			geolocation.value = location;
+		} else {
+			throw new Error('Error getting location data')
+		}
+		fetching.value = false
 	} catch (error: any) {
-		throw new Error('Error getting weather data, try again.')
+		dataError.value = error || 'Error getting weather data.';
+		fetching.value = false
 	}
 }
 
@@ -142,18 +215,16 @@ async function searchLocation(query: string | GeocodingData) {
 		if (!query) return;
 		fetching.value = true
 		if (typeof query === 'string') {
-			const results = await fetchByQuery(query);
+			const results = await getLocationByQuery(query);
 			if (!results.length) {
 				throw new Error(`No results for ${query}.`)
 			} else {
 				searchResults.value = results;
 			}
 		} else if (typeof query === 'object') {
-			const geolocation = await fetchByCoords(query.lat, query.lon);
-			await updateAppData(geolocation);
+			geolocation.value = await getLocationByCoords(query.lat, query.lon);
 			searchResults.value = null;
 		}
-		dataError.value = null;
 		fetching.value = false
 	} catch (error: any) {
 		if (error instanceof AxiosError) {
@@ -161,77 +232,39 @@ async function searchLocation(query: string | GeocodingData) {
 				dataError.value = 'City not found.'
 			}
 		} else {
-			dataError.value = error.message || 'Error searching for city, try again.'
+			dataError.value = error.message || 'Error searching for city.'
 		}
 		searchResults.value = null;
 		fetching.value = false
 	}
 }
 
-async function requestLocation() {
+async function getCurrentLocation() {
 	try {
-		dataError.value = null
 		fetching.value = true
-		await getCurrentLocation();
+		geolocation.value = await getLocation()
 		fetching.value = false
 	} catch (error: any) {
-		dataError.value = error.message
+		dataError.value = error || 'Error getting weather data.';
 		fetching.value = false
 	}
-}
-
-function getCurrentLocation(): Promise<null> {
-	return new Promise((resolve, reject) => {
-		if (navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition(
-				async (position) => {
-					try {
-						const { latitude, longitude } = position.coords;
-						const geolocation = await fetchByCoords(latitude, longitude);
-						await updateAppData(geolocation)
-						localStorage.setItem('userLocation', JSON.stringify(geolocation))
-						resolve(null)
-					} catch (error: any) {
-						reject(error)
-					}
-				}, (error) => {
-					switch (error.code) {
-						case 1:
-							reject(new Error('Geolocation request denied. Change browser setting to allow geolocation to use this function.'))
-							break;
-						case 2:
-							reject(new Error('Geolocation unavailable.'))
-							break;
-						case 3:
-							reject(new Error('Geolocation request timeout.'))
-							break;
-						default:
-							reject(new Error('Geolocation request error.'))
-							break;
-					}
-				}, { timeout: 5000, }
-			)
-		} else {
-			reject(new Error('Geolocation is not supported by this browser.'))
-		}
-	});
 };
 </script>
 
 <template>
 	<div class="main-container" :class="{ light: themeLight }">
-		<main v-if="apiData">
+		<main v-if="weatherData">
 			<div class="top">
 				<section class="basic">
 					<Controls @changeUnitsSystem="changeUnitsSystem" @changeDateFormat="changeDateFormat"
-						@searchLocation="searchLocation" @requestLocation="requestLocation" @clearResults="clearSearchResults"
-						@toggleTheme="toggleTheme" @updateData="updateData" :unitsSystem="unitsSystem"
+						@searchLocation="searchLocation" @requestLocation="getCurrentLocation" @clearResults="clearSearchResults"
+						@toggleTheme="toggleTheme" @updateAppData="updateAppData" :unitsSystem="unitsSystem"
 						:searchResults="searchResults" :themeLight="themeLight" :dateFormat="dateFormat" :fetching="fetching" />
-					<Current :weather="apiData" :location="geolocation" :unitsSystem="unitsSystem" :dateFormat="dateFormat" />
+					<Current :weather="weatherData" :location="geolocation" :unitsSystem="unitsSystem" :dateFormat="dateFormat" />
 				</section>
-				<Extra :weather="apiData" :pollution="airPollutionData" :unitsSystem="unitsSystem" />
+				<Extra :weather="weatherData" :pollution="pollutionData" :unitsSystem="unitsSystem" />
 			</div>
-			<Forecast :weather="apiData" :unitsSystem="unitsSystem" :dateFormat="dateFormat" />
+			<Forecast :weather="weatherData" :unitsSystem="unitsSystem" :dateFormat="dateFormat" />
 			<div v-if="dataError" class="error" @click="dismissError">
 				<h4>{{ dataError }}</h4>
 			</div>
@@ -245,7 +278,7 @@ function getCurrentLocation(): Promise<null> {
 	min-height: 100vh;
 	color: var(--color-text);
 	background-color: var(--color-background-soft);
-	transition: 0.30s ease-in-out;
+	transition: 0.3s ease-in-out;
 }
 
 main {
@@ -284,7 +317,7 @@ main {
 	z-index: 100;
 	cursor: pointer;
 	transition: 0.925 ease-in-out;
-	-webkit-transition: all 0.30s ease-in-out, color 0s;
+	-webkit-transition: all 0.3s ease-in-out, color 0s;
 }
 
 @media (min-width: 640px) {
