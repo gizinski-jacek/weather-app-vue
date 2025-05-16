@@ -7,8 +7,8 @@ import Tooltip from "./Tooltip.vue";
 
 const props = defineProps<{
 	weather: OneCallWeatherData | null;
-	unitsSystem: 'metric' | 'imperial';
-	dateFormat: 'en-gb' | 'en-us',
+	unitsSystem: 'metric' | 'imperial' | undefined;
+	dateFormat: 'en-gb' | 'en-us' | undefined,
 }>();
 
 const displayedForecast = ref<"daily" | "hourly">("daily");
@@ -129,11 +129,11 @@ watch(pageView, () => {
 				weather[displayedForecast],
 				groupSize
 			)" :key="indexH" class="forecast-daily" :class="{
-				active:
-					weather[displayedForecast].length > groupSize
-						? currentPage - 1 === indexH
-						: 'active',
-			}">
+	active:
+		weather[displayedForecast].length > groupSize
+			? currentPage - 1 === indexH
+			: 'active',
+}">
 				<div v-for="(day, i) in chunk" :key="i" class="day">
 					<div>
 						{{
@@ -486,8 +486,6 @@ watch(pageView, () => {
 </template>
 
 <style scoped lang="scss">
-@import "../assets/base.scss";
-
 .weather-forecast {
 	display: flex;
 	flex-direction: column;
@@ -554,9 +552,12 @@ watch(pageView, () => {
 		margin: 0 0.25rem;
 		border-radius: 50%;
 		border: 2px solid var(--color-heading);
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
 		user-select: none;
 		cursor: pointer;
-		transition: 0.30s ease-in-out;
+		transition: 0.3s ease-in-out;
 
 		&:hover {
 			background-color: var(--color-border-hover);
@@ -583,13 +584,13 @@ watch(pageView, () => {
 		&:after {
 			display: block;
 			margin: auto;
-			content: "";
+			content: '';
 			width: 12px;
 			height: 4px;
 			background-color: var(--color-border);
 			transform: translateY(5px) rotate(-45deg);
 			margin: 0 0.25rem;
-			transition: 0.30s ease-in-out;
+			transition: 0.3s ease-in-out;
 		}
 
 		&:after {
@@ -655,14 +656,14 @@ watch(pageView, () => {
 	padding: 0 0.5rem;
 	gap: 0.5rem;
 	border-radius: 8px;
-	transition: 0.30s ease-in-out;
-	-webkit-transition: background-color 0.30s ease-in-out, color 0s;
+	transition: 0.3s ease-in-out;
+	-webkit-transition: background-color 0.3s ease-in-out, color 0s;
 
 	&:nth-child(2n) {
 		background-color: var(--color-background);
 
 		>div:nth-child(2) {
-			transition: 0.30s ease-in-out;
+			transition: 0.3s ease-in-out;
 			background-color: var(--color-background-soft);
 			border-radius: 50%;
 		}
@@ -696,7 +697,7 @@ watch(pageView, () => {
 
 				path {
 					fill: var(--color-text-alt);
-					transition: 0.30s ease-in-out;
+					transition: 0.3s ease-in-out;
 				}
 			}
 
@@ -706,7 +707,6 @@ watch(pageView, () => {
 		}
 	}
 }
-
 
 .day {
 	grid-template-columns: 60px 50px 80px 70px 20px;
@@ -720,6 +720,7 @@ watch(pageView, () => {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	justify-content: space-between;
+	-moz-column-gap: 1rem;
 	column-gap: 1rem;
 	row-gap: 0.5rem;
 	width: 100%;
@@ -822,6 +823,8 @@ watch(pageView, () => {
 			grid-template-columns: minmax(0, 1fr);
 			grid-auto-columns: 1fr;
 			grid-auto-flow: column;
+			min-width: -webkit-fit-content !important;
+			min-width: -moz-fit-content !important;
 			min-width: fit-content !important;
 		}
 	}
