@@ -13,20 +13,20 @@
 	--vt-c-gold-dark: rgb(225, 175, 0);
 	--vt-c-gold-light: rgb(150, 100, 0);
 
-	--vt-c-green-dark: rgb(0, 200, 0);
-	--vt-c-green-light: rgb(0, 255, 0);
+	--vt-c-green-dark: rgb(0, 175, 0);
+	--vt-c-green-light: rgb(0, 225, 0);
 
-	--vt-c-yellow-dark: rgb(200, 200, 0);
-	--vt-c-yellow-light: rgb(255, 255, 0);
+	--vt-c-yellow-dark: rgb(175, 175, 0);
+	--vt-c-yellow-light: rgb(200, 200, 0);
 
 	--vt-c-orange-dark: rgb(200, 125, 0);
 	--vt-c-orange-light: rgb(255, 175, 0);
 
-	--vt-c-red-dark: rgb(200, 0, 0);
-	--vt-c-red-light: rgb(255, 0, 0);
+	--vt-c-red-dark: rgb(150, 0, 0);
+	--vt-c-red-light: rgb(200, 0, 0);
 
-	--vt-c-purple-dark: rgb(100, 0, 175);
-	--vt-c-purple-light: rgb(175, 0, 255);
+	--vt-c-purple-dark: rgb(75, 0, 150);
+	--vt-c-purple-light: rgb(150, 0, 225);
 
 	--vt-c-border-dark: rgb(100, 100, 100);
 
@@ -95,4 +95,5 @@ body {
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	overflow-x: hidden;
 }
