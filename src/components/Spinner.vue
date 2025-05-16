@@ -21,7 +21,18 @@
 	border-radius: 50%;
 	width: 160px;
 	height: 160px;
+	-webkit-animation: spin 1.5s linear infinite;
 	animation: spin 1.5s linear infinite;
+}
+
+@-webkit-keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
 }
 
 @keyframes spin {
