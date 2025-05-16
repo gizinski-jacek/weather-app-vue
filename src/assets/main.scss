@@ -20,6 +20,10 @@ button {
 	padding: 0.25rem 0.5rem;
 	cursor: pointer;
 	transition: 0.3s ease-in-out;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 
 	&:hover {
 		border: 2px solid var(--color-border-hover);
@@ -54,6 +58,9 @@ input {
 img,
 svg {
 	display: block;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 	user-select: none;
 	transition: 0.3s ease-in-out;
 }
