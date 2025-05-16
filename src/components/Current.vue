@@ -6,8 +6,8 @@ import { ref } from 'vue';
 const props = defineProps<{
 	weather: OneCallWeatherData | null;
 	location: GeocodingData | null;
-	unitsSystem: 'metric' | 'imperial';
-	dateFormat: 'en-gb' | 'en-us',
+	unitsSystem: 'metric' | 'imperial' | undefined;
+	dateFormat: 'en-gb' | 'en-us' | undefined,
 }>();
 const showAlert = ref<boolean>(false);
 
@@ -83,9 +83,9 @@ function toggleAlert() {
 			</div>
 			<div>
 				<span>Sunrise: {{ new Date(weather.current.sunrise * 1000).toLocaleTimeString(dateFormat,
-					{ hour: 'numeric', minute: 'numeric' }) }}</span>
+					{ hour: '2-digit', minute: '2-digit' }) }}</span>
 				<span>Sunset: {{ new Date(weather.current.sunset * 1000).toLocaleTimeString(dateFormat,
-					{ hour: 'numeric', minute: 'numeric' }) }}</span>
+					{ hour: '2-digit', minute: '2-digit' }) }}</span>
 			</div>
 		</div>
 	</div>
@@ -108,14 +108,16 @@ function toggleAlert() {
 
 		path {
 			fill: var(--color-text-alt);
-			transition: 0.30s ease-in-out;
+			transition: 0.3s ease-in-out;
 		}
 
 		&:hover path {
+			-webkit-filter: brightness(110%);
 			filter: brightness(110%);
 		}
 
 		&:active path {
+			-webkit-filter: brightness(120%);
 			filter: brightness(120%);
 		}
 	}
@@ -130,8 +132,8 @@ function toggleAlert() {
 		>div {
 			display: block;
 			width: 100%;
-			color: var(--color-background);
-			background-color: var(--color-border-active);
+			color: var(--color-text);
+			background-color: var(--color-background);
 			border: 0 solid var(--color-red);
 			border-radius: 8px;
 			overflow: hidden;
@@ -139,17 +141,20 @@ function toggleAlert() {
 			padding: 0 0.5rem;
 			transform: scale(0);
 			transform-origin: 0 0;
+			transition: 0.3s ease-in-out;
 		}
 	}
 
 	&.show .alert-content {
+		height: -webkit-fit-content;
+		height: -moz-fit-content;
 		height: fit-content;
 		width: 85vw;
 		max-width: 1100px;
 
 		>div {
 			padding: 0.25rem 0.5rem;
-			border-width: 3px;
+			border-width: 4px;
 			transform: scale(1);
 		}
 	}
@@ -160,21 +165,20 @@ function toggleAlert() {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 1rem;
-	padding: 1rem;
+	gap: 0.5rem;
 	text-transform: capitalize;
 
 	>div {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		gap: 3rem;
+		gap: 1rem;
 		text-align: center;
 	}
 
 	.date {
 		color: var(--color-text-alt);
-		transition: 0.30s ease-in-out;
+		transition: 0.3s ease-in-out;
 	}
 
 	img {
