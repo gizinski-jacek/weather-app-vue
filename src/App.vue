@@ -184,7 +184,6 @@ function watchResultsClick(e: MouseEvent) {
 }
 
 function toggleTheme() {
-	execBackgroundRunner();
 	themeLight.value = !themeLight.value
 }
 
