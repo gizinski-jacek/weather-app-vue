@@ -5,14 +5,14 @@ import { onMounted, onUnmounted, ref } from "vue";
 import Settings from './Settings.vue';
 
 const props = defineProps<{
-	unitsSystem: 'metric' | 'imperial',
-	dateFormat: 'en-gb' | 'en-us',
+	unitsSystem: 'metric' | 'imperial' | undefined,
+	dateFormat: 'en-gb' | 'en-us' | undefined,
 	searchResults: GeocodingData[] | null,
 	themeLight: boolean,
 	fetching: boolean
 }>();
 
-const emit = defineEmits(["changeUnitsSystem", "changeDateFormat", "searchLocation", "requestLocation", "clearResults", "toggleTheme", "updateData"]);
+const emit = defineEmits(["changeUnitsSystem", "changeDateFormat", "searchLocation", "requestLocation", "clearResults", "toggleTheme", "updateAppData"]);
 const searchValue = ref<string>("");
 const input = ref<HTMLInputElement | null>(null);
 const svgBtn = ref<SVGElement | null>(null);
@@ -79,8 +79,8 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 				@keypress.enter="triggerSearch" />
 			<div v-if="searchValue || searchResults" class="clear" @click="clearInputAndResults"></div>
 			<div class="mag-icon">
-				<svg ref="svgBtn" viewBox="0 0 24 24" stroke-width="2px" stroke-linecap="round"
-					xmlns="http://www.w3.org/2000/svg" @click="triggerSearch">
+				<svg ref="svgBtn" viewBox="0 0 24 24" stroke-width="2px" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg"
+					@click="triggerSearch">
 					<circle cx="10" cy="10" r="6" />
 					<path d="M14.5 14.5L19 19" />
 				</svg>
@@ -100,7 +100,7 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 				</div>
 			</div>
 		</div>
-		<button type="button" class="update-data" :class="{ fetching: fetching }" @click="emit('updateData')">
+		<button type="button" class="update-data" :class="{ fetching: fetching }" @click="emit('updateAppData')">
 			<svg fill="#000000" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
 				<g stroke-width="0"></g>
 				<g stroke-linecap="round" stroke-linejoin="round"></g>
@@ -185,6 +185,8 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 #search-box {
 	flex: 1;
 	display: flex;
+	width: -webkit-fit-content;
+	width: -moz-fit-content;
 	width: fit-content;
 	max-width: 320px;
 	background-color: var(--color-background);
@@ -193,13 +195,13 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 	gap: 0.25rem;
 	position: relative;
 	margin-right: auto;
-	transition: 0.30s ease-in-out;
+	transition: 0.3s ease-in-out;
 
 	input {
 		width: 100%;
 		background-color: transparent;
 		border: none;
-		transition: 0.30s ease-in-out;
+		transition: 0.3s ease-in-out;
 		font-weight: 700;
 
 		&:hover {
@@ -213,7 +215,7 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 
 	.mag-icon {
 		margin: auto 0;
-		transition: 0.30s ease-in-out;
+		transition: 0.3s ease-in-out;
 
 		svg {
 			width: 24px;
@@ -224,7 +226,7 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 			circle,
 			path {
 				stroke: var(--color-heading);
-				transition: 0.30s ease-in-out;
+				transition: 0.3s ease-in-out;
 			}
 
 			&:hover {
@@ -255,12 +257,12 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 		&:before,
 		&:after {
 			display: block;
-			content: "";
+			content: '';
 			width: 16px;
 			height: 2px;
 			background-color: var(--color-border);
 			transform: translateY(9px) rotate(-45deg);
-			transition: 0.30s ease-in-out;
+			transition: 0.3s ease-in-out;
 		}
 
 		&:after {
@@ -287,6 +289,7 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 
 		.result {
 			display: grid;
+			grid-template-columns: 30px 1fr -webkit-min-content;
 			grid-template-columns: 30px 1fr min-content;
 			grid-auto-flow: column;
 			align-items: center;
@@ -300,7 +303,6 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 			line-height: 1.25rem;
 
 			>div {
-
 				&:last-child {
 					margin-left: auto;
 					text-align: end;
@@ -360,7 +362,18 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 
 	&.fetching {
 		svg {
+			-webkit-animation: spin 500ms infinite linear;
 			animation: spin 500ms infinite linear;
+		}
+	}
+
+	@-webkit-keyframes spin {
+		0% {
+			transform: rotate(0deg);
+		}
+
+		100% {
+			transform: rotate(360deg);
 		}
 	}
 
@@ -400,7 +413,7 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 
 		path {
 			fill: var(--color-text-alt);
-			transition: 0.30s ease-in-out;
+			transition: 0.3s ease-in-out;
 		}
 	}
 }
@@ -420,7 +433,7 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 
 		path {
 			fill: var(--color-text-alt);
-			transition: 0.30s ease-in-out,
+			transition: 0.3s ease-in-out;
 		}
 	}
 
