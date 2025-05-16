@@ -61,7 +61,11 @@ function renderFrom(e: MouseEvent) {
 	}
 
 	&:hover .tooltip-content {
+		height: -webkit-max-content;
+		height: -moz-max-content;
 		height: max-content;
+		width: -webkit-max-content;
+		width: -moz-max-content;
 		width: max-content;
 		max-width: 280px;
 		text-align: center;
@@ -69,6 +73,9 @@ function renderFrom(e: MouseEvent) {
 		border: 2px solid var(--color-border-active);
 		border-radius: 4px;
 		opacity: 1;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
 		user-select: none;
 		transition: 0.15s ease-in-out;
 		transition-delay: 0.4s;
