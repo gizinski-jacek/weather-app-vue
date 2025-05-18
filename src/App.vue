@@ -77,7 +77,7 @@ async function importPreferences() {
 			if (userLocation) {
 				geolocation.value = JSON.parse(userLocation);
 			} else {
-				await getCurrentLocation();
+				getCurrentLocation();
 			}
 		} else {
 			const preferLight = window.matchMedia(
@@ -97,11 +97,11 @@ async function importPreferences() {
 			if (localStorage.userLocation) {
 				geolocation.value = JSON.parse(localStorage.userLocation)
 			} else {
-				await getCurrentLocation();
+				getCurrentLocation();
 			}
 		}
 	} catch (error: any) {
-		geolocation.value = defaultLocation;
+		dataError.value = 'Error getting user settings.'
 	}
 }
 
@@ -190,18 +190,13 @@ function toggleTheme() {
 async function updateAppData() {
 	try {
 		fetching.value = true;
-		let location = geolocation.value;
-		if (!location) {
-			location = await getLocation()
+		if (!geolocation.value) {
+			getCurrentLocation()
+			return
 		}
-		if (location) {
-			const { weather, airPollution } = await getWeatherData(location.lat, location.lon);
-			weatherData.value = weather;
-			pollutionData.value = airPollution;
-			geolocation.value = location;
-		} else {
-			throw new Error('Error getting location data')
-		}
+		const { weather, airPollution } = await getWeatherData(geolocation.value.lat, geolocation.value.lon);
+		weatherData.value = weather;
+		pollutionData.value = airPollution;
 		fetching.value = false
 	} catch (error: any) {
 		dataError.value = error || 'Error getting weather data.';
@@ -244,7 +239,8 @@ async function getCurrentLocation() {
 		geolocation.value = await getLocation()
 		fetching.value = false
 	} catch (error: any) {
-		dataError.value = error || 'Error getting weather data.';
+		dataError.value = error || 'Error getting location data.';
+		geolocation.value = geolocation.value || defaultLocation
 		fetching.value = false
 	}
 };
