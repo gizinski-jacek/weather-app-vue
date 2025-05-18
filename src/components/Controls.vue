@@ -51,7 +51,6 @@ function triggerSearch(e: KeyboardEvent | MouseEvent) {
 		if (e.target === svgBtn.value) input.value?.focus();
 	} else {
 		emit("searchLocation", searchValue.value.trim());
-		searchValue.value = "";
 	}
 }
 
@@ -79,8 +78,8 @@ function changeDateFormat(dateFormat: 'en-gb' | 'en-us') {
 				@keypress.enter="triggerSearch" />
 			<div v-if="searchValue || searchResults" class="clear" @click="clearInputAndResults"></div>
 			<div class="mag-icon">
-				<svg ref="svgBtn" viewBox="0 0 24 24" stroke-width="2px" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg"
-					@click="triggerSearch">
+				<svg ref="svgBtn" viewBox="0 0 24 24" stroke-width="2px" stroke-linecap="round"
+					xmlns="http://www.w3.org/2000/svg" @click="triggerSearch">
 					<circle cx="10" cy="10" r="6" />
 					<path d="M14.5 14.5L19 19" />
 				</svg>
