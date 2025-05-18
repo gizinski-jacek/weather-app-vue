@@ -10,6 +10,11 @@ import { Preferences } from '@capacitor/preferences';
 import { Geolocation } from '@capacitor/geolocation';
 import type { Position } from '@capacitor/geolocation/dist/esm';
 
+const API_KEY =
+	import.meta.env.MODE === 'development'
+		? import.meta.env.API_KEY_DEV
+		: import.meta.env.API_KEY;
+
 export function getLocation(): Promise<GeocodingData> {
 	return new Promise(async (resolve, reject) => {
 		try {
@@ -73,9 +78,7 @@ export async function getLocationByQuery(
 ): Promise<GeocodingData[]> {
 	try {
 		const res: AxiosResponse<GeocodingData[]> = await axios.get(
-			`https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=${
-				import.meta.env.VITE_API_KEY
-			}`,
+			`https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=${API_KEY}`,
 			{ timeout: 10000 }
 		);
 		return res.data;
@@ -90,9 +93,7 @@ export async function getLocationByCoords(
 ): Promise<GeocodingData> {
 	try {
 		const res: AxiosResponse<GeocodingData[]> = await axios.get(
-			`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${
-				import.meta.env.VITE_API_KEY
-			}`,
+			`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${API_KEY}`,
 			{ timeout: 10000 }
 		);
 		return res.data[0];
@@ -107,9 +108,7 @@ export async function getWeatherOneCall(
 ): Promise<OneCallWeatherData> {
 	try {
 		const res: AxiosResponse<OneCallWeatherData> = await axios.get(
-			`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&units=metric&appid=${
-				import.meta.env.VITE_API_KEY
-			}`,
+			`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`,
 			{ timeout: 10000 }
 		);
 		return res.data;
@@ -124,9 +123,7 @@ export async function getAirPollution(
 ): Promise<AirPollution> {
 	try {
 		const res: AxiosResponse<AirPollution> = await axios.get(
-			`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${
-				import.meta.env.VITE_API_KEY
-			}`,
+			`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`,
 			{ timeout: 10000 }
 		);
 		return res.data;
