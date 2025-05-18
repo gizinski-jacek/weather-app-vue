@@ -27,34 +27,29 @@ const dataError = ref<string | null>(null);
 const themeLight = ref<boolean>(false);
 const fetching = ref<boolean>(false);
 
-
 onMounted(async () => {
 	importPreferences()
 });
 
 async function importPreferences() {
-	try {
-		const preferLight = window.matchMedia(
-			'(prefers-color-scheme: light)'
-		).matches;
-		if (localStorage.userThemeLight) {
-			themeLight.value = JSON.parse(localStorage.userThemeLight);
-		} else {
-			themeLight.value = preferLight;
-		}
-		if (localStorage.userUnitsSystem) {
-			unitsSystem.value = JSON.parse(localStorage.userUnitsSystem);
-		}
-		if (localStorage.userDateFormat) {
-			dateFormat.value = JSON.parse(localStorage.userDateFormat);
-		}
-		if (localStorage.userLocation) {
-			geolocation.value = JSON.parse(localStorage.userLocation)
-		} else {
-			await getCurrentLocation();
-		}
-	} catch (error: any) {
-		geolocation.value = defaultLocation;
+	const preferLight = window.matchMedia(
+		'(prefers-color-scheme: light)'
+	).matches;
+	if (localStorage.userThemeLight) {
+		themeLight.value = JSON.parse(localStorage.userThemeLight);
+	} else {
+		themeLight.value = preferLight;
+	}
+	if (localStorage.userUnitsSystem) {
+		unitsSystem.value = JSON.parse(localStorage.userUnitsSystem);
+	}
+	if (localStorage.userDateFormat) {
+		dateFormat.value = JSON.parse(localStorage.userDateFormat);
+	}
+	if (localStorage.userLocation) {
+		geolocation.value = JSON.parse(localStorage.userLocation)
+	} else {
+		getCurrentLocation();
 	}
 }
 
@@ -126,18 +121,13 @@ function toggleTheme() {
 async function updateAppData() {
 	try {
 		fetching.value = true;
-		let location = geolocation.value;
-		if (!location) {
-			location = await getLocation()
+		if (!geolocation.value) {
+			getCurrentLocation()
+			return
 		}
-		if (location) {
-			const { weather, airPollution } = await getWeatherData(location.lat, location.lon);
-			weatherData.value = weather;
-			pollutionData.value = airPollution;
-			geolocation.value = location;
-		} else {
-			throw new Error('Error getting location data')
-		}
+		const { weather, airPollution } = await getWeatherData(geolocation.value.lat, geolocation.value.lon);
+		weatherData.value = weather;
+		pollutionData.value = airPollution;
 		fetching.value = false
 	} catch (error: any) {
 		dataError.value = error || 'Error getting weather data.';
@@ -180,7 +170,8 @@ async function getCurrentLocation() {
 		geolocation.value = await getLocation()
 		fetching.value = false
 	} catch (error: any) {
-		dataError.value = error || 'Error getting weather data.';
+		dataError.value = error || 'Error getting location data.';
+		geolocation.value = geolocation.value || defaultLocation
 		fetching.value = false
 	}
 };
